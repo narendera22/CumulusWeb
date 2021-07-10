@@ -1,0 +1,89 @@
+{
+  "documentRepository": [
+    {
+      "phase": "Pre - Initiation",
+      "documents": [
+        {
+          "name": "SOW Template - COTS Containerization",
+          "description": "SOW Template for a project involving migration of COTS application into Azure Kubernetes service. The project scope includes - setup of AKS infrastructure, Containerization of COTS product and deploy inside AKS cluster and setting up of DevOps pipeline. ",
+          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/SOW_Template.docx",
+          "tags": [
+            "SOW",
+            "Word",
+            "Container",
+            "Kubernetes",
+            "JBOSS",
+            "Twistlock",
+            "Sumologic",
+            "AppDynamics",
+            "Mongo",
+            "Memcached",
+            "AKS",
+            "APIM",
+            "VM",
+            "Application Gateway"
+          ]
+        },
+        {
+          "name": "Job Description - Containerization Project",
+          "description": "Job Description of different roles required for a AKS migration project.",
+          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/Roles JD.xlsx",
+          "tags": [
+            "SOW",
+            "Word",
+            "Container",
+            "Kubernetes",
+            "JBOSS",
+            "Twistlock",
+            "Sumologic",
+            "AppDynamics",
+            "Mongo",
+            "Memcached",
+            "AKS",
+            "APIM",
+            "VM",
+            "Application Gateway"
+          ]
+        },
+        {
+          "name": "High Level Plan - Containerization Project",
+          "description": "An indicative high-level week wise plan for an AKS migration project involving COTS application containerization and migration. The plan defines starts and end date of different phases including deployment to various environment including Cutover and Hypercare. This plan does not get into the task level details of different phases.",
+          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/High Level Plan.xlsx",
+          "tags": [
+            "Job Description",
+            "Excel",
+            "Solution Architect",
+            "Kubernetes Engineer",
+            "DevOps Engineer"
+          ]
+        },
+        {
+          "name": "RACI",
+          "description": "An Indicative RACI matrix to defining the responsibilities of three stakeholders - Customer, Microsoft and TCS. This is currently focused for the AKS migration project involving COTS application containerization and migration.",
+          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/RACI.xlsx",
+          "tags": [
+            "Risk",
+            "Mitigation"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "Initiation"
+    },
+    {
+      "phase": "Design"
+    },
+    {
+      "phase": "Build"
+    },
+    {
+      "phase": "Deploy"
+    },
+    {
+      "phase": "Test"
+    }
+  ],
+  "Uploaded By": "System",
+  "Uploaded On": "06/27/2021"
+}

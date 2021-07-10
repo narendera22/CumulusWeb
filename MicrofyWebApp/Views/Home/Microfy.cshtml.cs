@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace MicrofyWebApp.Pages
 {
-    public class IndexModel : PageModel
+    public class MicrofyModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<MicrofyModel> _logger;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public MicrofyModel(ILogger<MicrofyModel> logger)
         {
             _logger = logger;
         }

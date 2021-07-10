@@ -1,0 +1,64 @@
+﻿
+<form id="upload" enctype="multipart/form-data" method="POST">
+    <div class="card">
+        <h4 class="mb-3 ml-3">Upload Document</h4>
+        <div class="col-md-6">
+            <div class="form-group" style="margin-bottom: 2px;">
+                <label>Name</label>
+                <input type="text" class="form-control" id="txtname" placeholder="">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group" style="margin-bottom: 2px;">
+                <label>Description</label>
+                <textarea id="txtdescp" class="form-control" name="txtdescp" rows="4" cols="50"></textarea>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group" style="margin-bottom: 2px;">
+                <label>Tags</label>
+                <input type="text" class="form-control" id="txtTags" placeholder="">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mt-3 mb-3">
+                <input type="file" id="fileToUpload" name="file" />
+            </div>
+        </div>
+        <div class="float-left  m-3">
+            <button type="button" class="btn btn-primary"id="btnsubmit">Save changes</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnsubmit").click(function () {
+            debugger;
+           
+            
+            $.ajax({
+                url: "/Home/Upload",
+                type: "POST",
+                data: function () {
+                    var data = new FormData();
+                    //data.append("name", jQuery("#txtname").val());
+                    data.append("file", jQuery("#fileToUpload").get(0).files[0]);
+                    return data;
+                }(),
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    debugger;
+                    //console.log(response);
+
+                    DocumentSave(response);
+                },
+                error: function (jqXHR, textStatus, errorMessage) {
+                    console.log(errorMessage);
+                }
+            });
+        });
+    });
+
+</script>

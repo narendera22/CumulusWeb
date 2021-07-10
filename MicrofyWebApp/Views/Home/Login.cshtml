@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MicrofyWebApp</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+
+</head>
+<body>
+    <div class="body">
+
+    </div>
+    <div class="grad"></div>
+    <div class="header">
+        <div class="imglogo">
+            <img id="img_logo" alt="Logo" src="~/Image/microfy.png" />
+        </div>
+    </div>
+    <div class="login">
+
+        @using (Html.BeginForm("Microfy", "Home", FormMethod.Post))
+        {
+            <input type="text" placeholder="Enter Username" name="uname" required><br>
+            <input type="password" placeholder="Enter Password" name="psw" required><br>
+            <input type="submit" value="Login" /><br>
+
+        }
+        <p>Don't have an account? &nbsp;<a href="~/Home/Registration">Sign up</a></p>
+
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+      </div>
+</body>
+</html>
