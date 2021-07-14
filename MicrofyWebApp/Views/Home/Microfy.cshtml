@@ -1,99 +1,230 @@
-﻿@{
+﻿@model MicrofyWebApp.Models.PhaseViewModel
+@{
+    var sideMenu = Model;
+    var phase = Model.phases;
     ViewData["Title"] = "Home page";
 }
+<div class="container">
+    <div class="wrapper">
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <div class="imglogo">
+                    <img id="img_logo" alt="Logo" src="~/Image/microfy.png" />
+                </div>
+            </div>
+            <ul class="list-unstyled">
+                @for (int j = 0; j < phase.Count; j++)
+                {
+                    <li>
+                        <div class="anchor-link">
+                            @if (phase[j].subPhase != null)
+                            {
+                                <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">@phase[j].name</a>
+                            }
+                            else
+                            {
+                                <a href="#">@phase[j].name</a>
+                            }
+                        </div>
+                        @if (phase[j].subPhase != null)
+                        {
+                            var subphase = phase[j].subPhase;
+                            <ul class="collapse list-unstyled" id="@phase[j].name">
+                                @for (int i = 0; i < subphase.Count; i++)
+                                {
+                                    <li class="subanchor-link">
+                                        <a href="#">@subphase[i]</a>
+                                    </li>
+                                }
+                            </ul>
 
-<div class="col-md-12" style="padding-left: 15px;">
-    <div id="divbreadcrumb">
-        <ol class="breadcrumb breadcrumb-arrow">
-            <li class="homelink"><a href="#">Home</a></li>
-            <li class="active"><span>Dashboard</span></li>
-        </ol>
+                        }
+
+                    </li>
+                }
+            </ul>
+            <div class="tagcloud05">
+                <ul>
+                    <li><a href="#"><span>Sow</span></a></li>
+                    <li><a href="#"><span>word</span></a></li>
+                    <li><a href="#"><span>Container</span></a></li>
+                    <li><a href="#"><span>Kubernetes</span></a></li>
+                    <li><a href="#"><span>JBOSS</span></a></li>
+                    <li><a href="#"><span>Twistlock</span></a></li>
+                    <li><a href="#"><span>sumologic</span></a></li>
+                    <li><a href="#"><span>Appdynamic</span></a></li>
+                    <li><a href="#"><span>Mongo</span></a></li>
+                    <li><a href="#"><span>Memcached</span></a></li>
+                    <li><a href="#"><span>AKS</span></a></li>
+                    <li><a href="#"><span>APIM</span></a></li>
+                    <li><a href="#"><span>VM</span></a></li>
+                    <li><a href="#"><span>Application Gateway</span></a></li>
+                    <li><a href="#"><span>Job Description</span></a></li>
+                    <li><a href="#"><span>Excel</span></a></li>
+                    <li><a href="#"><span>Solution Architect</span></a></li>
+                    <li><a href="#"><span>Kubernetes enginer</span></a></li>
+                    <li><a href="#"><span>Devops enginer</span></a></li>
+                    <li><a href="#"><span>High Level plan</span></a></li>
+                    <li><a href="#"><span>RACI matrix</span></a></li>
+
+                </ul>
+            </div>
+        </nav>
+        <div id="content">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid col-md-12">
+                    <div class="col-md-3">
+                        <button type="button" id="sidebarCollapse" class="btn btn-dark">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" style="margin-bottom: 0px;">
+                            <input type="text" class="form-control" id="search" placeholder="Search..">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        @* <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <i class="fas fa-align-justify"></i>
+                            </button> *@
+                        <button class="btn btn-dark" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="dropdown" style="text-align: center;">
+                            <button class="btn btn-dark" type="button" id="myaccout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fas fa-user"></span>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#"> <i class="fas fa-user-circle"></i> My Profile</a>
+                                @*<a class="dropdown-item" href="#"><i class="fas fa-lock"></i> Password</a>*@
+                                <a class="dropdown-item" href="~/Home/Login"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="col-md-12" style="padding-left: 15px;">
+                <div id="divbreadcrumb">
+                    <ol class="breadcrumb breadcrumb-arrow">
+                        <li class="homelink"><a href="#">Home</a></li>
+                        <li class="active"><span>Dashboard</span></li>
+                    </ol>
+                </div>
+                @*<div class="col-sm-2 col-sm-pull-12">
+                    <div id="newdocdiv" style="display:none;">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newUploadCenter">
+                            <i class="fa fa-plus" aria-hidden="true"></i> New Document
+                        </button>
+                    </div>
+
+                </div>*@
+            </div>
+
+            <div class="container-fluid" id="dashboard" style="display: block;">
+                <div class="container">
+                    <table id="dashboardtb">
+                        <tr>
+                            <td>
+                                <div class="card mb-3">
+                                    <div class="card-deck">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <p>11 new reference architecture</p>
+                                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card mb-3">
+                                    <div class="card-deck">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <p>Design template for microservice</p>
+                                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card mb-3">
+                                    <div class="card-deck">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <p>Containerization best practice</p>
+                                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="card mb-3">
+                                    <div class="card-deck">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <p>New** Azure devops guideline</p>
+                                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card mb-3">
+                                    <div class="card-deck">
+                                        <div class="card-body">
+                                            <p>Cluster sizing tool</p>
+                                            <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card mb-3">
+                                    <div class="card-deck">
+                                        <div class="card-body">
+                                            <p>13 Project reviewed</p>
+                                            <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="container-fluid" id="documentpnl" style="display: none;">
+
+            </div>
+
+            <div class="container-fluid" id="uploadDocument" style="display: none;">
+
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="container-fluid" id="dashboard" style="display: block;">
-    <div class="container">
-        <table id="dashboardtb">
-            <tr>
-                <td>
-                    <div class="card mb-3">
-                        <div class="card-deck">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p>11 new reference architecture</p>
-                                    <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="card mb-3">
-                        <div class="card-deck">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p>Design template for microservice</p>
-                                    <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="card mb-3">
-                        <div class="card-deck">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p>Containerization best practice</p>
-                                    <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="card mb-3">
-                        <div class="card-deck">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p>New** Azure devops guideline</p>
-                                    <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="card mb-3">
-                        <div class="card-deck">
-                            <div class="card-body">
-                                <p>Cluster sizing tool</p>
-                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="card mb-3">
-                        <div class="card-deck">
-                            <div class="card-body">
-                                <p>13 Project reviewed</p>
-                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-</div>
-
-<div class="container-fluid" id="documentpnl" style="display: none;">
-
-</div>
-
-<div class="container-fluid" id="uploadDocument" style="display: none;">
-
 </div>

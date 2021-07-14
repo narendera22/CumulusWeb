@@ -1,35 +1,4 @@
-﻿@model MicrofyWebApp.Models.DocumentViewModel
-@{
-    var document = Model.documentRepository;
-    string documentname = string.Empty;
-    string description = string.Empty;
-    @foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
-    {
-        if (p.documents != null)
-        {
-            foreach (var doc in p.documents.Where(j => j.name == Model.selectedDocName))
-            {
-                documentname = doc.name;
-                description = doc.description;
-            }
-        }
-        else if (p.subphase != null)
-        {
-            foreach (var sub in p.subphase.Where(i => i.name == Model.selectedSubPhases))
-            {
-                if (sub.documents != null)
-                {
-                    foreach (var subdoc in sub.documents.Where(j => j.name == Model.selectedDocName))
-                    {
-                        documentname = subdoc.name;
-                        description = subdoc.description;
-                    }
-                }
-            }
-        }
-    }
-}
-
+﻿
 <form id="upload" enctype="multipart/form-data" method="POST">
     <div class="card">
         <nav>
@@ -41,13 +10,13 @@
             <div class="col-md-6">
                 <div class="form-group" style="margin-bottom: 2px;">
                     <label>Name</label>
-                    <input type="text" class="form-control" value="@documentname" required onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode==32)" id="txtname" placeholder="Enter Document name">
+                    <input type="text" class="form-control" required onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode==32)" id="txtname" placeholder="Enter Document name">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group" style="margin-bottom: 2px;">
                     <label>Description</label>
-                    <textarea id="txtdescp" class="form-control" required name="txtdescp" rows="4" cols="50" placeholder="Enter Description">@description</textarea>
+                    <textarea id="txtdescp" class="form-control" required name="txtdescp" rows="4" cols="50" placeholder="Enter Description"></textarea>
                 </div>
             </div>
             <div class="col-md-6">

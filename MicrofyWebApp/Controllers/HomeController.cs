@@ -15,23 +15,200 @@ using System.Reflection.Metadata;
 using System.Text;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MicrofyWebApp.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private IMemoryCache _cache;
 
         string Baseurl = "https://microfy-docfunc.azurewebsites.net/";
         string Asseturl = "https://microfy-assetstorfunc.azurewebsites.net/";
         string Phaseurl= "https://microfy-configfunc.azurewebsites.net/";
+        string Userurl = "https://microfy-userfunc.azurewebsites.net/";
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,IMemoryCache memoryCache)
         {
             _logger = logger;
+            _cache = memoryCache;
         }
 
-        public async Task<IActionResult> PhaseAsync()
+        [HttpPost]
+        public async Task<FileUploadResponse> UploadAsync(IFormFile file)
+        {
+            using (var client = new HttpClient())
+            {
+                byte[] data;
+                using (var br = new BinaryReader(file.OpenReadStream()))
+                {
+                    data = br.ReadBytes((int)file.OpenReadStream().Length);
+                    ByteArrayContent bytes = new ByteArrayContent(data);
+                    MultipartFormDataContent multiContent = new MultipartFormDataContent();
+                    multiContent.Add(bytes, "file", file.FileName);
+                    client.BaseAddress = new Uri(Asseturl);
+                    var response = await client.PostAsync("api/UploadStorageFunction?code=pTrea7/PaHpQ8TH173XmKL4A32ulcr5huhbP0iV0xFaYFCMlYts0FQ==", multiContent).Result.Content.ReadAsStringAsync();
+                    FileUploadResponse FileUploadReponseValue = JsonConvert.DeserializeObject<FileUploadResponse>(response);
+
+                    return FileUploadReponseValue;
+
+                }
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateDocumentAsync(CreateDocuments create)
+        {
+            DocumentViewModel DocModel = new DocumentViewModel();
+
+            string DocRepos;
+            var createDoc = JsonConvert.SerializeObject(create);
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+                var result = client.PostAsync("api/Document?code=xsoMPmFwEkvOtSYDeqdI6ykfmqt6C/qJbdI8RS4IEawmxeuCG1WKlA==", new StringContent(JsonConvert.SerializeObject(create), Encoding.UTF8, "application/json")).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    DocRepos = await GetDocumentListAsync();
+                    if (DocRepos != null || DocRepos != string.Empty)
+                    {
+                        var cacheEntryOptions = new MemoryCacheEntryOptions()
+                            .SetSlidingExpiration(TimeSpan.FromSeconds(8000));
+
+                        _cache.Set("_GetDocList", DocRepos, cacheEntryOptions);
+                        DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
+                        DocModel.selectedPhase = create.Phase;
+                        DocModel.selectedSubPhases = create.SubPhase;
+                    }
+                }
+            }
+
+            //----------------------Need to Remove-----------------------//
+            //var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"document.json"}");
+            //var JSON = System.IO.File.ReadAllText(folderDetails);
+            //var myJsonObject = JsonConvert.DeserializeObject<DocumentViewModel>(JSON);
+            //myJsonObject.selectedPhase = create.phase;
+            //-------------------------------------------------------------//
+
+            return PartialView("VW_Document_Repos_Partial", DocModel); //Change myJsonObject to DocModel
+
+        }
+
+   
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<string> signup(UserViewModel users)
+        {
+
+            string UserResponse=string.Empty;
+            var createDoc = JsonConvert.SerializeObject(users);
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Userurl);
+                var result = client.PostAsync("api/User?code=4lXNzClPbyzl9pQDE/cPAcS0yNumPv4Dpxm/Xpv/rPkGMfq5f8LaNw==", new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    UserResponse = await result.Content.ReadAsStringAsync();
+                }
+            }
+            return UserResponse;
+        }
+
+            [HttpGet]
+        public async Task<ActionResult> GetDocumentRepositoryAsync(string Phase , string SubPhase)
+        {
+            DocumentViewModel DocModel = new DocumentViewModel();
+            string DocRepos=string.Empty;
+            if (!_cache.TryGetValue("_GetDocList", out DocRepos))
+            {
+                DocRepos = await GetDocumentListAsync();
+            }
+            if (DocRepos != null || DocRepos!=string.Empty)
+            {
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(8000));
+
+                _cache.Set("_GetDocList", DocRepos, cacheEntryOptions);
+                DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
+                DocModel.selectedPhase = Phase;
+                DocModel.selectedSubPhases = SubPhase;
+            }
+
+           
+
+            //----------------------Need to Remove-----------------------//
+           
+            //if (!_cache.TryGetValue("_GetDocListJson", out DocRepos))
+            //{
+            //    var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"document.json"}");
+            //    var JSON = System.IO.File.ReadAllText(folderDetails);
+            //    var cacheEntryOptions = new MemoryCacheEntryOptions()
+            //                .SetSlidingExpiration(TimeSpan.FromSeconds(1000));
+
+            //    _cache.Set("_GetDocListJson", JSON, cacheEntryOptions);
+            //}
+            //var jsondoc = _cache.Get("_GetDocListJson");
+            //var myJsonObject = JsonConvert.DeserializeObject<DocumentViewModel>(DocRepos);
+            //myJsonObject.selectedPhase = Phase;
+            //myJsonObject.selectedSubPhases = SubPhase;
+            //-------------------------------------------------------------//
+
+            return PartialView("VW_Document_Repos_Partial", DocModel); //Change myJsonObject to DocModel
+        }
+
+        public async Task<string> GetDocumentListAsync()
+        {
+            string DocRepos=string.Empty;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.GetAsync("api/Get?code=xsoMPmFwEkvOtSYDeqdI6ykfmqt6C/qJbdI8RS4IEawmxeuCG1WKlA==");
+                if (Res.IsSuccessStatusCode)
+                {
+                    DocRepos = Res.Content.ReadAsStringAsync().Result;
+                    
+                }
+            }
+            return DocRepos;
+        }
+
+        public async Task<ActionResult> GetUploadPartialAsync(string phase,string subphase,string documentname)
+        {
+            DocumentViewModel DocModel = new DocumentViewModel();
+            string DocRepos = string.Empty;
+            if (!_cache.TryGetValue("_GetDocList", out DocRepos))
+            {
+                DocRepos = await GetDocumentListAsync();
+            }
+            if (DocRepos != null || DocRepos != string.Empty)
+            {
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(8000));
+
+                _cache.Set("_GetDocList", DocRepos, cacheEntryOptions);
+                DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
+                DocModel.selectedPhase = phase;
+                DocModel.selectedSubPhases = subphase;
+                DocModel.selectedDocName = documentname;
+            }
+            return PartialView("VW_Upload_Partial", DocModel);
+
+        }
+        public ActionResult GetNewUploadPartial()
+        {
+            return PartialView("VW_Upload_NewDoc_Partial");
+        }
+
+        public async Task<IActionResult> MicrofyAsync()
         {
 
             PhaseViewModel PhaseModel = new PhaseViewModel();
@@ -50,112 +227,6 @@ namespace MicrofyWebApp.Controllers
             }
             return View(PhaseModel);
         }
-
-        [HttpPost]
-        public async Task<string> UploadAsync(IFormFile file)
-        {
-            using (var client = new HttpClient())
-            {
-                byte[] data;
-                using (var br = new BinaryReader(file.OpenReadStream()))
-                {
-                    data = br.ReadBytes((int)file.OpenReadStream().Length);
-                    ByteArrayContent bytes = new ByteArrayContent(data);
-                    MultipartFormDataContent multiContent = new MultipartFormDataContent();
-                    multiContent.Add(bytes, "file", file.FileName);
-                    client.BaseAddress = new Uri(Asseturl);
-                    var response = await client.PostAsync("api/UploadStorageFunction?code=pTrea7/PaHpQ8TH173XmKL4A32ulcr5huhbP0iV0xFaYFCMlYts0FQ==", multiContent).Result.Content.ReadAsStringAsync();
-                    return response;
-
-                }
-            }
-
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> CreateDocumentAsync(CreateDocuments create)
-        {
-            DocumentViewModel DocModel = new DocumentViewModel();
-
-            string DocRepos;
-            var createDoc = JsonConvert.SerializeObject(create);
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Baseurl);
-                var result = client.PostAsync("api/CreateDocument?code=FwIH7Enq4yweKZVeWNwgtueM7WtnuZAAK9AA5vSqPaZlKMuJTumKtw==", new StringContent(JsonConvert.SerializeObject(create), Encoding.UTF8, "application/json")).Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    using (var Baseclient = new HttpClient())
-                    {
-                        Baseclient.BaseAddress = new Uri(Baseurl);
-                        Baseclient.DefaultRequestHeaders.Clear();
-                        Baseclient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        HttpResponseMessage Res = await Baseclient.GetAsync("api/GetDocumentListFunction?code=2CUJAefFX9UgUFTyDu3wMAEzZI0PtYBldkCSFlBxasjTaa8BKWCR/A==");
-                        if (Res.IsSuccessStatusCode)
-                        {
-                            DocRepos = Res.Content.ReadAsStringAsync().Result;
-                            DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(DocRepos);
-                        }
-                    }
-                }
-            }
-
-            //----------------------Need to Remove-----------------------//
-            var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"document.json"}");
-            var JSON = System.IO.File.ReadAllText(folderDetails);
-            var myJsonObject = JsonConvert.DeserializeObject<DocumentViewModel>(JSON);
-            myJsonObject.selectedPhase = create.phase;
-            //-------------------------------------------------------------//
-
-            return PartialView("VW_Document_Repos_Partial", myJsonObject); //Change myJsonObject to DocModel
-
-        }
-
-   
-
-        public IActionResult Login()
-        {
-            return View();
-        }
-        [HttpGet]
-        public async Task<ActionResult> GetResultByAjaxAsync(string Phase)
-        {
-            DocumentViewModel DocModel = new DocumentViewModel();
-            string DocRepos;
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Baseurl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync("api/GetDocumentListFunction?code=2CUJAefFX9UgUFTyDu3wMAEzZI0PtYBldkCSFlBxasjTaa8BKWCR/A==");
-                if (Res.IsSuccessStatusCode)
-                {
-                    DocRepos = Res.Content.ReadAsStringAsync().Result;
-                    DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(DocRepos);
-                }
-            }
-            DocModel.selectedPhase = Phase;
-
-            //----------------------Need to Remove-----------------------//
-            var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"document.json"}");
-            var JSON = System.IO.File.ReadAllText(folderDetails);
-            var myJsonObject = JsonConvert.DeserializeObject<DocumentViewModel>(JSON);
-            myJsonObject.selectedPhase = Phase;
-            //-------------------------------------------------------------//
-
-            return PartialView("VW_Document_Repos_Partial", myJsonObject); //Change myJsonObject to DocModel
-        }
-
-        public ActionResult GetUploadPartial()
-        {
-            return PartialView("VW_Upload_Partial");
-
-        }
-
-        public IActionResult Microfy()
-        {
-            return View();
-        }
         public IActionResult Registration()
         {
             return View();
@@ -166,6 +237,10 @@ namespace MicrofyWebApp.Controllers
             return View();
         }
         public IActionResult Upload()
+        {
+            return View();
+        }
+        public IActionResult MyProfile()
         {
             return View();
         }

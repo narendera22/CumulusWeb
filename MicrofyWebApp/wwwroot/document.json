@@ -1,7 +1,7 @@
 {
   "documentRepository": [
     {
-      "phase": "Pre - Initiation",
+      "phase": "Pre - Plan",
       "documents": [
         {
           "name": "SOW Template - COTS Containerization",
@@ -25,30 +25,9 @@
           ]
         },
         {
-          "name": "Job Description - Containerization Project",
+          "name": "Skill Mapping",
           "description": "Job Description of different roles required for a AKS migration project.",
           "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/Roles JD.xlsx",
-          "tags": [
-            "SOW",
-            "Word",
-            "Container",
-            "Kubernetes",
-            "JBOSS",
-            "Twistlock",
-            "Sumologic",
-            "AppDynamics",
-            "Mongo",
-            "Memcached",
-            "AKS",
-            "APIM",
-            "VM",
-            "Application Gateway"
-          ]
-        },
-        {
-          "name": "High Level Plan - Containerization Project",
-          "description": "An indicative high-level week wise plan for an AKS migration project involving COTS application containerization and migration. The plan defines starts and end date of different phases including deployment to various environment including Cutover and Hypercare. This plan does not get into the task level details of different phases.",
-          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/High Level Plan.xlsx",
           "tags": [
             "Job Description",
             "Excel",
@@ -58,32 +37,297 @@
           ]
         },
         {
+          "name": "High Level Plan",
+          "description": "High level planning is focusing on establishing your project's requirements and deliverables, and then tracking them over time. It's different from a detailed project plan, consisting of all the tasks needed to complete the project. One could say that a high level plan is a manager's view of the project.",
+          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/High Level Plan.xlsx",
+          "tags": [
+            "High Level Plan"
+          ]
+        },
+        {
+          "name": "Risk & Mitigations",
+          "description": "A risk management plan is a document that a project manager prepares to foresee risks, estimate impacts, and define responses to risks. It also contains a risk assessment matrix. A risk is an uncertain event or condition that, if it occurs, has a positive or negative effect on a project's objectives.,",
+          "url": "",
+          "tags": [
+            "Risk",
+            "Mitigation"
+          ]
+        },
+        {
           "name": "RACI",
           "description": "An Indicative RACI matrix to defining the responsibilities of three stakeholders - Customer, Microsoft and TCS. This is currently focused for the AKS migration project involving COTS application containerization and migration.",
           "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/RACI.xlsx",
           "tags": [
-            "Risk",
-            "Mitigation"
+            "RACI Matrix",
+            "Excel"
           ]
         }
       ]
     },
     {
-      "phase": "Initiation"
+      "phase": "Plan",
+      "Documents": [
+        {
+          "name": "List of Activities",
+          "description": "List of Activities",
+          "url": "",
+          "tags": [
+            "Activity List"
+          ]
+        },
+        {
+          "name": "Design Discovery questionnaire",
+          "description": "Design and Discovery Questionnaire",
+          "url": "https://microfystorage.blob.core.windows.net/documentrepository/02.Initiation/Design Discovery - Questionnaire - Detail.docx",
+          "tags": [
+            "Design",
+            "Discovery"
+          ]
+        },
+        {
+          "name": "Recommendation of Tools / Framework",
+          "description": "Tools and Framework recommendation",
+          "url": "",
+          "tags": [
+            "Tools",
+            "Framework"
+          ]
+        },
+        {
+          "name": "Patterns",
+          "description": "Patterns",
+          "url": "",
+          "tags": [
+            "Tools",
+            "Framework"
+          ]
+        },
+        {
+          "name": "Reference  Architecture",
+          "description": "Reference  Architecture",
+          "url": "",
+          "tags": [
+            "Architecture",
+            "Reference"
+          ]
+        },
+        {
+          "name": "Guidelines",
+          "description": "Guidelines",
+          "url": "",
+          "tags": [
+            "Guidelines"
+          ]
+        }
+      ]
     },
     {
-      "phase": "Design"
+      "phase": "Ready",
+      "documents": [
+        {
+          "name": "Design Documents",
+          "description": "Design Documents",
+          "url": "",
+          "tags": [
+            "Activity List"
+          ]
+        }
+      ]
     },
     {
-      "phase": "Build"
-    },
-    {
-      "phase": "Deploy"
-    },
-    {
-      "phase": "Test"
+      "phase": "Adopt",
+      "subphase": [
+        {
+          "name": "Refactor Application",
+          "Documents": [
+            {
+              "name": "Migration Approach - WAS to Tomcat",
+              "description": "Migration Approach - WAS to Tomcat",
+              "url": "",
+              "tags": [
+                "Migration",
+                "WAS to Tomcat"
+              ]
+            },
+            {
+              "name": "Migration Approach - Weblogic to Tomcat",
+              "description": "Migration Approach - Weblogic to Tomcat",
+              "url": "",
+              "tags": [
+                "Migration",
+                "Weblogic to Tomcat"
+              ]
+            },
+            {
+              "name": "Migration Approach - .Net Framework to CoreDotNet",
+              "description": "Migration Approach - .Net Framework to CoreDotNet",
+              "url": "",
+              "tags": [
+                "Migration",
+                ".Net Framework to CoreDotNet"
+              ]
+            },
+            {
+              "name": "Refactor - Keyvault Intergation",
+              "description": "Refactor - Keyvault Intergation",
+              "url": "",
+              "tags": [
+                "Refactor",
+                "Key Vault"
+              ]
+            },
+            {
+              "name": "Refactor - Property Externalization",
+              "description": "Refactor - Property Externalization",
+              "url": "",
+              "tags": [
+                "Refactor",
+                "Property Externalization"
+              ]
+            },
+            {
+              "name": "Refactor - AD Integration",
+              "description": "Refactor - AD Integration",
+              "url": "",
+              "tags": [
+                "Refactor",
+                "AD"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Containerize & Orchestrate",
+          "Documents": [
+            {
+              "name": "Basic Building blocks - Java - Tomcat",
+              "description": "Basic Building blocks - Java - Tomcat",
+              "url": "",
+              "tags": [
+                "Building Blocks",
+                "Java Tomcat"
+              ]
+            },
+            {
+              "name": "Basic Building blocks - .Net Core -IIS - Template for Docker file",
+              "description": "Basic Building blocks - .Net Core -IIS - Template for Docker file",
+              "url": "",
+              "tags": [
+                "Building Blocks",
+                ".Net Core",
+                "Dockerfile"
+              ]
+            },
+            {
+              "name": "Basic Building blocks - .Net Core -IIS - Helm Chart",
+              "description": "Basic Building blocks - .Net Core -IIS - Helm Chart",
+              "url": "",
+              "tags": [
+                "Building Blocks",
+                ".Net Core",
+                "Helm Chart"
+              ]
+            },
+            {
+              "name": "Basic Building blocks - .Net Core -IIS - One pager Steps",
+              "description": "Basic Building blocks - .Net Core -IIS - One pager Steps",
+              "url": "",
+              "tags": [
+                "Building Blocks",
+                ".Net Core",
+                "One pager Steps"
+              ]
+            },
+            {
+              "name": "Lessons Learnt",
+              "description": "Lessons Learnt",
+              "url": "",
+              "tags": [
+                "Lessons Learnt"
+              ]
+            },
+            {
+              "name": "Troubleshooting Guidelines",
+              "description": "Troubleshooting Guidelines",
+              "url": "",
+              "tags": [
+                "Troubleshooting Guidelines"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Automation",
+          "Documents": [
+            {
+              "name": "Terraform Template for AKS setup",
+              "description": "Terraform Template for AKS setup",
+              "url": "",
+              "tags": [
+                "Terraform",
+                "AKS"
+              ]
+            },
+            {
+              "name": "Azure DevOps CI",
+              "description": "Azure DevOps CI",
+              "url": "",
+              "tags": [
+                "Azure DevOps CI"
+              ]
+            },
+            {
+              "name": "Azure DevOps CD",
+              "description": "Azure DevOps CD",
+              "url": "",
+              "tags": [
+                "Azure DevOps CD"
+              ]
+            },
+            {
+              "name": "Azure DevOps dashboard",
+              "description": "Azure DevOps dashboard [Debkanta]",
+              "url": "",
+              "tags": [
+                "Dashboard",
+                "DevOps"
+              ]
+            },
+            {
+              "name": "DevOps Runbook",
+              "description": "DevOps Runbook",
+              "url": "",
+              "tags": [
+                "Runbook",
+                "DevOps"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Validate",
+          "Documents": [
+            {
+              "name": "Testing Strategy",
+              "description": "Testing Strategy",
+              "url": "",
+              "tags": [
+                "Testing Strategy"
+              ]
+            },
+            {
+              "name": "Testing tools",
+              "description": "Testing tools",
+              "url": "",
+              "tags": [
+                "Testing tools"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "Uploaded By": "System",
-  "Uploaded On": "06/27/2021"
+  "Uploaded On": "7/7/2021 4:08:12 PM"
 }
