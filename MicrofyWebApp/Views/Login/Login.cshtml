@@ -1,0 +1,65 @@
+﻿@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MicrofyWebApp</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+
+</head>
+<body>
+    <div class="body">
+
+    </div>
+    <div class="grad"></div>
+    <div class="header">
+        <div class="imglogo">
+            <img id="img_logo" alt="Logo" src="~/Image/microfy.png" />
+        </div>
+    </div>
+    <div class="login">
+
+        @*@using (Html.BeginForm("Microfy", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) *@
+            <input type="text" id="txtuname" placeholder="Enter Username" name="uname" required><br>
+            <input type="password" id="txtpwd" placeholder="Enter Password" name="psw" required><br>
+            <input type="submit" id="btnsubmit" value="Login" /><br>
+        <p>Don't have an account? &nbsp;<a href="~/Login/Registration">Sign up</a></p>
+
+        <p id="ResponseMessage" style="color:red;"></p>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    $('#btnsubmit').click(function () {
+        debugger;
+                var Username = $('#txtuname').val();
+                var Password = $('#txtpwd').val();
+                var redirecturl = "/Login/UserLogin";
+                var loginDetails = {
+                    UserId: Username,
+                    Password: Password
+                }
+                $.post(redirecturl, loginDetails, function (data) {
+                    if (data.statusCode == true) {
+                        $('#ResponseMessage').html("");
+                        window.location.href = '@Url.Action("Microfy","Home")';
+                    }
+                    else {
+                        $('#ResponseMessage').html(data.responseMessage);
+                    }
+
+                });
+
+            });
+</script>
+

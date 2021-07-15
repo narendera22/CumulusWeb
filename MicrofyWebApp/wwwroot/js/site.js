@@ -89,7 +89,9 @@ function DocumentSave(url) {
     //var tags = [];
     var name = $('#txtname').val();
     var description = $('#txtdescp').val();
-    var tags = $('#txtTags').val().split(",");
+    var tags = $('#txtTags').val().split(",").map(function (value) {
+        return value.trim();
+    });
     //$.each(txttags, function (i) {
     //    alert(array[i]);
     //});
@@ -116,14 +118,15 @@ function DocumentSave(url) {
         $.alert({
             title: 'Success!!',
             content: "Document uploaded successfully",
+            type: 'green',
+            onAction: function () {
+                $("#documentpnl").html(data);
+                $("#newdocdiv").show();
+                $("#dashboard").hide();
+                $("#uploadDocument").hide();
+                $("#documentpnl").show();
+            }
         });
-        //$("div.success").html("Document uploaded successfully").fadeIn(300).delay(1500).fadeOut(400);
-        //$("#documentpnl").delay(1500);
-        $("#documentpnl").html(data);
-        $("#newdocdiv").show();
-        $("#dashboard").hide();
-        $("#uploadDocument").hide();
-        $("#documentpnl").show();
     });
     return false;
 }
@@ -178,48 +181,4 @@ function UploadNewDocument() {
     });
 }
 
-$('#Registration_form').submit(function () {
-    var username = $('#first_name').val();
-    var custname = $('#cust_name').val();
-    var projectname = $('#project_name').val();
-    var role = $('#role :selected').text();
-    var userid = $('#userid').val();
-    var password = $('#user_password').val();
-    var confrmpassword = $('#confirm_password').val();
-
-    var Projects = [{
-        "ProjectName": projectname,
-        "CustomerName": custname
-    }];
-
-    var UserDetails = {
-        "username": userid,
-        "password": password,
-        "fullName": username,
-        "userRole": role,
-        "isActive": true,
-        "projects": Projects
-    }
-
-    var redirecturl = "/Home/signup";
-    $.post(redirecturl, UserDetails, function (data) {
-
-        $.alert({
-            title: 'Success!!',
-            content: data,
-            alignMiddle: true,
-            type:'green',
-        });
-        //$("div.success").html("Document uploaded successfully").fadeIn(300).delay(1500).fadeOut(400);
-
-        //$("#documentpnl").html(data);
-        //$("#newdocdiv").hide();
-        //$("#dashboard").hide();
-        //$("#uploadDocument").hide();
-        //$("#documentpnl").show();
-    });
-    return false;
-
-
-});
 

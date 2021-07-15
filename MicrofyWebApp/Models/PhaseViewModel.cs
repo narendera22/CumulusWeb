@@ -8,10 +8,13 @@ namespace MicrofyWebApp.Models
     public class PhaseViewModel
     {
         public List<phases> phases { get; set; }
+        public List<DocumentRepos> documentRepository { get; set; }
+
     }
     public class phases
     {
         public string name { get; set; }
         public List<string> subPhase { get; set; }
     }
+    
 }

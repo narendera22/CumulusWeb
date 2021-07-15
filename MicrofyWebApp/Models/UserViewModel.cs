@@ -13,10 +13,17 @@ namespace MicrofyWebApp.Models
         public string userRole { get; set; }
         public bool isActive { get; set; }
         public List<projects> projects { get; set; }
+        public bool StatusCode { get; set; }
+        public string responseMessage { get; set; }
     }
     public class projects
     {
         public string projectName { get; set; }
         public string customerName { get; set; }
+    }
+    public class LoginDetails
+    {
+        public string UserId { get; set; }
+        public string Password { get; set; }
     }
 }

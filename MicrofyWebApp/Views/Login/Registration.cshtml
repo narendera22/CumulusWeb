@@ -35,7 +35,7 @@
                 <!-- Text input-->
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label">User Name</label>
+                    <label class="col-md-4 control-label">Full Name</label>
                     <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -88,7 +88,7 @@
                     <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                            <input name="userid" id="userid" placeholder="Userid" class="form-control" type="text" required>
+                            <input name="userid" id="userid" placeholder="Userid" class="form-control" type="email" required>
                         </div>
                     </div>
                 </div>
@@ -160,4 +160,45 @@
             }
         }
     }
+
+$('#Registration_form').submit(function () {
+    var username = $('#first_name').val();
+    var custname = $('#cust_name').val();
+    var projectname = $('#project_name').val();
+    var role = $('#role :selected').text();
+    var userid = $('#userid').val();
+    var password = $('#user_password').val();
+    var confrmpassword = $('#confirm_password').val();
+
+    var Projects = [{
+        "ProjectName": projectname,
+        "CustomerName": custname
+    }];
+
+    var UserDetails = {
+        "username": userid,
+        "password": password,
+        "fullName": username,
+        "userRole": role,
+        "isActive": true,
+        "projects": Projects
+    }
+
+    var redirecturl = "/Login/signup";
+    $.post(redirecturl, UserDetails, function (data) {
+
+        $.alert({
+            title: 'Success!!',
+            content: data,
+            alignMiddle: true,
+            type: 'green',
+            onAction: function () {
+                window.location.href = '@Url.Action("Login","Login")';
+            }
+        });
+    });
+    return false;
+
+
+});
 </script>

@@ -26,15 +26,38 @@ namespace MicrofyWebApp.Controllers
 
         string Baseurl = "https://microfy-docfunc.azurewebsites.net/";
         string Asseturl = "https://microfy-assetstorfunc.azurewebsites.net/";
-        string Phaseurl= "https://microfy-configfunc.azurewebsites.net/";
+        string Phaseurl = "https://microfy-configfunc.azurewebsites.net/";
         string Userurl = "https://microfy-userfunc.azurewebsites.net/";
 
-        public HomeController(ILogger<HomeController> logger,IMemoryCache memoryCache)
+
+
+        public HomeController(ILogger<HomeController> logger, IMemoryCache memoryCache)
         {
             _logger = logger;
             _cache = memoryCache;
         }
+        public async Task<IActionResult> MicrofyAsync()
+        {
 
+            PhaseViewModel PhaseModel = new PhaseViewModel();
+            DocumentViewModel documentModel = new DocumentViewModel();
+            string Phase;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Phaseurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.GetAsync("api/GetPhaseListFunction?code=J6NFgMxPtrzjRdgRLfrl45WRShXAF9akAcQDSPScBAM7dwa3Q6RUEw==");
+                if (Res.IsSuccessStatusCode)
+                {
+                    Phase = Res.Content.ReadAsStringAsync().Result;
+                    PhaseModel = JsonConvert.DeserializeObject<PhaseViewModel>(Phase);
+                    documentModel = await GetDocumentListAsync();
+                    PhaseModel.documentRepository = documentModel.documentRepository;
+                }
+            }
+            return View(PhaseModel);
+        }
         [HttpPost]
         public async Task<FileUploadResponse> UploadAsync(IFormFile file)
         {
@@ -63,7 +86,6 @@ namespace MicrofyWebApp.Controllers
         {
             DocumentViewModel DocModel = new DocumentViewModel();
 
-            string DocRepos;
             var createDoc = JsonConvert.SerializeObject(create);
             using (var client = new HttpClient())
             {
@@ -71,135 +93,75 @@ namespace MicrofyWebApp.Controllers
                 var result = client.PostAsync("api/Document?code=xsoMPmFwEkvOtSYDeqdI6ykfmqt6C/qJbdI8RS4IEawmxeuCG1WKlA==", new StringContent(JsonConvert.SerializeObject(create), Encoding.UTF8, "application/json")).Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    DocRepos = await GetDocumentListAsync();
-                    if (DocRepos != null || DocRepos != string.Empty)
-                    {
-                        var cacheEntryOptions = new MemoryCacheEntryOptions()
-                            .SetSlidingExpiration(TimeSpan.FromSeconds(8000));
-
-                        _cache.Set("_GetDocList", DocRepos, cacheEntryOptions);
-                        DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
-                        DocModel.selectedPhase = create.Phase;
-                        DocModel.selectedSubPhases = create.SubPhase;
-                    }
+                    _cache.Remove("_GetDocList");
+                    DocModel = await GetDocumentListAsync();
+                    DocModel.selectedPhase = create.Phase;
+                    DocModel.selectedSubPhases = create.SubPhase;
                 }
             }
 
-            //----------------------Need to Remove-----------------------//
-            //var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"document.json"}");
-            //var JSON = System.IO.File.ReadAllText(folderDetails);
-            //var myJsonObject = JsonConvert.DeserializeObject<DocumentViewModel>(JSON);
-            //myJsonObject.selectedPhase = create.phase;
-            //-------------------------------------------------------------//
-
-            return PartialView("VW_Document_Repos_Partial", DocModel); //Change myJsonObject to DocModel
+            return PartialView("VW_Document_Repos_Partial", DocModel);
 
         }
 
-   
 
-        public IActionResult Login()
-        {
-            return View();
-        }
 
-        [HttpPost]
-        public async Task<string> signup(UserViewModel users)
-        {
-
-            string UserResponse=string.Empty;
-            var createDoc = JsonConvert.SerializeObject(users);
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Userurl);
-                var result = client.PostAsync("api/User?code=4lXNzClPbyzl9pQDE/cPAcS0yNumPv4Dpxm/Xpv/rPkGMfq5f8LaNw==", new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    UserResponse = await result.Content.ReadAsStringAsync();
-                }
-            }
-            return UserResponse;
-        }
-
-            [HttpGet]
-        public async Task<ActionResult> GetDocumentRepositoryAsync(string Phase , string SubPhase)
+        [HttpGet]
+        public async Task<ActionResult> GetDocumentRepositoryAsync(string Phase, string SubPhase)
         {
             DocumentViewModel DocModel = new DocumentViewModel();
-            string DocRepos=string.Empty;
+
+            DocModel = await GetDocumentListAsync();
+
+            DocModel.selectedPhase = Phase;
+            DocModel.selectedSubPhases = SubPhase;
+
+            return PartialView("VW_Document_Repos_Partial", DocModel);
+        }
+
+        public async Task<DocumentViewModel> GetDocumentListAsync()
+        {
+            string DocRepos = string.Empty;
+            DocumentViewModel DocModel = new DocumentViewModel();
+
             if (!_cache.TryGetValue("_GetDocList", out DocRepos))
             {
-                DocRepos = await GetDocumentListAsync();
-            }
-            if (DocRepos != null || DocRepos!=string.Empty)
-            {
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(8000));
-
-                _cache.Set("_GetDocList", DocRepos, cacheEntryOptions);
-                DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
-                DocModel.selectedPhase = Phase;
-                DocModel.selectedSubPhases = SubPhase;
-            }
-
-           
-
-            //----------------------Need to Remove-----------------------//
-           
-            //if (!_cache.TryGetValue("_GetDocListJson", out DocRepos))
-            //{
-            //    var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"document.json"}");
-            //    var JSON = System.IO.File.ReadAllText(folderDetails);
-            //    var cacheEntryOptions = new MemoryCacheEntryOptions()
-            //                .SetSlidingExpiration(TimeSpan.FromSeconds(1000));
-
-            //    _cache.Set("_GetDocListJson", JSON, cacheEntryOptions);
-            //}
-            //var jsondoc = _cache.Get("_GetDocListJson");
-            //var myJsonObject = JsonConvert.DeserializeObject<DocumentViewModel>(DocRepos);
-            //myJsonObject.selectedPhase = Phase;
-            //myJsonObject.selectedSubPhases = SubPhase;
-            //-------------------------------------------------------------//
-
-            return PartialView("VW_Document_Repos_Partial", DocModel); //Change myJsonObject to DocModel
-        }
-
-        public async Task<string> GetDocumentListAsync()
-        {
-            string DocRepos=string.Empty;
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Baseurl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync("api/Get?code=xsoMPmFwEkvOtSYDeqdI6ykfmqt6C/qJbdI8RS4IEawmxeuCG1WKlA==");
-                if (Res.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    DocRepos = Res.Content.ReadAsStringAsync().Result;
-                    
+                    client.BaseAddress = new Uri(Baseurl);
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpResponseMessage Res = await client.GetAsync("api/Get?code=xsoMPmFwEkvOtSYDeqdI6ykfmqt6C/qJbdI8RS4IEawmxeuCG1WKlA==");
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        DocRepos = Res.Content.ReadAsStringAsync().Result;
+                        if (DocRepos != null || DocRepos != string.Empty)
+                        {
+                            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                                .SetSlidingExpiration(TimeSpan.FromSeconds(8000));
+
+                            _cache.Set("_GetDocList", DocRepos, cacheEntryOptions);
+                            
+                        }
+                    }
+
                 }
             }
-            return DocRepos;
+            DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
+            return DocModel;
         }
 
-        public async Task<ActionResult> GetUploadPartialAsync(string phase,string subphase,string documentname)
+        public async Task<ActionResult> GetUploadPartialAsync(string phase, string subphase, string documentname)
         {
             DocumentViewModel DocModel = new DocumentViewModel();
             string DocRepos = string.Empty;
-            if (!_cache.TryGetValue("_GetDocList", out DocRepos))
-            {
-                DocRepos = await GetDocumentListAsync();
-            }
-            if (DocRepos != null || DocRepos != string.Empty)
-            {
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(8000));
 
-                _cache.Set("_GetDocList", DocRepos, cacheEntryOptions);
-                DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
-                DocModel.selectedPhase = phase;
-                DocModel.selectedSubPhases = subphase;
-                DocModel.selectedDocName = documentname;
-            }
+            DocModel = await GetDocumentListAsync();
+
+            DocModel.selectedPhase = phase;
+            DocModel.selectedSubPhases = subphase;
+            DocModel.selectedDocName = documentname;
+
             return PartialView("VW_Upload_Partial", DocModel);
 
         }
@@ -208,39 +170,8 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_Upload_NewDoc_Partial");
         }
 
-        public async Task<IActionResult> MicrofyAsync()
-        {
-
-            PhaseViewModel PhaseModel = new PhaseViewModel();
-            string Phase;
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Phaseurl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync("api/GetPhaseListFunction?code=J6NFgMxPtrzjRdgRLfrl45WRShXAF9akAcQDSPScBAM7dwa3Q6RUEw==");
-                if (Res.IsSuccessStatusCode)
-                {
-                    Phase = Res.Content.ReadAsStringAsync().Result;
-                    PhaseModel = JsonConvert.DeserializeObject<PhaseViewModel>(Phase);
-                }
-            }
-            return View(PhaseModel);
-        }
-        public IActionResult Registration()
-        {
-            return View();
-        }
 
         public IActionResult Privacy()
-        {
-            return View();
-        }
-        public IActionResult Upload()
-        {
-            return View();
-        }
-        public IActionResult MyProfile()
         {
             return View();
         }

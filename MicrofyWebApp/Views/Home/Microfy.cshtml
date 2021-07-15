@@ -1,6 +1,7 @@
-﻿@model MicrofyWebApp.Models.PhaseViewModel
+﻿@using MicrofyWebApp.Models;
+@model MicrofyWebApp.Models.PhaseViewModel;
 @{
-    var sideMenu = Model;
+    var sideMenu = Model.phases;
     var phase = Model.phases;
     ViewData["Title"] = "Home page";
 }
@@ -45,28 +46,37 @@
             </ul>
             <div class="tagcloud05">
                 <ul>
-                    <li><a href="#"><span>Sow</span></a></li>
-                    <li><a href="#"><span>word</span></a></li>
-                    <li><a href="#"><span>Container</span></a></li>
-                    <li><a href="#"><span>Kubernetes</span></a></li>
-                    <li><a href="#"><span>JBOSS</span></a></li>
-                    <li><a href="#"><span>Twistlock</span></a></li>
-                    <li><a href="#"><span>sumologic</span></a></li>
-                    <li><a href="#"><span>Appdynamic</span></a></li>
-                    <li><a href="#"><span>Mongo</span></a></li>
-                    <li><a href="#"><span>Memcached</span></a></li>
-                    <li><a href="#"><span>AKS</span></a></li>
-                    <li><a href="#"><span>APIM</span></a></li>
-                    <li><a href="#"><span>VM</span></a></li>
-                    <li><a href="#"><span>Application Gateway</span></a></li>
-                    <li><a href="#"><span>Job Description</span></a></li>
-                    <li><a href="#"><span>Excel</span></a></li>
-                    <li><a href="#"><span>Solution Architect</span></a></li>
-                    <li><a href="#"><span>Kubernetes enginer</span></a></li>
-                    <li><a href="#"><span>Devops enginer</span></a></li>
-                    <li><a href="#"><span>High Level plan</span></a></li>
-                    <li><a href="#"><span>RACI matrix</span></a></li>
+                    @foreach (var doc in Model.documentRepository)
+                    {
+                        if (doc.documents != null)
+                        {
+                            foreach (var doctags in doc.documents)
+                            {
+                                foreach (var tags in doctags.tags)
+                                {
+                                <li><a href="#"><span>@tags</span></a></li>
+                                }
 
+                            }
+                        }
+                        else if (doc.subphase != null)
+                        {
+                            foreach (var subdoc in doc.subphase)
+                            {
+                                if (subdoc.documents != null)
+                                {
+                                    foreach (var subdoctag in subdoc.documents)
+                                    {
+                                        foreach (var subtags in subdoctag.tags)
+                                        {
+                                        <li><a href="#"><span>@subtags</span></a></li>
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
                 </ul>
             </div>
         </nav>
@@ -97,9 +107,9 @@
                                 <span class="fas fa-user"></span>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#"> <i class="fas fa-user-circle"></i> My Profile</a>
+                                <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
                                 @*<a class="dropdown-item" href="#"><i class="fas fa-lock"></i> Password</a>*@
-                                <a class="dropdown-item" href="~/Home/Login"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                                <a class="dropdown-item" href="~/Login/Login"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
                             </div>
                         </div>
                     </div>
@@ -130,13 +140,13 @@
                     </ol>
                 </div>
                 @*<div class="col-sm-2 col-sm-pull-12">
-                    <div id="newdocdiv" style="display:none;">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newUploadCenter">
-                            <i class="fa fa-plus" aria-hidden="true"></i> New Document
-                        </button>
-                    </div>
+                        <div id="newdocdiv" style="display:none;">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newUploadCenter">
+                                <i class="fa fa-plus" aria-hidden="true"></i> New Document
+                            </button>
+                        </div>
 
-                </div>*@
+                    </div>*@
             </div>
 
             <div class="container-fluid" id="dashboard" style="display: block;">

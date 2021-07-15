@@ -3,6 +3,7 @@
     var document = Model.documentRepository;
     string documentname = string.Empty;
     string description = string.Empty;
+    string tags = string.Empty;
     @foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
     {
         if (p.documents != null)
@@ -11,6 +12,7 @@
             {
                 documentname = doc.name;
                 description = doc.description;
+                tags = string.Join(",", doc.tags);
             }
         }
         else if (p.subphase != null)
@@ -23,6 +25,7 @@
                     {
                         documentname = subdoc.name;
                         description = subdoc.description;
+                        tags = string.Join(",", subdoc.tags);
                     }
                 }
             }
@@ -53,7 +56,7 @@
             <div class="col-md-6">
                 <div class="form-group" style="margin-bottom: 2px;">
                     <label>Tags</label>
-                    <input type="text" class="form-control" id="txtTags" placeholder="Enter Tags with comma">
+                    <input type="text" class="form-control" value="@tags" id="txtTags" placeholder="Enter Tags with comma">
                 </div>
             </div>
             <div class="col-md-6">

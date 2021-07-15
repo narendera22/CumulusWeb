@@ -71,7 +71,11 @@
                                                 <ul>
                                                     @foreach (var tags in doc.tags)
                                                     {
-                                                        <li><a href="#"><span>@tags</span></a></li>
+                                                        if (tags != null)
+                                                        {
+                                                            <li><a href="#"><span>@tags</span></a></li>
+
+                                                        }
                                                     }
                                                 </ul>
                                             </div>
@@ -140,7 +144,11 @@
                                                         <ul>
                                                             @foreach (var tags in subdoc.tags)
                                                             {
-                                                                <li><a href="#"><span>@tags</span></a></li>
+                                                                if (tags != null)
+                                                                {
+                                                                    <li><a href="#"><span>@tags</span></a></li>
+
+                                                                }
                                                             }
                                                         </ul>
                                                     </div>
