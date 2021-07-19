@@ -36,6 +36,14 @@ namespace MicrofyWebApp.Controllers
         {
             return View();
         }
+        public IActionResult Logout()
+        {
+            _cache.Remove("_UserId");
+            _cache.Remove("_GetUseDetailsList");
+            _cache.Remove("_GetDocList");
+            _cache.Remove("_UserRole");
+            return RedirectToAction("Login");
+        }
 
         [HttpPost]
         public async Task<string> signup(UserViewModel users)
@@ -95,15 +103,17 @@ namespace MicrofyWebApp.Controllers
                     if (Res.IsSuccessStatusCode)
                     {
                         UserResponse = await Res.Content.ReadAsStringAsync();
+                        var cacheEntryOptions = new MemoryCacheEntryOptions();
+
                         if (UserResponse != null || UserResponse != string.Empty)
                         {
-                            var cacheEntryOptions = new MemoryCacheEntryOptions();
 
                             _cache.Set("_UserId", loginDetails.UserId, cacheEntryOptions);
                             _cache.Set("_GetUseDetailsList", UserResponse, cacheEntryOptions);
 
                         }
                         userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserResponse);
+                        _cache.Set("_UserRole", userViewModel.userRole, cacheEntryOptions);
                         userViewModel.StatusCode = Res.IsSuccessStatusCode;
                     }
                     else
@@ -116,6 +126,34 @@ namespace MicrofyWebApp.Controllers
             catch (Exception e)
             {
 
+            }
+            return userViewModel;
+        }
+
+
+        [HttpPost]
+        public async Task<UserViewModel> UpdateUser(UserViewModel users)
+        {
+            string UserResponse = string.Empty;
+            var createDoc = JsonConvert.SerializeObject(users);
+            UserViewModel userViewModel = new UserViewModel();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Userurl);
+                var result = client.PutAsync("api/UpdateUser/" + users.username + "?code=4lXNzClPbyzl9pQDE/cPAcS0yNumPv4Dpxm/Xpv/rPkGMfq5f8LaNw==", new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    userViewModel.StatusCode = result.IsSuccessStatusCode;
+                    userViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    userViewModel.StatusCode = result.IsSuccessStatusCode;
+                    userViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+
+                }
             }
             return userViewModel;
         }

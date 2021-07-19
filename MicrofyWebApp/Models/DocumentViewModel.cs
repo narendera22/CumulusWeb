@@ -12,6 +12,7 @@ namespace MicrofyWebApp.Models
         public DateTime uploadedOn { get; set; }
         public string selectedSubPhases { get; set; }
         public string selectedDocName { get; set; }
+        public string UserRole { get; set; }
     }
 
     public class DocumentRepos

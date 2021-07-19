@@ -6,6 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MicrofyWebApp</title>
+    <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
+
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -14,6 +16,7 @@
         .input-group-addon {
             padding: 6px 20px !important;
         }
+
         a {
             color: #007bff;
             text-decoration: none;
@@ -23,7 +26,7 @@
 </head>
 <body>
     <div class="container" style="padding-left:60px">
-        <form class="well form-horizontal" action=" " method="post" id="contact_form">
+        <form class="well form-horizontal" action=" " method="post" id="MyProfile_Form">
             <fieldset>
                 <div class="imglogo">
                     <img id="img_logo" alt="Logo" src="~/Image/microfy.png" />
@@ -31,13 +34,13 @@
                 </div>
                 <!-- Form Name -->
                 <!-- Text input-->
-
                 <div class="form-group">
                     <label class="col-md-4 control-label">Full Name</label>
                     <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input name="first_name" placeholder="User Name" class="form-control" type="text" value="@Model.fullName" readonly>
+                            <input name="first_name" id="first_name" placeholder="User Name" class="form-control" readonly type="text" value="@Model.fullName">
+                            <span data-alertid="first_name"></span>
                         </div>
                     </div>
                 </div>
@@ -48,7 +51,7 @@
                         <div class="col-md-4 inputGroupContainer">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input name="first_name" placeholder="Customer Name" class="form-control" type="text" value="@d.customerName" readonly>
+                                <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" readonly type="text" value="@d.customerName">
                             </div>
                         </div>
                     </div>
@@ -58,7 +61,7 @@
                         <div class="col-md-4 inputGroupContainer">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input name="first_name" placeholder="Project Name" class="form-control" type="text" value="@d.projectName" readonly>
+                                <input name="project_name" id="project_name" placeholder="Project Name" class="form-control" readonly type="text" value="@d.projectName">
                             </div>
                         </div>
                     </div>
@@ -69,36 +72,40 @@
                     <div class="col-md-4 selectContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                            <input name="Role" placeholder="Role" class="form-control" type="text" value="@Model.userRole" readonly>
+                            <input name="role" placeholder="Role" class="form-control" type="text" value="@Model.userRole" readonly>
                         </div>
                     </div>
                 </div>
 
                 <!-- Text input-->
+
 
                 <div class="form-group">
                     <label class="col-md-4 control-label">Userid</label>
                     <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                            <input name="user_name" placeholder="Userid" class="form-control" type="text" value="@Model.username" readonly>
+                            <input name="userid" id="userid" placeholder="Userid" class="form-control" type="email" readonly value="@Model.username">
                         </div>
                     </div>
                 </div>
+
                 <div class="form-group" id="ChangePwd" style="display:block;">
-                    <a href="#" class="col-md-4 control-label" onclick="displayPwd()">Change Password</a>
+                    <a href="#" class="col-md-4 control-label" onclick="displayPwd()">Show Change Password</a>
                 </div>
                 <div class="form-group" id="hidePwd" style="display:none;">
-                    <a href="#" class="col-md-4 control-label" onclick="hidepwd()">Change Password</a>
+                    <a href="#" class="col-md-4 control-label" onclick="hidepwd()"> Hide Change Password</a>
                 </div>
                 <!-- Text input-->
                 <div id="divPassword" style="display:none;">
+
                     <div class="form-group">
                         <label class="col-md-4 control-label">Password</label>
                         <div class="col-md-4 inputGroupContainer">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <input name="user_password" placeholder="Password" class="form-control" type="password">
+                                <input name="user_password" type="password" id="user_password" title="Password must contain: Minimum 8 characters atleast 1 Alphabet and 1 Number"
+                                       class="form-control" placeholder="Enter Password" required pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" />
                             </div>
                         </div>
                     </div>
@@ -110,7 +117,7 @@
                         <div class="col-md-4 inputGroupContainer">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <input name="confirm_password" placeholder="Confirm Password" class="form-control" type="password">
+                                <input name="confirm_password" id="confirm_password" placeholder="Confirm Password" class="form-control" required type="password">
                             </div>
                         </div>
                     </div>
@@ -138,6 +145,8 @@
     </div>
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery/dist/jquery-confirm.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -149,12 +158,82 @@
         $('#divPassword').show();
         $('#updatepwd').show();
         $('#ChangePwd').hide();
+        $('#hidePwd').show();
 
     }
     function hidepwd() {
         $('#divPassword').hide();
         $('#updatepwd').hide();
         $('#ChangePwd').show();
+        $('#hidePwd').hide();
 
     }
+    window.onload = function () {
+        var txtPassword = document.getElementById("user_password");
+        var txtConfirmPassword = document.getElementById("confirm_password");
+        txtPassword.onchange = ConfirmPassword;
+        txtConfirmPassword.onkeyup = ConfirmPassword;
+        function ConfirmPassword() {
+            txtConfirmPassword.setCustomValidity("");
+            if (txtPassword.value != txtConfirmPassword.value) {
+                txtConfirmPassword.setCustomValidity("Passwords do not match.");
+            }
+        }
+    }
+    $('#MyProfile_Form').submit(function () {
+    var username = $('#first_name').val();
+    var custname = $('#cust_name').val();
+    var projectname = $('#project_name').val();
+    var role = $('#role').val();
+    var userid = $('#userid').val();
+    var password = $('#user_password').val();
+    var confrmpassword = $('#confirm_password').val();
+
+    var Projects = [{
+        "ProjectName": projectname,
+        "CustomerName": custname
+    }];
+
+    var UserDetails = {
+        "username": userid,
+        "password": password,
+        "fullName": username,
+        "userRole": role,
+        "isActive": true,
+        "projects": Projects
+    }
+
+        var redirecturl = "/Login/UpdateUser";
+        $.post(redirecturl, UserDetails, function (data) {
+            var title = "";
+            var type = "";
+            if (data.statusCode == true) {
+                title = "Success!!";
+                type = "green";
+            }
+            else {
+                title = "Error!!";
+                type = "red";
+            }
+            $.alert({
+                    title: title,
+                    content: data.responseMessage,
+                    type: type,
+                    onAction: function () {
+                        window.location.href = '@Url.Action("MyProfile","Login")';
+                    }
+                });
+        })
+        .fail(function (response) {
+           $.alert({
+                title: 'Error!!',
+                content: response,
+                alignMiddle: true,
+                type: 'red'
+            });
+        });
+    return false;
+
+
+});
 </script>

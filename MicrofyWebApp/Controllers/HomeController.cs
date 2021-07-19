@@ -16,6 +16,7 @@ using System.Text;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MicrofyWebApp.Controllers
 {
@@ -115,6 +116,7 @@ namespace MicrofyWebApp.Controllers
 
             DocModel.selectedPhase = Phase;
             DocModel.selectedSubPhases = SubPhase;
+            DocModel.UserRole = (string)_cache.Get("_UserRole");
 
             return PartialView("VW_Document_Repos_Partial", DocModel);
         }

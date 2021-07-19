@@ -44,7 +44,7 @@ $(document).ready(function () {
             success: function (data) {
                 //window.location.replace(data.newUrl);
                 $("#documentpnl").html(data);
-                $("#newdocdiv").show();
+                //$("#newdocdiv").show();
                 $("#dashboard").hide();
                 $("#uploadDocument").hide();
                 $("#documentpnl").show();
@@ -70,7 +70,7 @@ $(document).ready(function () {
 
     });
     $(".homelink").on("click", function () {
-        $("#newdocdiv").hide();
+        //$("#newdocdiv").hide();
         $("#dashboard").show();
         $("#uploadDocument").hide();
         $("#documentpnl").hide();
@@ -121,7 +121,7 @@ function DocumentSave(url) {
             type: 'green',
             onAction: function () {
                 $("#documentpnl").html(data);
-                $("#newdocdiv").show();
+                //$("#newdocdiv").show();
                 $("#dashboard").hide();
                 $("#uploadDocument").hide();
                 $("#documentpnl").show();
@@ -146,7 +146,7 @@ function UploadDocument(Documentname) {
         success: function (data) {
             //window.location.replace(data.newUrl);
             $("#uploadDocument").html(data);
-            $("#newdocdiv").hide();
+            //$("#newdocdiv").hide();
             $("#dashboard").hide();
             $("#uploadDocument").show();
             $("#documentpnl").hide();
@@ -169,7 +169,7 @@ function UploadNewDocument() {
         success: function (data) {
             //window.location.replace(data.newUrl);
             $("#uploadDocument").html(data);
-            $("#newdocdiv").hide();
+            //$("#newdocdiv").hide();
             $("#dashboard").hide();
             $("#uploadDocument").show();
             $("#documentpnl").hide();

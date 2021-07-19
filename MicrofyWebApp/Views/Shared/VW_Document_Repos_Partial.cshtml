@@ -2,14 +2,11 @@
 @{
     var template = Model;
     var DocumentsLen = Model.documentRepository.Count;
-    //var DocumentRepos[];
-    //for (int i=0;i<=DocumentsLen;i++)
-    //{
-    //    if (Model.DocumentRepository[i].Phase == Model.selectedPhase)
-    //    {
-    //        DocumentRepos = Model.DocumentRepository[i];
-    //    }
-    //}
+    var displaymode = "none";
+    if (Model.UserRole== "Administrator")
+    {
+        displaymode = "block";
+    }
 }
 <div class="row col-md-12 mb-2">
     <div class="col-md-8">
@@ -22,7 +19,7 @@
         </nav>
     </div>
     <div class="col-md-4">
-        <div class="float-right" id="newdocdiv" style="display:none;">
+        <div class="float-right" id="newdocdiv" style="display:@displaymode;">
             <a href="#" class="btn btn-primary" onclick="UploadNewDocument()"><i class="fa fa-upload" aria-hidden="true"></i> New document</a>
         </div>
     </div>
@@ -86,12 +83,15 @@
                                         <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
                                     </tr>
                                 </table>
-                                <div class="float-right">
-                                    <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download</a>
-                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
-                                        <i class="fa fa-upload" aria-hidden="true"></i>  Upload
-                                    </button>
-
+                                <div class="float-right" style="display:flex;">
+                                    <div>
+                                        <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download</a>
+                                    </div>
+                                    <div style="display:@displaymode; padding-left:5px;">
+                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
+                                            <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <table class="table ml-2" style="display: none;">
@@ -130,8 +130,8 @@
                                                 <p class="doctitle">@subdoc.name</p>
                                             </div>
                                             @* <div class="col-md-11">
-                                                     <p>Skill Mapping - JD Template</p>
-                                                </div> *@
+                 <p>Skill Mapping - JD Template</p>
+            </div> *@
                                         </div>
                                         <div class="row col-md-12 ml-2">
                                             @subdoc.description
@@ -159,12 +159,15 @@
                                                 <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
                                             </tr>
                                         </table>
-                                        <div class="float-right">
-                                            <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download</a>
-                                            <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
-                                                <i class="fa fa-upload" aria-hidden="true"></i>  Upload
-                                            </button>
-
+                                        <div class="float-right" style="display:flex;">
+                                            <div>
+                                                <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download</a>
+                                            </div>
+                                            <div style="display:@displaymode; padding-left:5px;">
+                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
+                                                    <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <table class="table ml-2" style="display: none;">
