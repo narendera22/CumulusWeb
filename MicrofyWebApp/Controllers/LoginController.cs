@@ -46,21 +46,29 @@ namespace MicrofyWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<string> signup(UserViewModel users)
+        public async Task<UserViewModel> signup(UserViewModel users)
         {
 
             string UserResponse = string.Empty;
             var createDoc = JsonConvert.SerializeObject(users);
+            UserViewModel userViewModel = new UserViewModel();
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
                 var result = client.PostAsync("api/User?code=4lXNzClPbyzl9pQDE/cPAcS0yNumPv4Dpxm/Xpv/rPkGMfq5f8LaNw==", new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    UserResponse = await result.Content.ReadAsStringAsync();
+                    userViewModel.StatusCode = result.IsSuccessStatusCode;
+                    userViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    userViewModel.StatusCode = result.IsSuccessStatusCode;
+                    userViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+
                 }
             }
-            return UserResponse;
+            return userViewModel;
         }
 
         public IActionResult Registration()

@@ -17,6 +17,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace MicrofyWebApp.Controllers
 {
@@ -28,7 +29,6 @@ namespace MicrofyWebApp.Controllers
         string Baseurl = "https://microfy-docfunc.azurewebsites.net/";
         string Asseturl = "https://microfy-assetstorfunc.azurewebsites.net/";
         string Phaseurl = "https://microfy-configfunc.azurewebsites.net/";
-        string Userurl = "https://microfy-userfunc.azurewebsites.net/";
 
 
 
@@ -48,7 +48,7 @@ namespace MicrofyWebApp.Controllers
                 client.BaseAddress = new Uri(Phaseurl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync("api/GetPhaseListFunction?code=J6NFgMxPtrzjRdgRLfrl45WRShXAF9akAcQDSPScBAM7dwa3Q6RUEw==");
+                HttpResponseMessage Res = await client.GetAsync("api/GetPhaseListFunction?code=DSa/RrNoIxbON2obraEyBx3GK8RfoLygKk5GdIPnXMS3cfJReW2xKA==");
                 if (Res.IsSuccessStatusCode)
                 {
                     Phase = Res.Content.ReadAsStringAsync().Result;
@@ -72,7 +72,7 @@ namespace MicrofyWebApp.Controllers
                     MultipartFormDataContent multiContent = new MultipartFormDataContent();
                     multiContent.Add(bytes, "file", file.FileName);
                     client.BaseAddress = new Uri(Asseturl);
-                    var response = await client.PostAsync("api/UploadStorageFunction?code=pTrea7/PaHpQ8TH173XmKL4A32ulcr5huhbP0iV0xFaYFCMlYts0FQ==", multiContent).Result.Content.ReadAsStringAsync();
+                    var response = await client.PostAsync("api/Upload?code=cXk0i43E1NkCnFPUC9yqFRLcYrZ0kqLWqCC5f4V4pnh6T5BUrHF1dg==", multiContent).Result.Content.ReadAsStringAsync();
                     FileUploadResponse FileUploadReponseValue = JsonConvert.DeserializeObject<FileUploadResponse>(response);
 
                     return FileUploadReponseValue;
@@ -98,6 +98,7 @@ namespace MicrofyWebApp.Controllers
                     DocModel = await GetDocumentListAsync();
                     DocModel.selectedPhase = create.Phase;
                     DocModel.selectedSubPhases = create.SubPhase;
+                    DocModel.UserRole = (string)_cache.Get("_UserRole");
                 }
             }
 
@@ -143,7 +144,7 @@ namespace MicrofyWebApp.Controllers
                                 .SetSlidingExpiration(TimeSpan.FromSeconds(8000));
 
                             _cache.Set("_GetDocList", DocRepos, cacheEntryOptions);
-                            
+
                         }
                     }
 
@@ -172,6 +173,21 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_Upload_NewDoc_Partial");
         }
 
+        public FileResult DownloadDocument(string url)
+        {
+            string filename = Path.GetFileName(url);
+            using (var client = new HttpClient())
+            {
+
+                client.BaseAddress = new Uri(Asseturl);
+                Task<HttpResponseMessage> response = client.GetAsync("api/Download/" + filename + "?code=cXk0i43E1NkCnFPUC9yqFRLcYrZ0kqLWqCC5f4V4pnh6T5BUrHF1dg==");
+                HttpResponseMessage file = new HttpResponseMessage();
+                file = response.Result;
+
+                return File(file.Content.ReadAsByteArrayAsync().Result, "application/octet-stream", filename);
+            }
+
+        }
 
         public IActionResult Privacy()
         {

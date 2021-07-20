@@ -180,5 +180,3 @@ function UploadNewDocument() {
         }
     });
 }
-
-

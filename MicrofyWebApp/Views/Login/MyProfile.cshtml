@@ -72,7 +72,7 @@
                     <div class="col-md-4 selectContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                            <input name="role" placeholder="Role" class="form-control" type="text" value="@Model.userRole" readonly>
+                            <input name="role" placeholder="Role" id="txtrole" class="form-control" type="text" value="@Model.userRole" readonly>
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@
     var username = $('#first_name').val();
     var custname = $('#cust_name').val();
     var projectname = $('#project_name').val();
-    var role = $('#role').val();
+    var role = $('#txtrole').val();
     var userid = $('#userid').val();
     var password = $('#user_password').val();
     var confrmpassword = $('#confirm_password').val();

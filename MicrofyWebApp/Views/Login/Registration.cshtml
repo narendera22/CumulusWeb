@@ -187,16 +187,33 @@ $('#Registration_form').submit(function () {
     var redirecturl = "/Login/signup";
     $.post(redirecturl, UserDetails, function (data) {
 
-        $.alert({
-            title: 'Success!!',
-            content: data,
-            alignMiddle: true,
-            type: 'green',
-            onAction: function () {
-                window.location.href = '@Url.Action("Login","Login")';
+        var title = "";
+            var type = "";
+            if (data.statusCode == true) {
+                title = "Success!!";
+                type = "green";
             }
+            else {
+                title = "Error!!";
+                type = "red";
+            }
+            $.alert({
+                    title: title,
+                    content: data.responseMessage,
+                    type: type,
+                    onAction: function () {
+                        window.location.href = '@Url.Action("Login","Login")';
+                    }
+                });
+        })
+        .fail(function (response) {
+           $.alert({
+                title: 'Error!!',
+                content: response,
+                alignMiddle: true,
+                type: 'red'
+            });
         });
-    });
     return false;
 
 

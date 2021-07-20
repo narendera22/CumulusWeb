@@ -3,7 +3,7 @@
     var template = Model;
     var DocumentsLen = Model.documentRepository.Count;
     var displaymode = "none";
-    if (Model.UserRole== "Administrator")
+    if (Model.UserRole == "Administrator")
     {
         displaymode = "block";
     }
@@ -27,19 +27,19 @@
 <div class="tab-content mt-2" id="nav-tabContent">
     <div class="tab-pane fade show active" id="nav-docrepo" role="tabpanel" aria-labelledby="nav-docrepo-tab">
         <div class="container">
-            <div class="row col-md-12 mb-2">
-                <div class="col-md-9">
-                    <div class="form-check float-right" style="padding-top: 10px;">
-                        <input class="form-check-input" type="checkbox" value="" id="selectAll">
-                        Select all/Deselect all
+            @*<div class="row col-md-12 mb-2">
+                    <div class="col-md-9">
+                        <div class="form-check float-right" style="padding-top: 10px;">
+                            <input class="form-check-input" type="checkbox" value="" id="selectAll">
+                            Select all/Deselect all
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="float-right">
-                        <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download all</a>
+                    <div class="col-md-3">
+                        <div class="float-right">
+                            <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download all</a>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </div>*@
             @foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
             {
                 if (p.documents != null)
@@ -50,7 +50,7 @@
                             <div class="card-body docrepo">
                                 <div class="row col-md-12">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        @*<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">*@
                                         <p class="doctitle">@doc.name</p>
                                     </div>
                                     @* <div class="col-md-11">
@@ -85,7 +85,10 @@
                                 </table>
                                 <div class="float-right" style="display:flex;">
                                     <div>
-                                        <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download</a>
+                                       
+                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.url }) + "'");">
+                                            <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                        </button>
                                     </div>
                                     <div style="display:@displaymode; padding-left:5px;">
                                         <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
@@ -130,8 +133,8 @@
                                                 <p class="doctitle">@subdoc.name</p>
                                             </div>
                                             @* <div class="col-md-11">
-                 <p>Skill Mapping - JD Template</p>
-            </div> *@
+                                                     <p>Skill Mapping - JD Template</p>
+                                                </div> *@
                                         </div>
                                         <div class="row col-md-12 ml-2">
                                             @subdoc.description
@@ -161,7 +164,9 @@
                                         </table>
                                         <div class="float-right" style="display:flex;">
                                             <div>
-                                                <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download</a>
+                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.url }) + "'");">
+                                                    <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                                </button>
                                             </div>
                                             <div style="display:@displaymode; padding-left:5px;">
                                                 <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
