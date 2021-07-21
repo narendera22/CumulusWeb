@@ -18,6 +18,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
+using Microsoft.Extensions.Configuration;
 
 namespace MicrofyWebApp.Controllers
 {
@@ -26,16 +27,27 @@ namespace MicrofyWebApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private IMemoryCache _cache;
 
-        string Baseurl = "https://microfy-docfunc.azurewebsites.net/";
-        string Asseturl = "https://microfy-assetstorfunc.azurewebsites.net/";
-        string Phaseurl = "https://microfy-configfunc.azurewebsites.net/";
+        string Docurl = string.Empty;
+        string Asseturl = string.Empty;
+        string Phaseurl = string.Empty;
+        string DocCode = string.Empty;
+        string AssetCode = string.Empty;
+        string PhaseCode = string.Empty;
+
+        private IConfiguration _configuration;
 
 
-
-        public HomeController(ILogger<HomeController> logger, IMemoryCache memoryCache)
+        public HomeController(ILogger<HomeController> logger, IMemoryCache memoryCache,IConfiguration configuration)
         {
             _logger = logger;
             _cache = memoryCache;
+            _configuration = configuration;
+            Docurl = _configuration.GetValue<string>("Values:DocumentBaseUrl");
+            DocCode = _configuration.GetValue<string>("Values:DocumentCode");
+            Asseturl = _configuration.GetValue<string>("Values:AssetStrgeBaseUrl");
+            AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
+            Phaseurl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
+            PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
         }
         public async Task<IActionResult> MicrofyAsync()
         {
@@ -43,12 +55,13 @@ namespace MicrofyWebApp.Controllers
             PhaseViewModel PhaseModel = new PhaseViewModel();
             DocumentViewModel documentModel = new DocumentViewModel();
             string Phase;
+            string Requestapi = $"api/GetPhaseListFunction?{PhaseCode}";
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Phaseurl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync("api/GetPhaseListFunction?code=DSa/RrNoIxbON2obraEyBx3GK8RfoLygKk5GdIPnXMS3cfJReW2xKA==");
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
                 if (Res.IsSuccessStatusCode)
                 {
                     Phase = Res.Content.ReadAsStringAsync().Result;
@@ -65,6 +78,8 @@ namespace MicrofyWebApp.Controllers
             using (var client = new HttpClient())
             {
                 byte[] data;
+                string Requestapi = $"api/Upload?{AssetCode}";
+
                 using (var br = new BinaryReader(file.OpenReadStream()))
                 {
                     data = br.ReadBytes((int)file.OpenReadStream().Length);
@@ -72,7 +87,7 @@ namespace MicrofyWebApp.Controllers
                     MultipartFormDataContent multiContent = new MultipartFormDataContent();
                     multiContent.Add(bytes, "file", file.FileName);
                     client.BaseAddress = new Uri(Asseturl);
-                    var response = await client.PostAsync("api/Upload?code=cXk0i43E1NkCnFPUC9yqFRLcYrZ0kqLWqCC5f4V4pnh6T5BUrHF1dg==", multiContent).Result.Content.ReadAsStringAsync();
+                    var response = await client.PostAsync(Requestapi, multiContent).Result.Content.ReadAsStringAsync();
                     FileUploadResponse FileUploadReponseValue = JsonConvert.DeserializeObject<FileUploadResponse>(response);
 
                     return FileUploadReponseValue;
@@ -88,10 +103,12 @@ namespace MicrofyWebApp.Controllers
             DocumentViewModel DocModel = new DocumentViewModel();
 
             var createDoc = JsonConvert.SerializeObject(create);
+            string Requestapi = $"api/Document?{DocCode}";
+
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Baseurl);
-                var result = client.PostAsync("api/Document?code=xsoMPmFwEkvOtSYDeqdI6ykfmqt6C/qJbdI8RS4IEawmxeuCG1WKlA==", new StringContent(JsonConvert.SerializeObject(create), Encoding.UTF8, "application/json")).Result;
+                client.BaseAddress = new Uri(Docurl);
+                var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(create), Encoding.UTF8, "application/json")).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     _cache.Remove("_GetDocList");
@@ -126,15 +143,16 @@ namespace MicrofyWebApp.Controllers
         {
             string DocRepos = string.Empty;
             DocumentViewModel DocModel = new DocumentViewModel();
+            string Requestapi = $"api/Get?{DocCode}";
 
             if (!_cache.TryGetValue("_GetDocList", out DocRepos))
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri(Baseurl);
+                    client.BaseAddress = new Uri(Docurl);
                     client.DefaultRequestHeaders.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage Res = await client.GetAsync("api/Get?code=xsoMPmFwEkvOtSYDeqdI6ykfmqt6C/qJbdI8RS4IEawmxeuCG1WKlA==");
+                    HttpResponseMessage Res = await client.GetAsync(Requestapi);
                     if (Res.IsSuccessStatusCode)
                     {
                         DocRepos = Res.Content.ReadAsStringAsync().Result;
@@ -176,11 +194,13 @@ namespace MicrofyWebApp.Controllers
         public FileResult DownloadDocument(string url)
         {
             string filename = Path.GetFileName(url);
+            string Requestapi = $"api/Download/{filename}?{AssetCode}";
+
             using (var client = new HttpClient())
             {
 
                 client.BaseAddress = new Uri(Asseturl);
-                Task<HttpResponseMessage> response = client.GetAsync("api/Download/" + filename + "?code=cXk0i43E1NkCnFPUC9yqFRLcYrZ0kqLWqCC5f4V4pnh6T5BUrHF1dg==");
+                Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
                 HttpResponseMessage file = new HttpResponseMessage();
                 file = response.Result;
 

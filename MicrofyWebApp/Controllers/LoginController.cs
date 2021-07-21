@@ -16,20 +16,25 @@ using System.Text;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 
 namespace MicrofyWebApp.Controllers
 {
     public class LoginController : Controller
     {
-        string Userurl = "https://microfy-userfunc.azurewebsites.net/";
         private readonly ILogger<LoginController> _logger;
         private IMemoryCache _cache;
+        private IConfiguration _configuration;
+        string Userurl = string.Empty;
+        string Usercode = string.Empty;
 
-
-        public LoginController(ILogger<LoginController> logger, IMemoryCache memoryCache)
+        public LoginController(ILogger<LoginController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _logger = logger;
             _cache = memoryCache;
+            _configuration = configuration;
+            Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
+            Usercode = _configuration.GetValue<string>("Values:UsersCode");
         }
 
         public IActionResult Login()
@@ -52,10 +57,11 @@ namespace MicrofyWebApp.Controllers
             string UserResponse = string.Empty;
             var createDoc = JsonConvert.SerializeObject(users);
             UserViewModel userViewModel = new UserViewModel();
+            string Requestapi = $"api/User?{Usercode}";
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
-                var result = client.PostAsync("api/User?code=4lXNzClPbyzl9pQDE/cPAcS0yNumPv4Dpxm/Xpv/rPkGMfq5f8LaNw==", new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
+                var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     userViewModel.StatusCode = result.IsSuccessStatusCode;
@@ -80,12 +86,14 @@ namespace MicrofyWebApp.Controllers
             UserViewModel userViewModel = new UserViewModel();
             string userResponse = string.Empty;
             string Userid = (string)_cache.Get("_UserId");
+            string Requestapi = $"api/GetUserDetails/{Userid}?{Usercode}";
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync("api/GetUserDetails/" + Userid + "?code=4lXNzClPbyzl9pQDE/cPAcS0yNumPv4Dpxm/Xpv/rPkGMfq5f8LaNw==");
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
                 if (Res.IsSuccessStatusCode)
                 {
                     userResponse = Res.Content.ReadAsStringAsync().Result;
@@ -104,10 +112,12 @@ namespace MicrofyWebApp.Controllers
             try
             {
                 var logindet = JsonConvert.SerializeObject(loginDetails);
+                string Requestapi = $"api/Authenticate?{Usercode}";
+
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(Userurl);
-                    HttpResponseMessage Res = client.PostAsync("api/AuthenticateUser?code=4lXNzClPbyzl9pQDE/cPAcS0yNumPv4Dpxm/Xpv/rPkGMfq5f8LaNw==", new StringContent(JsonConvert.SerializeObject(loginDetails), Encoding.UTF8, "application/json")).Result;
+                    HttpResponseMessage Res = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(loginDetails), Encoding.UTF8, "application/json")).Result;
                     if (Res.IsSuccessStatusCode)
                     {
                         UserResponse = await Res.Content.ReadAsStringAsync();
@@ -145,11 +155,12 @@ namespace MicrofyWebApp.Controllers
             string UserResponse = string.Empty;
             var createDoc = JsonConvert.SerializeObject(users);
             UserViewModel userViewModel = new UserViewModel();
+            string Requestapi = $"api/UpdateUser/{users.username}?{Usercode}";
 
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
-                var result = client.PutAsync("api/UpdateUser/" + users.username + "?code=4lXNzClPbyzl9pQDE/cPAcS0yNumPv4Dpxm/Xpv/rPkGMfq5f8LaNw==", new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
+                var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
 
                 if (result.IsSuccessStatusCode)
                 {
