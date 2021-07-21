@@ -83,6 +83,12 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<IActionResult> MyProfileAsync()
         {
+            string username = (string)_cache.Get("_UserId");
+
+            if (username == null)
+            {
+                return RedirectToAction("Login");
+            }
             UserViewModel userViewModel = new UserViewModel();
             string userResponse = string.Empty;
             string Userid = (string)_cache.Get("_UserId");
@@ -177,6 +183,53 @@ namespace MicrofyWebApp.Controllers
             return userViewModel;
         }
 
+        public async Task<IActionResult> ListUserAsync()
+        {
+            string username = (string)_cache.Get("_UserId");
 
+            if (username == null)
+            {
+                return RedirectToAction("Login");
+            }
+            UserViewModel userViewModel = new UserViewModel();
+            string userResponse = string.Empty;
+            string Requestapi = $"api/GetUserList?{Usercode}";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Userurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    userResponse = Res.Content.ReadAsStringAsync().Result;
+                    userViewModel.usersDetails = JsonConvert.DeserializeObject<List<ListUserDetails>>(value: userResponse);
+
+                }
+
+            }
+            return View(userViewModel);
+        }
+        public async Task<bool> ActivateDeactivate(string username)
+        {
+            string userResponse = string.Empty;
+            string Requestapi = $"api/Delete/{username}?{Usercode}";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Userurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.DeleteAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    userResponse = Res.Content.ReadAsStringAsync().Result;
+
+                }
+
+            }
+            return true;
+        }
     }
 }

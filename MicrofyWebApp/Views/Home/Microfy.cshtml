@@ -4,6 +4,11 @@
     var sideMenu = Model.phases;
     var phase = Model.phases;
     ViewData["Title"] = "Home page";
+    var displaymode = "none";
+    if (Model.UserRole == "Administrator")
+    {
+        displaymode = "block";
+    }
 }
 <div class="container">
     <div class="wrapper">
@@ -108,7 +113,7 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
-                                @*<a class="dropdown-item" href="#"><i class="fas fa-lock"></i> Password</a>*@
+                                <a class="dropdown-item" href="~/Login/ListUser" style="display:@displaymode;"><i class="fas fa-user"></i> Users</a>
                                 <a class="dropdown-item" href="~/Login/Logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
                             </div>
                         </div>

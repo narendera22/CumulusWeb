@@ -15,6 +15,7 @@ namespace MicrofyWebApp.Models
         public List<projects> projects { get; set; }
         public bool StatusCode { get; set; }
         public string responseMessage { get; set; }
+        public List<ListUserDetails> usersDetails { get; set; }
     }
     public class projects
     {
@@ -25,5 +26,14 @@ namespace MicrofyWebApp.Models
     {
         public string UserId { get; set; }
         public string Password { get; set; }
+    }
+    public class ListUserDetails
+    {
+        public string username { get; set; }
+        public string password { get; set; }
+        public string fullName { get; set; }
+        public string userRole { get; set; }
+        public bool isActive { get; set; }
+        public List<projects> projects { get; set; }
     }
 }

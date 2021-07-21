@@ -37,7 +37,7 @@ namespace MicrofyWebApp.Controllers
         private IConfiguration _configuration;
 
 
-        public HomeController(ILogger<HomeController> logger, IMemoryCache memoryCache,IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _logger = logger;
             _cache = memoryCache;
@@ -51,6 +51,12 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<IActionResult> MicrofyAsync()
         {
+            string username = (string)_cache.Get("_UserId");
+
+            if (username == null)
+            {
+                return RedirectToAction("Login","Login");
+            }
 
             PhaseViewModel PhaseModel = new PhaseViewModel();
             DocumentViewModel documentModel = new DocumentViewModel();
@@ -68,6 +74,8 @@ namespace MicrofyWebApp.Controllers
                     PhaseModel = JsonConvert.DeserializeObject<PhaseViewModel>(Phase);
                     documentModel = await GetDocumentListAsync();
                     PhaseModel.documentRepository = documentModel.documentRepository;
+                    PhaseModel.UserRole = (string)_cache.Get("_UserRole");
+
                 }
             }
             return View(PhaseModel);

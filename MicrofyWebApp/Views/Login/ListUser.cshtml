@@ -1,0 +1,107 @@
+﻿@model MicrofyWebApp.Models.UserViewModel
+@{
+    var status = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MicrofyWebApp</title>
+    <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <!-- Datatable plugin CSS file -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+    <!-- jQuery library file -->
+    <script type="text/javascript"
+            src="https://code.jquery.com/jquery-3.5.1.js">
+    </script>
+    <!-- Datatable plugin JS library file -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
+    </script>
+</head>
+
+<body>
+    <div class="container" style="padding-left:60px">
+        <div class="imglogo">
+            <img id="img_logo" alt="Logo" src="~/Image/microfy.png" />
+            @*<center><h2><b>Users</b></h2></center>*@
+        </div>
+        <!--HTML table with student data-->
+        <table id="tableID" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Full Name</th>
+                    <th>Role</th>
+                    <th>Project Name</th>
+                    <th>Customer Name</th>
+                    <th>IsActive</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usr in Model.usersDetails)
+                {
+                    <tr>
+
+                        <td>@usr.username</td>
+                        <td>@usr.fullName</td>
+                        <td>@usr.userRole</td>
+                        @foreach (var p in usr.projects)
+                        {
+                            <td>@p.projectName.</td>
+                            <td>@p.customerName</td>
+                        }
+                        @if (usr.isActive) { status = "checked"; } else { status = ""; }
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" @status class="togglecheckbox" data-username="@usr.username">
+                                <span class="slider round"></span>
+                            </label>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="form-group">
+            <div class="col-md-4 control-label">
+                <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Microfy", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        /* Initialization of datatable */
+        $(document).ready(function () {
+            $('#tableID').DataTable({});
+        });
+        function Activate(username) {
+        debugger;
+            alert(username);
+        }
+        $('.togglecheckbox').change(function () {
+            $(this).prop('checked');
+            var username = $(this).data('username');
+            $.ajax({
+                type: "GET",
+                url: "/Login/ActivateDeactivate",
+                data: { "username": username },
+                contentType: "application/json; charset=utf-8",
+                //dataType: 'json',
+                success: function (data) {
+
+                },
+                error: function (data) {
+                    console.log(JSON.stringify(data));
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
