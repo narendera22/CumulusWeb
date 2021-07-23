@@ -51,7 +51,7 @@
         <div class="imglogo" style="display:flex;">
             <img id="img_logo" alt="Logo" src="~/Image/microfy.png" />
             <div class=" col-lg-8" style="padding-top:40px">
-                <center><h2><b>Users</b></h2></center>
+                <center><h2><b>User Management</b></h2></center>
             </div>
         </div>
         <!--HTML table with student data-->
@@ -65,7 +65,7 @@
                     <th>Customer Name</th>
                     <th>IsActive</th>
                     <th data-orderable="false"></th>
-                    <th data-orderable="false"></th>
+                    <th data-orderable="false" style="border-bottom:0px;"></th>
                 </tr>
             </thead>
             <tbody>
@@ -100,8 +100,8 @@
                 }
             </tbody>
         </table>
-        <div class="form-group">
-            <div class="col-md-4 control-label">
+        <div class="form-group" >
+            <div class="col-md-4 control-label" style="padding-bottom:15px;">
                 <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Microfy", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
             </div>
         </div>

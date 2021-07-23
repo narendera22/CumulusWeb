@@ -6,6 +6,7 @@ $(document).ready(function () {
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
     });
+   
     $(".anchor-link").on("click", function () {
         $(".anchor-link").removeClass("active");
         $(this).addClass("active");
@@ -34,27 +35,7 @@ $(document).ready(function () {
         }
     });
 
-    function Getdocuments(phase, subphase) {
-        $.ajax({
-            type: "GET",
-            url: "/Home/GetDocumentRepository",
-            data: { "Phase": phase, "SubPhase": subphase },
-            contentType: "application/json; charset=utf-8",
-            //dataType: 'json',
-            success: function (data) {
-                //window.location.replace(data.newUrl);
-                $("#documentpnl").html(data);
-                //$("#newdocdiv").show();
-                $("#dashboard").hide();
-                $("#uploadDocument").hide();
-                $("#documentpnl").show();
-
-            },
-            error: function (data) {
-                console.log(JSON.stringify(data));
-            }
-        });
-    }
+   
 
     $(".subanchor-link").on("click", function () {
        
@@ -83,7 +64,37 @@ $(document).ready(function () {
 
 
 });
+function Getdocuments(phase, subphase) {
+    $.ajax({
+        type: "GET",
+        url: "/Home/GetDocumentRepository",
+        data: { "Phase": phase, "SubPhase": subphase },
+        contentType: "application/json; charset=utf-8",
+        //dataType: 'json',
+        success: function (data) {
+            //window.location.replace(data.newUrl);
+            $("#documentpnl").html(data);
+            //$("#newdocdiv").show();
+            $("#dashboard").hide();
+            $("#uploadDocument").hide();
+            $("#documentpnl").show();
 
+        },
+        error: function (data) {
+            console.log(JSON.stringify(data));
+        }
+    });
+}
+
+function fn_cancel() {
+    var phase = $(".anchor-link.active").find("a").text();
+    var subphase = $(".subanchor-link.active").find("a").text();
+    if (subphase != "") {
+        phase = $(".subanchor-link.active").parent().parent().find('a.dropdown-toggle').text();
+    }
+    Getdocuments(phase, subphase);
+    return false;
+}
 
 function DocumentSave(url) {
     //var tags = [];

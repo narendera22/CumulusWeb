@@ -21,69 +21,69 @@
             <ul class="list-unstyled">
                 @for (int j = 0; j < phase.Count; j++)
                 {
-                    <li>
-                        <div class="anchor-link">
-                            @if (phase[j].subPhase != null)
+                <li>
+                    <div class="anchor-link">
+                        @if (phase[j].subPhase != null)
                             {
-                                <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">@phase[j].name</a>
+                        <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">@phase[j].name</a>
                             }
                             else
                             {
-                                <a href="#">@phase[j].name</a>
+                        <a href="#">@phase[j].name</a>
                             }
-                        </div>
-                        @if (phase[j].subPhase != null)
+                    </div>
+                    @if (phase[j].subPhase != null)
                         {
                             var subphase = phase[j].subPhase;
-                            <ul class="collapse list-unstyled" id="@phase[j].name">
-                                @for (int i = 0; i < subphase.Count; i++)
+                    <ul class="collapse list-unstyled" id="@phase[j].name">
+                        @for (int i = 0; i < subphase.Count; i++)
                                 {
-                                    <li class="subanchor-link">
-                                        <a href="#">@subphase[i]</a>
-                                    </li>
+                        <li class="subanchor-link">
+                            <a href="#">@subphase[i]</a>
+                        </li>
                                 }
-                            </ul>
+                    </ul>
 
                         }
 
-                    </li>
+                </li>
                 }
             </ul>
             @*<div class="tagcloud05">
-                <ul>
-                    @foreach (var doc in Model.documentRepository)
-                    {
-                        if (doc.documents != null)
+                    <ul>
+                        @foreach (var doc in Model.documentRepository)
                         {
-                            foreach (var doctags in doc.documents)
+                            if (doc.documents != null)
                             {
-                                foreach (var tags in doctags.tags)
+                                foreach (var doctags in doc.documents)
                                 {
-                                <li><a href="#"><span>@tags</span></a></li>
-                                }
-
-                            }
-                        }
-                        else if (doc.subphase != null)
-                        {
-                            foreach (var subdoc in doc.subphase)
-                            {
-                                if (subdoc.documents != null)
-                                {
-                                    foreach (var subdoctag in subdoc.documents)
+                                    foreach (var tags in doctags.tags)
                                     {
-                                        foreach (var subtags in subdoctag.tags)
-                                        {
-                                        <li><a href="#"><span>@subtags</span></a></li>
-                                        }
+                                    <li><a href="#"><span>@tags</span></a></li>
+                                    }
 
+                                }
+                            }
+                            else if (doc.subphase != null)
+                            {
+                                foreach (var subdoc in doc.subphase)
+                                {
+                                    if (subdoc.documents != null)
+                                    {
+                                        foreach (var subdoctag in subdoc.documents)
+                                        {
+                                            foreach (var subtags in subdoctag.tags)
+                                            {
+                                            <li><a href="#"><span>@subtags</span></a></li>
+                                            }
+
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                </ul>
-            </div>*@
+                    </ul>
+                </div>*@
         </nav>
         <div id="content">
             <nav class="navbar navbar-default">
@@ -102,9 +102,10 @@
                         @* <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                 <i class="fas fa-align-justify"></i>
                             </button> *@
-                        <button class="btn btn-dark" type="button">
-                            <i class="fa fa-search"></i>
-                        </button>
+                        @*<button class="btn btn-dark" type="button" onclick="return false;">
+                                <i class="fa fa-search"></i>
+                            </button>*@
+                        <a href="#" class="btn btn-dark"><i class="fa fa-search" aria-hidden="true"></i></a>
                     </div>
                     <div class="col-md-2">
                         <div class="dropdown" style="text-align: center;">
