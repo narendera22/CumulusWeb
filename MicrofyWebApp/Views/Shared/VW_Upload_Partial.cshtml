@@ -98,8 +98,17 @@
                 success: function (response) {
                     //debugger;
                     //console.log(response);
+                    if (response.statuscode) {
+                        DocumentSave(response.url);
+                    }
+                    else {
+                        $.alert({
+                            title: 'Error!!',
+                            content: response.errorMessage,
+                            type: 'red'
+                        });
+                    }
 
-                    DocumentSave(response.url);
                 },
                 error: function (jqXHR, textStatus, errorMessage) {
                     console.log(errorMessage);

@@ -87,7 +87,7 @@ namespace MicrofyWebApp.Controllers
             {
                 byte[] data;
                 string Requestapi = $"api/Upload?{AssetCode}";
-
+                FileUploadResponse FileUploadReponseValue = new FileUploadResponse();
                 using (var br = new BinaryReader(file.OpenReadStream()))
                 {
                     data = br.ReadBytes((int)file.OpenReadStream().Length);
@@ -95,9 +95,18 @@ namespace MicrofyWebApp.Controllers
                     MultipartFormDataContent multiContent = new MultipartFormDataContent();
                     multiContent.Add(bytes, "file", file.FileName);
                     client.BaseAddress = new Uri(Asseturl);
-                    var response = await client.PostAsync(Requestapi, multiContent).Result.Content.ReadAsStringAsync();
-                    FileUploadResponse FileUploadReponseValue = JsonConvert.DeserializeObject<FileUploadResponse>(response);
+                    var response = client.PostAsync(Requestapi, multiContent).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        FileUploadReponseValue.statuscode = response.IsSuccessStatusCode;
+                        FileUploadReponseValue.url = await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        FileUploadReponseValue.statuscode = response.IsSuccessStatusCode;
+                        FileUploadReponseValue = JsonConvert.DeserializeObject<FileUploadResponse>(await response.Content.ReadAsStringAsync());
 
+                    }
                     return FileUploadReponseValue;
 
                 }

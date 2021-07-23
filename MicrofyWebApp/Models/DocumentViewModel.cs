@@ -54,7 +54,10 @@ namespace MicrofyWebApp.Models
     }
     public class FileUploadResponse
     {
+        public bool statuscode { get; set; }
         public string filename { get; set; }
         public string url { get; set; }
+        public bool isDuplicate { get; set; }
+        public string errorMessage { get; set; }
     }
 }

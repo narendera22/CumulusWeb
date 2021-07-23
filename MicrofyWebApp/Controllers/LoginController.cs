@@ -47,6 +47,7 @@ namespace MicrofyWebApp.Controllers
             _cache.Remove("_GetUseDetailsList");
             _cache.Remove("_GetDocList");
             _cache.Remove("_UserRole");
+            _cache.Remove("_UserLoginResponse");
             return RedirectToAction("Login");
         }
 
@@ -83,33 +84,21 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<IActionResult> MyProfileAsync()
         {
-            string username = (string)_cache.Get("_UserId");
+            string Userid = (string)_cache.Get("_UserId");
 
-            if (username == null)
+            if (Userid == null)
             {
                 return RedirectToAction("Login");
             }
             UserViewModel userViewModel = new UserViewModel();
             string userResponse = string.Empty;
-            string Userid = (string)_cache.Get("_UserId");
-            string Requestapi = $"api/GetUserDetails/{Userid}?{Usercode}";
+            string JWTResponse= (string)_cache.Get("_UserLoginResponse");
+            userResponse = await GetLoginUserDetails(JWTResponse, Userid); ;
+            userViewModel = JsonConvert.DeserializeObject<UserViewModel>(userResponse);
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Userurl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync(Requestapi);
-                if (Res.IsSuccessStatusCode)
-                {
-                    userResponse = Res.Content.ReadAsStringAsync().Result;
-                    userViewModel = JsonConvert.DeserializeObject<UserViewModel>(value: userResponse);
-
-                }
-
-            }
             return View(userViewModel);
         }
+
         public async Task<UserViewModel> UserLoginAsync(LoginDetails loginDetails)
         {
 
@@ -119,7 +108,7 @@ namespace MicrofyWebApp.Controllers
             {
                 var logindet = JsonConvert.SerializeObject(loginDetails);
                 string Requestapi = $"api/Authenticate?{Usercode}";
-
+                string LoginUserResponse = string.Empty;
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(Userurl);
@@ -131,12 +120,13 @@ namespace MicrofyWebApp.Controllers
 
                         if (UserResponse != null || UserResponse != string.Empty)
                         {
-
+                            _cache.Set("_UserLoginResponse", UserResponse, cacheEntryOptions);
                             _cache.Set("_UserId", loginDetails.UserId, cacheEntryOptions);
-                            _cache.Set("_GetUseDetailsList", UserResponse, cacheEntryOptions);
+                            LoginUserResponse = await GetLoginUserDetails(UserResponse, loginDetails.UserId);
+                            _cache.Set("_GetUseDetailsList", LoginUserResponse, cacheEntryOptions);
 
                         }
-                        userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserResponse);
+                        userViewModel = JsonConvert.DeserializeObject<UserViewModel>(LoginUserResponse);
                         _cache.Set("_UserRole", userViewModel.userRole, cacheEntryOptions);
                         userViewModel.StatusCode = Res.IsSuccessStatusCode;
                     }
@@ -154,6 +144,27 @@ namespace MicrofyWebApp.Controllers
             return userViewModel;
         }
 
+        public async Task<string> GetLoginUserDetails(string JWTResponse, string Userid)
+        {
+            string LoginUserDetails = string.Empty;
+
+            string Requestapi = $"api/GetUserDetails/{Userid}?{Usercode}";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Userurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", JWTResponse);
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    LoginUserDetails = Res.Content.ReadAsStringAsync().Result;
+                }
+
+            }
+            return LoginUserDetails;
+        }
 
         [HttpPost]
         public async Task<UserViewModel> UpdateUser(UserViewModel users)
@@ -162,10 +173,12 @@ namespace MicrofyWebApp.Controllers
             var createDoc = JsonConvert.SerializeObject(users);
             UserViewModel userViewModel = new UserViewModel();
             string Requestapi = $"api/UpdateUser/{users.username}?{Usercode}";
+            string JWTResponse = (string)_cache.Get("_UserLoginResponse");
 
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
+                client.DefaultRequestHeaders.Add("Authorization", JWTResponse);
                 var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
 
                 if (result.IsSuccessStatusCode)
@@ -193,6 +206,7 @@ namespace MicrofyWebApp.Controllers
             }
             UserViewModel userViewModel = new UserViewModel();
             string userResponse = string.Empty;
+            string JWTResponse = (string)_cache.Get("_UserLoginResponse");
             string Requestapi = $"api/GetUserList?{Usercode}";
 
             using (var client = new HttpClient())
@@ -200,6 +214,7 @@ namespace MicrofyWebApp.Controllers
                 client.BaseAddress = new Uri(Userurl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", JWTResponse);
                 HttpResponseMessage Res = await client.GetAsync(Requestapi);
                 if (Res.IsSuccessStatusCode)
                 {
@@ -215,12 +230,15 @@ namespace MicrofyWebApp.Controllers
         {
             string userResponse = string.Empty;
             string Requestapi = $"api/Delete/{username}?{Usercode}";
+            string JWTResponse = (string)_cache.Get("_UserLoginResponse");
 
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", JWTResponse);
+
                 HttpResponseMessage Res = await client.DeleteAsync(Requestapi);
                 if (Res.IsSuccessStatusCode)
                 {
