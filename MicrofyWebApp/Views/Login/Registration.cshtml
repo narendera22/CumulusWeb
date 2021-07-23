@@ -18,8 +18,8 @@
             padding: 6px 20px !important;
         }
         /*.jconfirm .jconfirm-holder {*/
-            /*max-height: 100%;*/
-            /*padding-right: 250px !important;
+        /*max-height: 100%;*/
+        /*padding-right: 250px !important;
         }*/
         .justify-content-lg-center {
             justify-content: right !important;
@@ -30,9 +30,11 @@
     <div class="container" style="padding-left:60px">
         <form class="well form-horizontal" action=" " method="post" id="Registration_form">
             <fieldset>
-                <div class="imglogo">
+                <div class="imglogo" style="display:flex;">
                     <img id="img_logo" alt="Logo" src="~/Image/microfy.png" />
-                    <center><h2><b>Sign up</b></h2></center>
+                    <div class=" col-lg-8" style="padding-top:40px">
+                        <center><h2><b>Sign-up</b></h2></center>
+                    </div>
                 </div>
                 <!-- Form Name -->
                 <!-- Text input-->
@@ -69,7 +71,7 @@
                 </div>
 
 
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label class="col-md-4 control-label">Role</label>
                     <div class="col-md-4 selectContainer">
                         <div class="input-group">
@@ -77,13 +79,12 @@
                             <select name="role" id="role" class="form-control selectpicker" required>
                                 <option value="">Select Role</option>
                                 <option value="Administrator">Administrator</option>
-                                <option value="User">User</option>
-                                @*<option>Auditor</option>*@
-                            </select>
+                                <option value="User">User</option>-->
+                @*<option>Auditor</option>*@
+                <!--</select>
                         </div>
                     </div>
-                </div>
-
+                </div>-->
                 <!-- Text input-->
 
                 <div class="form-group">
@@ -104,7 +105,7 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                             <input name="user_password" type="password" id="user_password" title="Password must contain: Minimum 8 characters atleast 1 Alphabet and 1 Number"
-                                   class="form-control" placeholder="Enter Password" required  />
+                                   class="form-control" placeholder="Enter Password" required />
                         </div>
                     </div>
                 </div>
@@ -130,7 +131,7 @@
                 <!-- Button -->
                 <div class="form-group">
                     <div class="col-md-4 control-label">
-                        <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Login", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
+                        <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Login", "Login") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
                     </div>
                     <div class="col-md-4 control-label">
                         <button type="submit" class="btn btn-warning">SUBMIT <span class="glyphicon glyphicon-send"></span></button>
@@ -168,7 +169,7 @@ $('#Registration_form').submit(function () {
     var username = $('#first_name').val();
     var custname = $('#cust_name').val();
     var projectname = $('#project_name').val();
-    var role = $('#role :selected').text();
+    var role = "User"; //$('#role :selected').text();
     var userid = $('#userid').val();
     var password = $('#user_password').val();
     var confrmpassword = $('#confirm_password').val();
