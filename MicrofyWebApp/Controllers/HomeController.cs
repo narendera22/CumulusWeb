@@ -187,7 +187,9 @@ namespace MicrofyWebApp.Controllers
 
                 }
             }
-            DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
+            if ( DocRepos != null){
+                DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
+            }
             return DocModel;
         }
 
