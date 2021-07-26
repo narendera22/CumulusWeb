@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MicrofyWebApp.Models
 {
@@ -21,12 +22,49 @@ namespace MicrofyWebApp.Models
         public List<Documents> documents { get; set; }
         public List<SubPhase> subphase { get; set; }
     }
-    public class Documents{
+    public class Documents
+    {
         public string name { get; set; }
-        public string description { get; set;}
-        public string url { get; set;}
+        public string description { get; set; }
+        public string url { get; set; }
         //public List<Dictionary<string,string>> Tags { get; set; }
         public List<string> tags { get; set; }
+        public string filetype
+        {
+            get
+            {
+                string extension = string.Empty;
+                extension = Path.GetExtension(url);
+                string icons = string.Empty;
+                if (extension == null) { return ""; }
+                if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
+                {
+                    icons = "fa-file-word fa-4x";
+                }
+                else if (extension.Equals(".xlsx") || extension.Equals(".xlsm") || extension.Equals(".xls"))
+                {
+                    icons = "fa-file-excel fa-4x";
+                }
+                else if (extension.Equals(".pptm") || extension.Equals(".pptx") || extension.Equals(".ppsx") || extension.Equals(".ppt"))
+                {
+                    icons = "fa-file-powerpoint fa-4x";
+                }
+                else if (extension.Equals(".pdf"))
+                {
+                    icons = "fa-file-pdf fa-4x";
+                }
+                else if (extension.Equals(".csv"))
+                {
+                    icons = "fa-file-csv fa-4x";
+                }
+                else
+                {
+                    icons = "fa-file-alt fa-4x";
+                }
+                return icons;
+            }
+
+        }
     }
     public class SubPhase
     {
@@ -40,6 +78,42 @@ namespace MicrofyWebApp.Models
         public string url { get; set; }
         //public List<Dictionary<string,string>> Tags { get; set; }
         public List<string> tags { get; set; }
+        public string filetype
+        {
+            get
+            {
+                string extension = string.Empty;
+                extension = Path.GetExtension(url);
+                string icons = string.Empty;
+                if (extension == null) { return ""; }
+                if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
+                {
+                    icons = "fa-file-word fa-4x";
+                }
+                else if (extension.Equals(".xlsx") || extension.Equals(".xlsm") || extension.Equals(".xls"))
+                {
+                    icons = "fa-file-excel fa-4x";
+                }
+                else if (extension.Equals(".pptm") || extension.Equals(".pptx") || extension.Equals(".ppsx") || extension.Equals(".ppt"))
+                {
+                    icons = "fa-file-powerpoint fa-4x";
+                }
+                else if (extension.Equals(".pdf"))
+                {
+                    icons = "fa-file-pdf fa-4x";
+                }
+                else if (extension.Equals(".csv"))
+                {
+                    icons = "fa-file-csv fa-4x";
+                }
+                else
+                {
+                    icons = "fa-file-alt fa-4x";
+                }
+                return icons;
+            }
+
+        }
     }
     public class CreateDocuments
     {
@@ -50,6 +124,7 @@ namespace MicrofyWebApp.Models
         public string URL { get; set; }
         //public List<Dictionary<string,string>> Tags { get; set; }
         public List<string> Tags { get; set; }
+
 
     }
     public class FileUploadResponse

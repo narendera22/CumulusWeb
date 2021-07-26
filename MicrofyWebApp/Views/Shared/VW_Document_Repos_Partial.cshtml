@@ -83,20 +83,26 @@
                                         <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
                                     </tr>
                                 </table>
-                                <div class="float-right" style="display:flex;">
-                                    <div>
-                                       
-                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.url }) + "'");">
-                                            <i class="fa fa-download" aria-hidden="true"></i>  Download
-                                        </button>
+                                <div class="col-md-12" style="display:flex">
+                                    <div class="col-md-4">
+                                        <i class="far @doc.filetype"></i>
                                     </div>
-                                    <div style="display:@displaymode; padding-left:5px;">
-                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
-                                            <i class="fa fa-upload" aria-hidden="true"></i>  Upload
-                                        </button>
+                                    <div class="col-md-8">
+                                        <div class="float-right" style="display:flex;">
+                                            <div>
+
+                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.url }) + "'");">
+                                                    <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                                </button>
+                                            </div>
+                                            <div style="display:@displaymode; padding-left:5px;">
+                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
+                                                    <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-
                                 <table class="table ml-2" style="display: none;">
                                     <tr>
                                         <td>Feedback</td>
@@ -162,18 +168,26 @@
                                                 <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
                                             </tr>
                                         </table>
-                                        <div class="float-right" style="display:flex;">
-                                            <div>
-                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.url }) + "'");">
-                                                    <i class="fa fa-download" aria-hidden="true"></i>  Download
-                                                </button>
+                                        <div class="col-md-12" style="display:flex">
+                                            <div class="col-md-4">
+                                                <i class="far @subdoc.filetype"></i>
                                             </div>
-                                            <div style="display:@displaymode; padding-left:5px;">
-                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
-                                                    <i class="fa fa-upload" aria-hidden="true"></i>  Upload
-                                                </button>
+                                            <div class="col-md-8">
+                                                <div class="float-right" style="display:flex;">
+                                                    <div>
+                                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.url }) + "'");">
+                                                            <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                                        </button>
+                                                    </div>
+                                                    <div style="display:@displaymode; padding-left:5px;">
+                                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
+                                                            <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+
 
                                         <table class="table ml-2" style="display: none;">
                                             <tr>
