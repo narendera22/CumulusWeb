@@ -55,7 +55,7 @@ namespace MicrofyWebApp.Controllers
 
             if (username == null)
             {
-                return RedirectToAction("Login","Login");
+                return RedirectToAction("Login", "Login");
             }
 
             PhaseViewModel PhaseModel = new PhaseViewModel();
@@ -81,12 +81,14 @@ namespace MicrofyWebApp.Controllers
             return View(PhaseModel);
         }
         [HttpPost]
-        public async Task<FileUploadResponse> UploadAsync(IFormFile file)
+        public async Task<FileUploadResponse> UploadAsync(string phase, string subphase, IFormFile file)
         {
             using (var client = new HttpClient())
             {
                 byte[] data;
-                string Requestapi = $"api/Upload?{AssetCode}";
+                string Phase = "Phase=" + phase;
+                string SubPhase = "SubPhase=" + subphase;
+                string Requestapi = $"api/Upload?{AssetCode}&{Phase}&{SubPhase}";
                 FileUploadResponse FileUploadReponseValue = new FileUploadResponse();
                 using (var br = new BinaryReader(file.OpenReadStream()))
                 {

@@ -56,16 +56,17 @@
         $("#upload").submit(function (e) {
             //debugger;
             e.preventDefault();
-            //if (!validations()) {
-            //    return false;
-            //}
+            var active = GetActivePhase();
+            var phase = active.phase;
+            var subphase = active.subphase;
 
             $.ajax({
                 url: "/Home/Upload",
                 type: "POST",
                 data: function () {
                     var data = new FormData();
-                    //data.append("name", jQuery("#txtname").val());
+                    data.append("phase", phase);
+                    data.append("subphase", subphase);
                     data.append("file", jQuery("#fileToUpload").get(0).files[0]);
                     return data;
                 }(),

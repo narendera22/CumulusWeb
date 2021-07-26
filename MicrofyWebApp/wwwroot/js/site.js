@@ -9,6 +9,7 @@ $(document).ready(function () {
    
     $(".anchor-link").on("click", function () {
         $(".anchor-link").removeClass("active");
+        $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
         $(this).addClass("active");
         // $(this).toggleClass("active");
        
@@ -64,6 +65,18 @@ $(document).ready(function () {
 
 
 });
+function GetActivePhase() {
+    var phase = $(".anchor-link.active").find("a").text();
+    var subphase = $(".subanchor-link.active").find("a").text();
+    if (subphase != "") {
+        phase = $(".subanchor-link.active").parent().parent().find('a.dropdown-toggle').text();
+    }
+    var Active = {
+        phase: phase,
+        subphase: subphase
+    }
+    return Active;
+}
 function Getdocuments(phase, subphase) {
     $.ajax({
         type: "GET",
@@ -87,11 +100,9 @@ function Getdocuments(phase, subphase) {
 }
 
 function fn_cancel() {
-    var phase = $(".anchor-link.active").find("a").text();
-    var subphase = $(".subanchor-link.active").find("a").text();
-    if (subphase != "") {
-        phase = $(".subanchor-link.active").parent().parent().find('a.dropdown-toggle').text();
-    }
+    var active = GetActivePhase();
+    var phase = active.phase;
+    var subphase = active.subphase;
     Getdocuments(phase, subphase);
     return false;
 }
@@ -108,11 +119,9 @@ function DocumentSave(url) {
     //});
     //tags.push(txttags);
 
-    var phase = $(".anchor-link.active").find("a").text();
-    var subphase = $(".subanchor-link.active").find("a").text();
-    if (subphase != "") {
-        phase = $(".subanchor-link.active").parent().parent().find('a.dropdown-toggle').text();
-    }
+    var active = GetActivePhase();
+    var phase = active.phase;
+    var subphase = active.subphase;
 
 
     var documentDet = {
@@ -142,12 +151,14 @@ function DocumentSave(url) {
     return false;
 }
 
+
+
+
 function UploadDocument(Documentname) {
-    var phase = $(".anchor-link.active").find("a").text();
-    var subphase = $(".subanchor-link.active").find("a").text();
-    if (subphase != "") {
-        phase = $(".subanchor-link.active").parent().parent().find('a.dropdown-toggle').text();
-    }
+    var active = GetActivePhase();
+    var phase = active.phase;
+    var subphase = active.subphase;
+   
     $.ajax({
         type: "GET",
         url: "/Home/GetUploadPartial",
