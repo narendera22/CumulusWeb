@@ -93,7 +93,7 @@
                                             <div class="float-right" style="display:flex;">
                                                 <div>
 
-                                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.url }) + "'");">
+                                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.url, phase=p.phase,subphase=string.Empty }) + "'");">
                                                         <i class="fa fa-download" aria-hidden="true"></i>  Download
                                                     </button>
                                                 </div>
@@ -177,7 +177,7 @@
                                                 <div class="col-md-8">
                                                     <div class="float-right" style="display:flex;">
                                                         <div>
-                                                            <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.url }) + "'");">
+                                                            <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.url,phase=p.phase,subphase=sub.name }) + "'");">
                                                                 <i class="fa fa-download" aria-hidden="true"></i>  Download
                                                             </button>
                                                         </div>

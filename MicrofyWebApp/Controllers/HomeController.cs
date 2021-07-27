@@ -212,10 +212,12 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_Upload_NewDoc_Partial");
         }
 
-        public FileResult DownloadDocument(string url)
+        public FileResult DownloadDocument(string url, string phase, string subphase)
         {
             string filename = Path.GetFileName(url);
-            string Requestapi = $"api/Download/{filename}?{AssetCode}";
+            string Phase = "Phase=" + phase;
+            string SubPhase = "SubPhase=" + subphase;
+            string Requestapi = $"api/Download/{filename}?{AssetCode}&{Phase}&{SubPhase}";
 
             using (var client = new HttpClient())
             {

@@ -10,6 +10,19 @@
         displaymode = "block";
     }
 }
+<style type="text/css">
+    .card-deck {
+        -ms-flex-flow: row wrap;
+        flex-flow: row wrap;
+        margin-right: -16px;
+        margin-left: -31px !important;
+        border: none !important;
+    }
+
+    .card {
+        border: none !important;
+    }
+</style>
 <div class="container">
     <div class="wrapper">
         <nav id="sidebar">
@@ -21,32 +34,32 @@
             <ul class="list-unstyled">
                 @for (int j = 0; j < phase.Count; j++)
                 {
-                <li>
-                    <div class="anchor-link">
-                        @if (phase[j].subPhase != null)
+                    <li>
+                        <div class="anchor-link">
+                            @if (phase[j].subPhase != null)
                             {
-                        <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">@phase[j].name</a>
+                                <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">@phase[j].name</a>
                             }
                             else
                             {
-                        <a href="#">@phase[j].name</a>
+                                <a href="#">@phase[j].name</a>
                             }
-                    </div>
-                    @if (phase[j].subPhase != null)
+                        </div>
+                        @if (phase[j].subPhase != null)
                         {
                             var subphase = phase[j].subPhase;
-                    <ul class="collapse list-unstyled" id="@phase[j].name">
-                        @for (int i = 0; i < subphase.Count; i++)
+                            <ul class="collapse list-unstyled" id="@phase[j].name">
+                                @for (int i = 0; i < subphase.Count; i++)
                                 {
-                        <li class="subanchor-link">
-                            <a href="#">@subphase[i]</a>
-                        </li>
+                                    <li class="subanchor-link">
+                                        <a href="#">@subphase[i]</a>
+                                    </li>
                                 }
-                    </ul>
+                            </ul>
 
                         }
 
-                </li>
+                    </li>
                 }
             </ul>
             @*<div class="tagcloud05">
@@ -157,80 +170,72 @@
 
             <div class="container-fluid" id="dashboard" style="display: block;">
                 <div class="container">
-                    <table id="dashboardtb">
-                        <tr>
-                            <td>
-                                <div class="card mb-3">
-                                    <div class="card-deck">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <p>11 new reference architecture</p>
-                                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
+                    <div class="row">
+                        @if (Model.documentRepository != null)
+                        {
+                            foreach (var p in Model.documentRepository)
+                            {
+                                if (p.documents != null)
+                                {
+                                    @*<div class="card col-md-3 m-2">
+                                            <div class="card-deck">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <p>@p.phase </p>
+                                                        <p>@p.documents.Count()</p>
+                                                        <button type="submit" class="btn btn-primary" id="btnView" onclick='ViewDocuments("@p.phase",null)'>
+                                                            <i class="fa fa-eye" aria-hidden="true"></i> View
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                    <div class="col-lg-4 col-sm-6">
+                                        <div class="circle-tile ">
+                                            <a onclick='ViewDocuments("@p.phase",null)'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="fa fa-file-alt fa-fw fa-3x"></i></div></a>
+                                            <div class="circle-tile-content orange">
+                                                <div class="circle-tile-description text-faded"> @p.phase</div>
+                                                <div class="circle-tile-number text-faded ">@p.documents.Count()</div>
+                                                <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase",null)'>More Info<i class="fa fa-chevron-circle-right"></i></a>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="card mb-3">
-                                    <div class="card-deck">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <p>Design template for microservice</p>
-                                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
+                                }
+                                else if (p.subphase != null)
+                                {
+                                    foreach (var sub in p.subphase)
+                                    {
+
+                                        @*<div class="card col-md-3 m-2">
+                                                <div class="card-deck">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <p>@sub.name - Document repository</p>
+                                                            <p>@sub.documents.Count()</p>
+                                                            <button type="submit" class="btn btn-primary" id="btnView" onclick='ViewDocuments("@p.phase","@sub.name")'>
+                                                                <i class="fa fa-eye" aria-hidden="true"></i> View
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <div class="col-lg-4 col-sm-6">
+                                            <div class="circle-tile ">
+                                                <a onclick='ViewDocuments("@p.phase","@sub.name")'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="fa fa-file-alt fa-fw fa-3x"></i></div></a>
+                                                <div class="circle-tile-content orange">
+                                                    <div class="circle-tile-description text-faded"> @sub.name</div>
+                                                    <div class="circle-tile-number text-faded ">@sub.documents.Count()</div>
+                                                    <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase","@sub.name")'>More Info<i class="fa fa-chevron-circle-right"></i></a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="card mb-3">
-                                    <div class="card-deck">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <p>Containerization best practice</p>
-                                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="card mb-3">
-                                    <div class="card-deck">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <p>New** Azure devops guideline</p>
-                                                <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="card mb-3">
-                                    <div class="card-deck">
-                                        <div class="card-body">
-                                            <p>Cluster sizing tool</p>
-                                            <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="card mb-3">
-                                    <div class="card-deck">
-                                        <div class="card-body">
-                                            <p>13 Project reviewed</p>
-                                            <a href="#" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
+
+                                    }
+                                }
+                            }
+                        }
+                    </div>
+
                 </div>
             </div>
 

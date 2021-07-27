@@ -6,13 +6,13 @@ $(document).ready(function () {
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
     });
-   
+
     $(".anchor-link").on("click", function () {
         $(".anchor-link").removeClass("active");
         $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
         $(this).addClass("active");
         // $(this).toggleClass("active");
-       
+
         var htmltemplate;
         if ($(this).siblings().length === 0) {
             $(".anchor-link").siblings().removeClass('show');
@@ -36,10 +36,10 @@ $(document).ready(function () {
         }
     });
 
-   
+
 
     $(".subanchor-link").on("click", function () {
-       
+
         $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
         $(this).addClass('active');
         var phase = $(this).parent().parent().find('a.dropdown-toggle').text();
@@ -158,7 +158,7 @@ function UploadDocument(Documentname) {
     var active = GetActivePhase();
     var phase = active.phase;
     var subphase = active.subphase;
-   
+
     $.ajax({
         type: "GET",
         url: "/Home/GetUploadPartial",
@@ -181,7 +181,7 @@ function UploadDocument(Documentname) {
 }
 
 function UploadNewDocument() {
-    
+
     $.ajax({
         type: "GET",
         url: "/Home/GetNewUploadPartial",
@@ -201,4 +201,26 @@ function UploadNewDocument() {
             console.log(JSON.stringify(data));
         }
     });
+}
+
+function ViewDocuments(phase, subphase) {
+    if (subphase === null) {
+        var activate = $(".anchor-link");
+        $(activate).each(function () {
+            var value = $(this).find("a").text();
+            if (value === phase) {
+                $(this).click();
+            }
+        });
+    }
+    else {
+        var subactivate = $(".subanchor-link");
+        $(subactivate).each(function () {
+            var value = $(this).find("a").text();
+            if (value === subphase) {
+                $(this).parent().addClass('show');
+                $(this).click();
+            }
+        });
+    }
 }
