@@ -45,26 +45,32 @@ $(document).ready(function () {
         var phase = $(this).parent().parent().find('a.dropdown-toggle').text();
         var subphase = $(this).find('a').text();
         $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
-        var htmltemplate = $('<li><a href="#">' + phase + '</a></li><li class="active"> <span>' + subphase + '</span></li>');
+        var htmltemplate = $('<li><a href="#" onclick="subanchorlink()">' + phase + '</a></li><li class="active"> <span>' + subphase + '</span></li>');
         $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
         Getdocuments(phase, subphase);
 
 
     });
-    $(".homelink").on("click", function () {
-        //$("#newdocdiv").hide();
-        $("#dashboard").show();
-        $("#uploadDocument").hide();
-        $("#documentpnl").hide();
-        $(".anchor-link").removeClass("active");
-        $(".anchor-link").siblings().removeClass('show');
-        $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
-        var htmltemplate = $('<li class="active"> <span>Dashboard </span></li></ol>');
-        $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
-    });
+    //$(".homelink").on("click", function () {
+    //    $("#newdocdiv").hide();
+    //    $("#dashboard").show();
+    //    $("#uploadDocument").hide();
+    //    $("#documentpnl").hide();
+    //    $(".anchor-link").removeClass("active");
+    //    $(".anchor-link").siblings().removeClass('show');
+    //    $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
+    //    var htmltemplate = $('<li class="active"> <span>Dashboard </span></li></ol>');
+    //    $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
 
+    //});
 
 });
+function subanchorlink() {
+    var active = GetActivePhase();
+    var phase = active.phase;
+    var subphase = active.subphase;
+    ViewDocuments(phase, subphase);
+}
 function GetActivePhase() {
     var phase = $(".anchor-link.active").find("a").text();
     var subphase = $(".subanchor-link.active").find("a").text();

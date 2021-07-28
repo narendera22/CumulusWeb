@@ -109,6 +109,8 @@ p {
         font-weight: 300;
         line-height: 1.7em;
         color: rgb(200, 127, 16);
+        padding-left: 5px;
+        padding-top: 15px;
     }
 
 a,
@@ -842,4 +844,12 @@ input:checked + .slider:before {
 
 .text-faded {
     color: rgba(255, 255, 255, 0.7);
+}
+
+.circle-tile :hover .circle-tile-heading, circle-title:focus .circle-tile-heading {
+    -ms-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    -o-transform: scale(1.2);
+    transform: scale(1.2);
 }
