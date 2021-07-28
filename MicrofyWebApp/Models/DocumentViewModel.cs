@@ -39,27 +39,39 @@ namespace MicrofyWebApp.Models
                 if (extension == null) { return ""; }
                 if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
                 {
-                    icons = "fa-file-word fa-4x";
+                    icons = "/Image/DocumentLogos/doc-logo.png";
                 }
                 else if (extension.Equals(".xlsx") || extension.Equals(".xlsm") || extension.Equals(".xls"))
                 {
-                    icons = "fa-file-excel fa-4x";
+                    icons = "/Image/DocumentLogos/xls-logo.png";
                 }
                 else if (extension.Equals(".pptm") || extension.Equals(".pptx") || extension.Equals(".ppsx") || extension.Equals(".ppt"))
                 {
-                    icons = "fa-file-powerpoint fa-4x";
+                    icons = "/Image/DocumentLogos/ppt-logo.png";
                 }
                 else if (extension.Equals(".pdf"))
                 {
-                    icons = "fa-file-pdf fa-4x";
+                    icons = "/Image/DocumentLogos/pdf-logo.png";
                 }
                 else if (extension.Equals(".csv"))
                 {
-                    icons = "fa-file-csv fa-4x";
+                    icons = "/Image/DocumentLogos/csv-logo.png";
+                }
+                else if (extension.Equals(".gif"))
+                {
+                    icons = "/Image/DocumentLogos/gif-logo.png";
+                }
+                else if (extension.Equals(".png"))
+                {
+                    icons = "/Image/DocumentLogos/png-logo.png";
+                }
+                else if (extension.Equals(".jpg") || extension.Equals(".jpeg"))
+                {
+                    icons = "/Image/DocumentLogos/jpg-logo.png";
                 }
                 else
                 {
-                    icons = "fa-file-alt fa-4x";
+                    icons = "/Image/DocumentLogos/txt-logo.png";
                 }
                 return icons;
             }
@@ -88,27 +100,39 @@ namespace MicrofyWebApp.Models
                 if (extension == null) { return ""; }
                 if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
                 {
-                    icons = "fa-file-word fa-4x";
+                    icons = "/Image/DocumentLogos/doc-logo.png";
                 }
                 else if (extension.Equals(".xlsx") || extension.Equals(".xlsm") || extension.Equals(".xls"))
                 {
-                    icons = "fa-file-excel fa-4x";
+                    icons = "/Image/DocumentLogos/xls-logo.png";
                 }
                 else if (extension.Equals(".pptm") || extension.Equals(".pptx") || extension.Equals(".ppsx") || extension.Equals(".ppt"))
                 {
-                    icons = "fa-file-powerpoint fa-4x";
+                    icons = "/Image/DocumentLogos/ppt-logo.png";
                 }
                 else if (extension.Equals(".pdf"))
                 {
-                    icons = "fa-file-pdf fa-4x";
+                    icons = "/Image/DocumentLogos/pdf-logo.png";
                 }
                 else if (extension.Equals(".csv"))
                 {
-                    icons = "fa-file-csv fa-4x";
+                    icons = "/Image/DocumentLogos/csv-logo.png";
+                }
+                else if (extension.Equals(".gif"))
+                {
+                    icons = "/Image/DocumentLogos/gif-logo.png";
+                }
+                else if (extension.Equals(".png"))
+                {
+                    icons = "/Image/DocumentLogos/png-logo.png";
+                }
+                else if (extension.Equals(".jpg")||extension.Equals(".jpeg"))
+                {
+                    icons = "/Image/DocumentLogos/jpg-logo.png";
                 }
                 else
                 {
-                    icons = "fa-file-alt fa-4x";
+                    icons = "/Image/DocumentLogos/txt-logo.png";
                 }
                 return icons;
             }
