@@ -39,39 +39,39 @@ namespace MicrofyWebApp.Models
                 if (extension == null) { return ""; }
                 if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
                 {
-                    icons = "/Image/DocumentLogos/doc-logo.png";
+                    icons = "fa-file-word";
                 }
                 else if (extension.Equals(".xlsx") || extension.Equals(".xlsm") || extension.Equals(".xls"))
                 {
-                    icons = "/Image/DocumentLogos/xls-logo.png";
+                    icons = "fa-file-excel";
                 }
                 else if (extension.Equals(".pptm") || extension.Equals(".pptx") || extension.Equals(".ppsx") || extension.Equals(".ppt"))
                 {
-                    icons = "/Image/DocumentLogos/ppt-logo.png";
+                    icons = "fa-file-powerpoint";
                 }
                 else if (extension.Equals(".pdf"))
                 {
-                    icons = "/Image/DocumentLogos/pdf-logo.png";
+                    icons = "fa-file-pdf";
                 }
                 else if (extension.Equals(".csv"))
                 {
-                    icons = "/Image/DocumentLogos/csv-logo.png";
+                    icons = "fa-file-csv";
                 }
                 else if (extension.Equals(".gif"))
                 {
-                    icons = "/Image/DocumentLogos/gif-logo.png";
+                    icons = "fa-file-image";
                 }
                 else if (extension.Equals(".png"))
                 {
-                    icons = "/Image/DocumentLogos/png-logo.png";
+                    icons = "fa-file-image";
                 }
                 else if (extension.Equals(".jpg") || extension.Equals(".jpeg"))
                 {
-                    icons = "/Image/DocumentLogos/jpg-logo.png";
+                    icons = "fa-file-image";
                 }
                 else
                 {
-                    icons = "/Image/DocumentLogos/txt-logo.png";
+                    icons = "fa-file-alt";
                 }
                 return icons;
             }
@@ -100,39 +100,39 @@ namespace MicrofyWebApp.Models
                 if (extension == null) { return ""; }
                 if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
                 {
-                    icons = "/Image/DocumentLogos/doc-logo.png";
+                    icons = "fa-file-word";
                 }
                 else if (extension.Equals(".xlsx") || extension.Equals(".xlsm") || extension.Equals(".xls"))
                 {
-                    icons = "/Image/DocumentLogos/xls-logo.png";
+                    icons = "fa-file-excel";
                 }
                 else if (extension.Equals(".pptm") || extension.Equals(".pptx") || extension.Equals(".ppsx") || extension.Equals(".ppt"))
                 {
-                    icons = "/Image/DocumentLogos/ppt-logo.png";
+                    icons = "fa-file-powerpoint";
                 }
                 else if (extension.Equals(".pdf"))
                 {
-                    icons = "/Image/DocumentLogos/pdf-logo.png";
+                    icons = "fa-file-pdf";
                 }
                 else if (extension.Equals(".csv"))
                 {
-                    icons = "/Image/DocumentLogos/csv-logo.png";
+                    icons = "fa-file-csv";
                 }
                 else if (extension.Equals(".gif"))
                 {
-                    icons = "/Image/DocumentLogos/gif-logo.png";
+                    icons = "fa-file-image";
                 }
                 else if (extension.Equals(".png"))
                 {
-                    icons = "/Image/DocumentLogos/png-logo.png";
+                    icons = "fa-file-image";
                 }
-                else if (extension.Equals(".jpg")||extension.Equals(".jpeg"))
+                else if (extension.Equals(".jpg") || extension.Equals(".jpeg"))
                 {
-                    icons = "/Image/DocumentLogos/jpg-logo.png";
+                    icons = "fa-file-image";
                 }
                 else
                 {
-                    icons = "/Image/DocumentLogos/txt-logo.png";
+                    icons = "fa-file-alt";
                 }
                 return icons;
             }
