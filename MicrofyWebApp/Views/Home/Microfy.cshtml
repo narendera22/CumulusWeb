@@ -67,7 +67,7 @@
                                 {
                                     foreach (var subdoctag in subdoc.documents)
                                     {
-                                        foreach (var subtags in subdoctag.tags)
+                                        foreach (var subtags in subdoctag.tags.TakeWhile(q => q.Count() <= 1))
                                         {
                                         <li><a href="#"><span>@subtags</span></a></li>
                                         }
