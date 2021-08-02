@@ -6,11 +6,13 @@ $(document).ready(function () {
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
     });
+
     $(".anchor-link").on("click", function () {
         $(".anchor-link").removeClass("active");
+        $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
         $(this).addClass("active");
         // $(this).toggleClass("active");
-       
+
         var htmltemplate;
         if ($(this).siblings().length === 0) {
             $(".anchor-link").siblings().removeClass('show');
@@ -34,56 +36,82 @@ $(document).ready(function () {
         }
     });
 
-    function Getdocuments(phase, subphase) {
-        $.ajax({
-            type: "GET",
-            url: "/Home/GetDocumentRepository",
-            data: { "Phase": phase, "SubPhase": subphase },
-            contentType: "application/json; charset=utf-8",
-            //dataType: 'json',
-            success: function (data) {
-                //window.location.replace(data.newUrl);
-                $("#documentpnl").html(data);
-                $("#newdocdiv").show();
-                $("#dashboard").hide();
-                $("#uploadDocument").hide();
-                $("#documentpnl").show();
 
-            },
-            error: function (data) {
-                console.log(JSON.stringify(data));
-            }
-        });
-    }
 
     $(".subanchor-link").on("click", function () {
-       
+
         $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
         $(this).addClass('active');
         var phase = $(this).parent().parent().find('a.dropdown-toggle').text();
         var subphase = $(this).find('a').text();
         $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
-        var htmltemplate = $('<li><a href="#">' + phase + '</a></li><li class="active"> <span>' + subphase + '</span></li>');
+        var htmltemplate = $('<li><a href="#" onclick="subanchorlink()">' + phase + '</a></li><li class="active"> <span>' + subphase + '</span></li>');
         $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
         Getdocuments(phase, subphase);
 
 
     });
-    $(".homelink").on("click", function () {
-        $("#newdocdiv").hide();
-        $("#dashboard").show();
-        $("#uploadDocument").hide();
-        $("#documentpnl").hide();
-        $(".anchor-link").removeClass("active");
-        $(".anchor-link").siblings().removeClass('show');
-        $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
-        var htmltemplate = $('<li class="active"> <span>Dashboard </span></li></ol>');
-        $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
-    });
+    //$(".homelink").on("click", function () {
+    //    $("#newdocdiv").hide();
+    //    $("#dashboard").show();
+    //    $("#uploadDocument").hide();
+    //    $("#documentpnl").hide();
+    //    $(".anchor-link").removeClass("active");
+    //    $(".anchor-link").siblings().removeClass('show');
+    //    $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
+    //    var htmltemplate = $('<li class="active"> <span>Dashboard </span></li></ol>');
+    //    $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
 
+    //});
 
 });
+function subanchorlink() {
+    var active = GetActivePhase();
+    var phase = active.phase;
+    var subphase = active.subphase;
+    ViewDocuments(phase, subphase);
+}
+function GetActivePhase() {
+    var phase = $(".anchor-link.active").find("a").text();
+    var subphase = $(".subanchor-link.active").find("a").text();
+    if (subphase != "") {
+        phase = $(".subanchor-link.active").parent().parent().find('a.dropdown-toggle').text();
+    }
+    var Active = {
+        phase: phase,
+        subphase: subphase
+    }
+    return Active;
+}
+function Getdocuments(phase, subphase) {
+    $.ajax({
+        type: "GET",
+        url: "/Home/GetDocumentRepository",
+        data: { "Phase": phase, "SubPhase": subphase },
+        contentType: "application/json; charset=utf-8",
+        //dataType: 'json',
+        success: function (data) {
+            //window.location.replace(data.newUrl);
+            $("#documentpnl").html(data);
+            //$("#newdocdiv").show();
+            $("#dashboard").hide();
+            $("#uploadDocument").hide();
+            $("#documentpnl").show();
 
+        },
+        error: function (data) {
+            console.log(JSON.stringify(data));
+        }
+    });
+}
+
+function fn_cancel() {
+    var active = GetActivePhase();
+    var phase = active.phase;
+    var subphase = active.subphase;
+    Getdocuments(phase, subphase);
+    return false;
+}
 
 function DocumentSave(url) {
     //var tags = [];
@@ -97,11 +125,9 @@ function DocumentSave(url) {
     //});
     //tags.push(txttags);
 
-    var phase = $(".anchor-link.active").find("a").text();
-    var subphase = $(".subanchor-link.active").find("a").text();
-    if (subphase != "") {
-        phase = $(".subanchor-link.active").parent().parent().find('a.dropdown-toggle').text();
-    }
+    var active = GetActivePhase();
+    var phase = active.phase;
+    var subphase = active.subphase;
 
 
     var documentDet = {
@@ -121,7 +147,7 @@ function DocumentSave(url) {
             type: 'green',
             onAction: function () {
                 $("#documentpnl").html(data);
-                $("#newdocdiv").show();
+                //$("#newdocdiv").show();
                 $("#dashboard").hide();
                 $("#uploadDocument").hide();
                 $("#documentpnl").show();
@@ -131,12 +157,14 @@ function DocumentSave(url) {
     return false;
 }
 
+
+
+
 function UploadDocument(Documentname) {
-    var phase = $(".anchor-link.active").find("a").text();
-    var subphase = $(".subanchor-link.active").find("a").text();
-    if (subphase != "") {
-        phase = $(".subanchor-link.active").parent().parent().find('a.dropdown-toggle').text();
-    }
+    var active = GetActivePhase();
+    var phase = active.phase;
+    var subphase = active.subphase;
+
     $.ajax({
         type: "GET",
         url: "/Home/GetUploadPartial",
@@ -146,7 +174,7 @@ function UploadDocument(Documentname) {
         success: function (data) {
             //window.location.replace(data.newUrl);
             $("#uploadDocument").html(data);
-            $("#newdocdiv").hide();
+            //$("#newdocdiv").hide();
             $("#dashboard").hide();
             $("#uploadDocument").show();
             $("#documentpnl").hide();
@@ -159,7 +187,7 @@ function UploadDocument(Documentname) {
 }
 
 function UploadNewDocument() {
-    
+
     $.ajax({
         type: "GET",
         url: "/Home/GetNewUploadPartial",
@@ -169,7 +197,7 @@ function UploadNewDocument() {
         success: function (data) {
             //window.location.replace(data.newUrl);
             $("#uploadDocument").html(data);
-            $("#newdocdiv").hide();
+            //$("#newdocdiv").hide();
             $("#dashboard").hide();
             $("#uploadDocument").show();
             $("#documentpnl").hide();
@@ -181,4 +209,24 @@ function UploadNewDocument() {
     });
 }
 
-
+function ViewDocuments(phase, subphase) {
+    if (subphase === null) {
+        var activate = $(".anchor-link");
+        $(activate).each(function () {
+            var value = $(this).find("a").text();
+            if (value === phase) {
+                $(this).click();
+            }
+        });
+    }
+    else {
+        var subactivate = $(".subanchor-link");
+        $(subactivate).each(function () {
+            var value = $(this).find("a").text();
+            if (value === subphase) {
+                $(this).parent().addClass('show');
+                $(this).click();
+            }
+        });
+    }
+}

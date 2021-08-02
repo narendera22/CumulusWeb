@@ -1,16 +1,43 @@
 ﻿@model MicrofyWebApp.Models.DocumentViewModel
 @{
     var template = Model;
-    var DocumentsLen = Model.documentRepository.Count;
-    //var DocumentRepos[];
-    //for (int i=0;i<=DocumentsLen;i++)
-    //{
-    //    if (Model.DocumentRepository[i].Phase == Model.selectedPhase)
-    //    {
-    //        DocumentRepos = Model.DocumentRepository[i];
-    //    }
-    //}
+    //var DocumentsLen = Model.documentRepository.Count;
+    var displaymode = "none";
+    if (Model.UserRole == "Administrator")
+    {
+        displaymode = "block";
+    }
 }
+<style type="text/css">
+
+    i.fas.fa-file-word.fa-3x {
+        color: #2294ff !important;
+    }
+
+    i.fas.fa-file-excel.fa-3x {
+        color: #2cce14 !important;
+    }
+
+    i.fas.fa-file-powerpoint.fa-3x {
+        color: #ff7511 !important;
+    }
+
+    i.fas.fa-file-pdf.fa-3x {
+        color: #f11639 !important;
+    }
+
+    i.fas.fa-file-csv.fa-3x {
+        color: #717171 !important;
+    }
+
+    i.fas.fa-file-image.fa-3x {
+        color: #717171 !important;
+    }
+
+    i.fas.fa-file-alt.fa-3x {
+        color: #717171 !important;
+    }
+</style>
 <div class="row col-md-12 mb-2">
     <div class="col-md-8">
         <nav>
@@ -22,7 +49,7 @@
         </nav>
     </div>
     <div class="col-md-4">
-        <div class="float-right" id="newdocdiv" style="display:none;">
+        <div class="float-right" id="newdocdiv" style="display:@displaymode;">
             <a href="#" class="btn btn-primary" onclick="UploadNewDocument()"><i class="fa fa-upload" aria-hidden="true"></i> New document</a>
         </div>
     </div>
@@ -30,166 +57,192 @@
 <div class="tab-content mt-2" id="nav-tabContent">
     <div class="tab-pane fade show active" id="nav-docrepo" role="tabpanel" aria-labelledby="nav-docrepo-tab">
         <div class="container">
-            <div class="row col-md-12 mb-2">
-                <div class="col-md-9">
-                    <div class="form-check float-right" style="padding-top: 10px;">
-                        <input class="form-check-input" type="checkbox" value="" id="selectAll">
-                        Select all/Deselect all
+            @*<div class="row col-md-12 mb-2">
+                    <div class="col-md-9">
+                        <div class="form-check float-right" style="padding-top: 10px;">
+                            <input class="form-check-input" type="checkbox" value="" id="selectAll">
+                            Select all/Deselect all
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="float-right">
-                        <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download all</a>
+                    <div class="col-md-3">
+                        <div class="float-right">
+                            <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download all</a>
+                        </div>
                     </div>
+                </div>*@
+            @if (Model.documentRepository != null)
+            {
+                foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
+                {
+                    if (p.documents != null)
+                    {
+                        foreach (var doc in p.documents)
+                        {
+            <div class="card mb-3">
+                <div class="card-body docrepo">
+                    <div class="row col-md-12">
+
+                        <div class="form-check" style="display:flex">
+                            @*<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">*@
+                            @*<div class="imglogo">
+                                    <img alt="Logo" src="@doc.filetype" />
+                                </div>*@
+                            <i class="fas @doc.filetype fa-3x"></i>
+                            <p class="doctitle">@doc.name</p>
+                        </div>
+                        @* <div class="col-md-11">
+                                 <p>Skill Mapping - JD Template</p>
+                            </div> *@
+
+                    </div>
+                    <div class="row col-md-12 ml-2" style="padding-top:5px">
+                        @doc.description
+                    </div>
+                    <table class="table ml-2">
+                        <tr class="col-md-12">
+                            <td class="col-md-2">Tags</td>
+                            <td class="col-md-10">
+                                <div class="tagcloud01">
+                                    <ul>
+                                        @foreach (var tags in doc.tags)
+                                                        {
+                                                            if (tags != null)
+                                                            {
+                                        <li><a href="#"><span>@tags</span></a></li>
+
+                                                            }
+                                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="col-md-12">
+                            <td class="col-md-2">Last Modified on</td>
+                            <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    </table>
+                    <div class="float-right" style="display:flex;">
+                        <div>
+
+                            <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.url, phase=p.phase,subphase=string.Empty }) + "'");">
+                                <i class="fa fa-download" aria-hidden="true"></i>  Download
+                            </button>
+                        </div>
+                        <div style="display:@displaymode; padding-left:5px;">
+                            <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
+                                <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table ml-2" style="display: none;">
+                        <tr>
+                            <td>Feedback</td>
+                            <td>
+                                <div class="form-group">
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    <i class="fa fa-save" aria-hidden="true"></i>  Submit
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+
                 </div>
             </div>
-            @foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
-            {
-                if (p.documents != null)
-                {
-                    foreach (var doc in p.documents)
-                    {
-                        <div class="card mb-3">
-                            <div class="card-body docrepo">
-                                <div class="row col-md-12">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <p class="doctitle">@doc.name</p>
-                                    </div>
-                                    @* <div class="col-md-11">
-                                             <p>Skill Mapping - JD Template</p>
-                                        </div> *@
-                                </div>
-                                <div class="row col-md-12 ml-2">
-                                    @doc.description
-                                </div>
-                                <table class="table ml-2">
-                                    <tr class="col-md-12">
-                                        <td class="col-md-2">Tags</td>
-                                        <td class="col-md-10">
-                                            <div class="tagcloud01">
-                                                <ul>
-                                                    @foreach (var tags in doc.tags)
-                                                    {
-                                                        if (tags != null)
-                                                        {
-                                                            <li><a href="#"><span>@tags</span></a></li>
-
-                                                        }
-                                                    }
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="col-md-12">
-                                        <td class="col-md-2">Last Modified on</td>
-                                        <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
-                                    </tr>
-                                </table>
-                                <div class="float-right">
-                                    <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download</a>
-                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
-                                        <i class="fa fa-upload" aria-hidden="true"></i>  Upload
-                                    </button>
-
-                                </div>
-
-                                <table class="table ml-2" style="display: none;">
-                                    <tr>
-                                        <td>Feedback</td>
-                                        <td>
-                                            <div class="form-group">
-                                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary">
-                                                <i class="fa fa-save" aria-hidden="true"></i>  Submit
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </table>
-
-                            </div>
-                        </div>
+                        }
                     }
-                }
-                else if (p.subphase != null)
-                {
-                    foreach (var sub in p.subphase.Where(i => i.name == Model.selectedSubPhases))
+                    else if (p.subphase != null)
                     {
-                        if (sub.documents != null)
+                        foreach (var sub in p.subphase.Where(i => i.name == Model.selectedSubPhases))
                         {
-                            foreach (var subdoc in sub.documents)
+                            if (sub.documents != null)
                             {
-                                <div class="card mb-3">
-                                    <div class="card-body docrepo">
-                                        <div class="row col-md-12">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                <p class="doctitle">@subdoc.name</p>
-                                            </div>
-                                            @* <div class="col-md-11">
-                                                     <p>Skill Mapping - JD Template</p>
-                                                </div> *@
-                                        </div>
-                                        <div class="row col-md-12 ml-2">
-                                            @subdoc.description
-                                        </div>
-                                        <table class="table ml-2">
-                                            <tr class="col-md-12">
-                                                <td class="col-md-2">Tags</td>
-                                                <td class="col-md-10">
-                                                    <div class="tagcloud01">
-                                                        <ul>
-                                                            @foreach (var tags in subdoc.tags)
-                                                            {
-                                                                if (tags != null)
+                                foreach (var subdoc in sub.documents)
+                                {
+            <div class="card mb-3">
+                <div class="card-body docrepo">
+                    <div class="row col-md-12">
+                        <div class="form-check" style="display:flex">
+                            @*<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">*@
+                            @*<div class="imglogo">
+                                    <img alt="Logo" src="@subdoc.filetype" />
+                                </div>*@
+                            <i class="fas @subdoc.filetype fa-3x"></i>
+
+                            <p class="doctitle">@subdoc.name</p>
+                        </div>
+                        @* <div class="col-md-11">
+                                 <p>Skill Mapping - JD Template</p>
+                            </div> *@
+                    </div>
+                    <div class="row col-md-12 ml-2" style="padding-top:5px">
+                        @subdoc.description
+                    </div>
+                    <table class="table ml-2">
+                        <tr class="col-md-12">
+                            <td class="col-md-2">Tags</td>
+                            <td class="col-md-10">
+                                <div class="tagcloud01">
+                                    <ul>
+                                        @foreach (var tags in subdoc.tags)
                                                                 {
-                                                                    <li><a href="#"><span>@tags</span></a></li>
+                                                                    if (tags != null)
+                                                                    {
+                                        <li><a href="#"><span>@tags</span></a></li>
 
+                                                                    }
                                                                 }
-                                                            }
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr class="col-md-12">
-                                                <td class="col-md-2">Last Modified on</td>
-                                                <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
-                                            </tr>
-                                        </table>
-                                        <div class="float-right">
-                                            <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download</a>
-                                            <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
-                                                <i class="fa fa-upload" aria-hidden="true"></i>  Upload
-                                            </button>
-
-                                        </div>
-
-                                        <table class="table ml-2" style="display: none;">
-                                            <tr>
-                                                <td>Feedback</td>
-                                                <td>
-                                                    <div class="form-group">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-primary">
-                                                        <i class="fa fa-save" aria-hidden="true"></i>  Submit
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </table>
-
-                                    </div>
+                                    </ul>
                                 </div>
+                            </td>
+                        </tr>
+                        <tr class="col-md-12">
+                            <td class="col-md-2">Last Modified on</td>
+                            <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    </table>
+                    <div class="float-right" style="display:flex;">
+                        <div>
+                            <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.url,phase=p.phase,subphase=sub.name }) + "'");">
+                                <i class="fa fa-download" aria-hidden="true"></i>  Download
+                            </button>
+                        </div>
+                        <div style="display:@displaymode; padding-left:5px;">
+                            <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
+                                <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <table class="table ml-2" style="display: none;">
+                        <tr>
+                            <td>Feedback</td>
+                            <td>
+                                <div class="form-group">
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    <i class="fa fa-save" aria-hidden="true"></i>  Submit
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+                                }
                             }
                         }
                     }
                 }
             }
+
 
         </div>
     </div>

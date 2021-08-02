@@ -9,6 +9,8 @@ namespace MicrofyWebApp.Models
     {
         public List<phases> phases { get; set; }
         public List<DocumentRepos> documentRepository { get; set; }
+        public string UserRole { get; set; }
+
 
     }
     public class phases

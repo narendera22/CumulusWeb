@@ -64,8 +64,18 @@
                     <input type="file" id="fileToUpload" name="file" required />
                 </div>
             </div>
-            <div class="float-left  m-3">
-                <button type="submit" class="btn btn-primary" id="btnsubmit">Save changes</button>
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="float-left  m-3">
+                        <button type="button" class="btn btn-primary" id="btnCancel" onclick="fn_cancel()">Cancel</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="float-left  m-3">
+                        <button type="submit" class="btn btn-primary" id="btnsubmit">Save changes</button>
+                    </div>
+                </div>
+
             </div>
         </div>
         <div class="alert-messages"></div>
@@ -80,16 +90,17 @@
         $("#upload").submit(function (e) {
             //debugger;
             e.preventDefault();
-            //if (!validations()) {
-            //    return false;
-            //}
+            var active = GetActivePhase();
+            var phase = active.phase;
+            var subphase = active.subphase;
 
             $.ajax({
                 url: "/Home/Upload",
                 type: "POST",
                 data: function () {
                     var data = new FormData();
-                    //data.append("name", jQuery("#txtname").val());
+                    data.append("phase", phase);
+                    data.append("subphase", subphase);
                     data.append("file", jQuery("#fileToUpload").get(0).files[0]);
                     return data;
                 }(),
@@ -98,8 +109,17 @@
                 success: function (response) {
                     //debugger;
                     //console.log(response);
+                    if (response.statuscode) {
+                        DocumentSave(response.url);
+                    }
+                    else {
+                        $.alert({
+                            title: 'Error!!',
+                            content: response.errorMessage,
+                            type: 'red'
+                        });
+                    }
 
-                    DocumentSave(response.url);
                 },
                 error: function (jqXHR, textStatus, errorMessage) {
                     console.log(errorMessage);
