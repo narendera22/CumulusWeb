@@ -15,7 +15,7 @@ $(document).ready(function () {
 
         var htmltemplate;
         if ($(this).siblings().length === 0) {
-            $(".anchor-link").siblings().removeClass('show');
+            //$(".anchor-link").siblings().removeClass('show');
             $(this).addClass('active');
             var thismenu = $(this).find('a').text();
             // var subtabmenu=$('#documentpnl').find('nav').find('#nav-tab').find('a.nav-item.nav-link.active').text();
@@ -39,7 +39,7 @@ $(document).ready(function () {
 
 
     $(".subanchor-link").on("click", function () {
-
+        $(".anchor-link").removeClass("active");
         $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
         $(this).addClass('active');
         var phase = $(this).parent().parent().find('a.dropdown-toggle').text();

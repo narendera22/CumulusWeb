@@ -169,8 +169,8 @@ a:focus {
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    background: #181a5f;
-    color: #fff;
+    background: #ffffff;
+    color: #181a5f;
     transition: all 0.3s;
 }
 
@@ -180,7 +180,7 @@ a:focus {
 
     #sidebar .sidebar-header {
         /* padding: 20px; */
-        background: #181a5f;
+        background: #ffffff;
     }
 
     #sidebar ul.components {
@@ -200,8 +200,8 @@ a:focus {
     }
 
         #sidebar ul li a:hover {
-            color: #7386D5;
-            background: #fff;
+            color: #fff;
+            background: #3498db;
         }
 /* .subanchor-link li.active {
   color: #7386D5;
@@ -258,13 +258,13 @@ a.article:hover {
 }
 
 .collapse.list-unstyled > li.subanchor-link.active > a {
-    color: #181a5f;
-    background-color: #fff;
+    color: #fff;
+    background-color: #181a5f;
 }
 
 div.anchor-link.active {
-    color: #181a5f;
-    background: #fff;
+    color: #fff;
+    background: #181a5f;
 }
 
 /* ---------------------------------------------------

@@ -28,7 +28,7 @@
         <nav id="sidebar">
             <div class="sidebar-header">
                 <div class="imglogo">
-                    <img id="img_logo" alt="Logo" src="~/Image/microfy.png" />
+                    <img id="img_logo" alt="Logo" src="~/Image/microfy.png" onclick="@("window.location.href='" + @Url.Action("Microfy", "Home") + "'");" />
                 </div>
             </div>
             <ul class="list-unstyled">
@@ -48,7 +48,7 @@
                         @if (phase[j].subPhase != null)
                         {
                             var subphase = phase[j].subPhase;
-                            <ul class="collapse list-unstyled" id="@phase[j].name">
+                            <ul class="collapse list-unstyled show" id="@phase[j].name">
                                 @for (int i = 0; i < subphase.Count; i++)
                                 {
                                     <li class="subanchor-link">
@@ -127,7 +127,7 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
-                                <a class="dropdown-item" href="~/Login/ListUser" style="display:@displaymode;"><i class="fas fa-user"></i> Users</a>
+                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");" style="display:@displaymode;"><i class="fas fa-user"></i> Users</a>
                                 <a class="dropdown-item" href="~/Login/Logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
                             </div>
                         </div>
@@ -193,7 +193,7 @@
                                     <div class="col-lg-4 col-sm-6">
                                         <div class="circle-tile ">
                                             <a onclick='ViewDocuments("@p.phase",null)'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="fa fa-file-alt fa-fw fa-3x"></i></div></a>
-                                            <div class="circle-tile-content orange">
+                                            <div class="circle-tile-content" style="background-color: #ff9c00; ">
                                                 <div class="circle-tile-description text-faded"> @p.phase</div>
                                                 <div class="circle-tile-number text-faded ">@p.documents.Count()</div>
                                                 <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase",null)'>More Info<i class="fa fa-chevron-circle-right"></i></a>
@@ -222,7 +222,7 @@
                                         <div class="col-lg-4 col-sm-6">
                                             <div class="circle-tile ">
                                                 <a onclick='ViewDocuments("@p.phase","@sub.name")'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="fa fa-file-alt fa-fw fa-3x"></i></div></a>
-                                                <div class="circle-tile-content orange">
+                                                <div class="circle-tile-content" style="background-color: #ff9c00;">
                                                     <div class="circle-tile-description text-faded"> @sub.name</div>
                                                     <div class="circle-tile-number text-faded ">@sub.documents.Count()</div>
                                                     <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase","@sub.name")'>More Info<i class="fa fa-chevron-circle-right"></i></a>
