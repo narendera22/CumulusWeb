@@ -27,6 +27,7 @@ namespace MicrofyWebApp.Controllers
         private IConfiguration _configuration;
         string Userurl = string.Empty;
         string Usercode = string.Empty;
+        string DefaultPassword = string.Empty;
 
         public LoginController(ILogger<LoginController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
@@ -35,6 +36,7 @@ namespace MicrofyWebApp.Controllers
             _configuration = configuration;
             Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
             Usercode = _configuration.GetValue<string>("Values:UsersCode");
+            DefaultPassword = _configuration.GetValue<string>("Values:DefaultPassword");
         }
 
         public IActionResult Login()
@@ -174,7 +176,7 @@ namespace MicrofyWebApp.Controllers
             UserViewModel userViewModel = new UserViewModel();
             string Requestapi = $"api/UpdateUser/{users.username}?{Usercode}";
             string JWTResponse = (string)_cache.Get("_UserLoginResponse");
-
+            if (users.password == string.Empty || users.password==null) users.password = DefaultPassword;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
@@ -220,7 +222,6 @@ namespace MicrofyWebApp.Controllers
                 {
                     userResponse = Res.Content.ReadAsStringAsync().Result;
                     userViewModel.usersDetails = JsonConvert.DeserializeObject<List<ListUserDetails>>(value: userResponse);
-
                 }
 
             }
