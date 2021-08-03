@@ -51,7 +51,7 @@
 <body>
     <div class="container">
         <div class="imglogo" style="display:flex;">
-            <img id="img_logo" alt="Logo" src="~/Image/microfy.png" />
+            <img id="img_logo" alt="Logo" src="~/Image/microfy.png" onclick="@("window.location.href='" + @Url.Action("Microfy", "Home") + "'");" />
             <div class=" col-lg-8" style="padding-top:40px">
                 <center><h2><b>User Management</b></h2></center>
             </div>
@@ -67,38 +67,44 @@
                     <th>Customer Name</th>
                     <th>IsActive</th>
                     <th data-orderable="false"></th>
+                    <th data-orderable="false"></th>
                     <th data-orderable="false" style="border-bottom:0px;"></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var usr in Model.usersDetails)
                 {
-                    <tr>
+                <tr>
 
-                        <td>@usr.username</td>
-                        <td>@usr.fullName</td>
-                        <td>@usr.userRole</td>
-                        @foreach (var p in usr.projects)
-                        {
-                            <td>@p.projectName.</td>
-                            <td>@p.customerName</td>
-                        }
-                        @if (usr.isActive) { status = "checked"; } else { status = ""; }
-                        <td>
-                            <label class="switch">
-                                <input type="checkbox" @status class="togglecheckbox" data-username="@usr.username">
-                                <span class="slider round"></span>
-                            </label>
-                        </td>
-                        <td style="display:none;">
-                            <input name="pwd" type="password" class="pwd" value="@usr.password"/>
-                        </td>
-                        <td>
-                            <a href="" class="edit" id="editusers">
-                                <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
-                            </a>
-                        </td>
-                    </tr>
+                    <td>@usr.username</td>
+                    <td>@usr.fullName</td>
+                    <td>@usr.userRole</td>
+                    @foreach (var p in usr.projects)
+                    {
+                        <td>@p.projectName.</td>
+                        <td>@p.customerName</td>
+                    }
+                    @if (usr.isActive) { status = "checked"; } else { status = ""; }
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" @status class="togglecheckbox" data-username="@usr.username">
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                    <td style="display:none;">
+                        <input name="pwd" type="password" class="pwd" value="@usr.password" />
+                    </td>
+                    <td>
+                        <a href="" class="edit" title="Edit User">
+                            <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="" class="resetpwd" title="Reset Password">
+                            <span class="glyphicon glyphicon-lock" style="font-size:25px;"></span>
+                        </a>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>
@@ -243,6 +249,64 @@
                 else { $(".switch").find("#statusCheck").prop("checked", false); }
                 $('#password').val(pwd);
                 $("#UserEditPopup").modal("show");
+                return false;
+            });
+            $("a[class='resetpwd']").click(function () {
+                debugger;
+                var userid = $(this).closest("tr").find('td:eq(0)').text();
+                var first_name = $(this).closest("tr").find('td:eq(1)').text();
+                var role = $(this).closest("tr").find('td:eq(2)').text();
+                var cust_name = $(this).closest("tr").find('td:eq(3)').text();
+                var project_name = $(this).closest("tr").find('td:eq(4)').text();
+                var Status = $(this).closest("tr").find('td:eq(5)').find(".switch .togglecheckbox").is(":checked");
+                var pwd = $(this).closest("tr").find('td:eq(6)').find(".pwd").val();
+                var Projects = [{
+                    "ProjectName": project_name,
+                    "CustomerName": cust_name
+                }];
+
+                var UserDetails = {
+                    "username": userid,
+                    "password": "Microfy@123",
+                    "fullName": first_name,
+                    "userRole": role,
+                    "isActive": Status,
+                    "projects": Projects
+                }
+
+        var redirecturl = "/Login/UpdateUser";
+        $.post(redirecturl, UserDetails, function (data) {
+            var title = "";
+            var type = "";
+            var content = "";
+            if (data.statusCode == true) {
+                title = "Success!!";
+                type = "green";
+                content = "Password Reset Successfully";
+            }
+            else {
+                title = "Error!!";
+                type = "red";
+                content = data.responseMessage;
+
+            }
+            $.alert({
+                    title: title,
+                    content: content,
+                    type: type,
+                    onAction: function () {
+                        window.location.href = '@Url.Action("ListUser","Login")';
+                    }
+                });
+        })
+        .fail(function (response) {
+           $.alert({
+                title: 'Error!!',
+                content: response,
+                alignMiddle: true,
+                type: 'red'
+            });
+        });
                 return false;
             });
         });

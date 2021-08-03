@@ -15,7 +15,7 @@ $(document).ready(function () {
 
         var htmltemplate;
         if ($(this).siblings().length === 0) {
-            $(".anchor-link").siblings().removeClass('show');
+            //$(".anchor-link").siblings().removeClass('show');
             $(this).addClass('active');
             var thismenu = $(this).find('a').text();
             // var subtabmenu=$('#documentpnl').find('nav').find('#nav-tab').find('a.nav-item.nav-link.active').text();
