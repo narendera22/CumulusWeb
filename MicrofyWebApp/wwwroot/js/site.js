@@ -39,7 +39,7 @@ $(document).ready(function () {
 
 
     $(".subanchor-link").on("click", function () {
-
+        $(".anchor-link").removeClass("active");
         $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
         $(this).addClass('active');
         var phase = $(this).parent().parent().find('a.dropdown-toggle').text();
