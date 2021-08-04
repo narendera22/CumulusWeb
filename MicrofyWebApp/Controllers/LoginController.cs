@@ -28,6 +28,8 @@ namespace MicrofyWebApp.Controllers
         string Userurl = string.Empty;
         string Usercode = string.Empty;
         string DefaultPassword = string.Empty;
+        string Activityurl = string.Empty;
+        string ActivityCode = string.Empty;
 
         public LoginController(ILogger<LoginController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
@@ -37,6 +39,8 @@ namespace MicrofyWebApp.Controllers
             Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
             Usercode = _configuration.GetValue<string>("Values:UsersCode");
             DefaultPassword = _configuration.GetValue<string>("Values:DefaultPassword");
+            Activityurl = _configuration.GetValue<string>("Values:ActivityBaseUrl");
+            ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
         }
 
         public IActionResult Login()
@@ -69,6 +73,7 @@ namespace MicrofyWebApp.Controllers
                 {
                     userViewModel.StatusCode = result.IsSuccessStatusCode;
                     userViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+
                 }
                 else
                 {
@@ -131,6 +136,7 @@ namespace MicrofyWebApp.Controllers
                         userViewModel = JsonConvert.DeserializeObject<UserViewModel>(LoginUserResponse);
                         _cache.Set("_UserRole", userViewModel.userRole, cacheEntryOptions);
                         userViewModel.StatusCode = Res.IsSuccessStatusCode;
+                        //bool Activity = ActivityTracker("LogIn", $"User {loginDetails.UserId} logged in");
                     }
                     else
                     {
@@ -176,7 +182,10 @@ namespace MicrofyWebApp.Controllers
             UserViewModel userViewModel = new UserViewModel();
             string Requestapi = $"api/UpdateUser/{users.username}?{Usercode}";
             string JWTResponse = (string)_cache.Get("_UserLoginResponse");
-            if (users.password == string.Empty || users.password==null) users.password = DefaultPassword;
+            if (users.password == string.Empty || users.password == null)
+            {
+                users.password = DefaultPassword;
+            }
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
@@ -244,11 +253,34 @@ namespace MicrofyWebApp.Controllers
                 if (Res.IsSuccessStatusCode)
                 {
                     userResponse = Res.Content.ReadAsStringAsync().Result;
+                    //bool Activity = ActivityTracker("DeactivateUser", $"User {(string)_cache.Get("_UserId")} has successfully deactivated {username}");
 
                 }
 
             }
             return true;
         }
+
+        public bool ActivityTracker(string ActivityType, string ActivityDetails)
+        {
+            ActivityTracker activity = new ActivityTracker();
+            activity.UserName = (string)_cache.Get("_UserId");
+            activity.ActivityType = ActivityType;
+            activity.ActivityDetails = ActivityDetails;
+
+            string Requestapi = $"api/TrackActivity?{ActivityCode}";
+            var resp = false;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Activityurl);
+                var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(activity), Encoding.UTF8, "application/json")).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    resp = result.IsSuccessStatusCode;
+                }
+            }
+            return resp;
+        }
+
     }
 }

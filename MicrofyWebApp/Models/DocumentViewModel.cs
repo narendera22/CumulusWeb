@@ -159,4 +159,11 @@ namespace MicrofyWebApp.Models
         public bool isDuplicate { get; set; }
         public string errorMessage { get; set; }
     }
+
+    public class ActivityTracker
+    {
+        public string UserName { get; set; }
+        public string ActivityType { get; set; }
+        public string ActivityDetails { get; set; }
+    }
 }

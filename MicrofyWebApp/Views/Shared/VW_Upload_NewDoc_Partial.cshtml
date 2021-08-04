@@ -54,11 +54,22 @@
 <script type="text/javascript">
     $(function () {
         $("#upload").submit(function (e) {
-            //debugger;
+            debugger;
             e.preventDefault();
             var active = GetActivePhase();
             var phase = active.phase;
             var subphase = active.subphase;
+
+            var file = jQuery("#fileToUpload").get(0).files[0];
+            var reg = /(.*?)\.(txt|doc|docx|xls|xlsx|ppt|pptx|zip|jpg|jpeg|png|gif|pdf|bmp|csv)$/;
+            if (!reg.exec(file.name)) {
+                $.alert({
+                    title: 'Error!!',
+                    content: "Choose valid file",
+                    type: 'red',
+                });
+                return false;
+            }
 
             $.ajax({
                 url: "/Home/Upload",

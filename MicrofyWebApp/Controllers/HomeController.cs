@@ -33,6 +33,8 @@ namespace MicrofyWebApp.Controllers
         string DocCode = string.Empty;
         string AssetCode = string.Empty;
         string PhaseCode = string.Empty;
+        string Activityurl = string.Empty;
+        string ActivityCode = string.Empty;
 
         private IConfiguration _configuration;
 
@@ -48,6 +50,8 @@ namespace MicrofyWebApp.Controllers
             AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
             Phaseurl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
             PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
+            Activityurl = _configuration.GetValue<string>("Values:ActivityBaseUrl");
+            ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
         }
         public async Task<IActionResult> MicrofyAsync()
         {
@@ -90,6 +94,7 @@ namespace MicrofyWebApp.Controllers
                 string SubPhase = "SubPhase=" + subphase;
                 string Requestapi = $"api/Upload?{AssetCode}&{Phase}&{SubPhase}";
                 FileUploadResponse FileUploadReponseValue = new FileUploadResponse();
+                
                 using (var br = new BinaryReader(file.OpenReadStream()))
                 {
                     data = br.ReadBytes((int)file.OpenReadStream().Length);
@@ -102,6 +107,8 @@ namespace MicrofyWebApp.Controllers
                     {
                         FileUploadReponseValue.statuscode = response.IsSuccessStatusCode;
                         FileUploadReponseValue.url = await response.Content.ReadAsStringAsync();
+                        //bool Activity = ActivityTracker("UploadDocument", $"New Document uploaded in url {FileUploadReponseValue.url}");
+
                     }
                     else
                     {
@@ -135,6 +142,10 @@ namespace MicrofyWebApp.Controllers
                     DocModel.selectedPhase = create.Phase;
                     DocModel.selectedSubPhases = create.SubPhase;
                     DocModel.UserRole = (string)_cache.Get("_UserRole");
+
+                    string username = (string)_cache.Get("_UserId");
+                    //bool Activity = ActivityTracker("NewDocument", $"User {username} has posted a new document {Path.GetFileName(create.URL)} at {create.URL}");
+
                 }
             }
 
@@ -218,7 +229,7 @@ namespace MicrofyWebApp.Controllers
             string Phase = "Phase=" + phase;
             string SubPhase = "SubPhase=" + subphase;
             string Requestapi = $"api/Download/{filename}?{AssetCode}&{Phase}&{SubPhase}";
-
+            bool Activity;
             using (var client = new HttpClient())
             {
 
@@ -226,7 +237,7 @@ namespace MicrofyWebApp.Controllers
                 Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
                 HttpResponseMessage file = new HttpResponseMessage();
                 file = response.Result;
-
+                Activity = ActivityTracker("DownloadDocument", $"Downloaded document from url {url}");
                 return File(file.Content.ReadAsByteArrayAsync().Result, "application/octet-stream", filename);
             }
 
@@ -235,6 +246,27 @@ namespace MicrofyWebApp.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public bool ActivityTracker(string ActivityType, string ActivityDetails)
+        {
+            ActivityTracker activity = new ActivityTracker();
+            activity.UserName = (string)_cache.Get("_UserId");
+            activity.ActivityType = ActivityType;
+            activity.ActivityDetails = ActivityDetails;
+
+            string Requestapi = $"api/TrackActivity?{ActivityCode}";
+            var resp = false;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Activityurl);
+                var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(activity), Encoding.UTF8, "application/json")).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    resp = result.IsSuccessStatusCode;
+                }
+            }
+            return resp;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
