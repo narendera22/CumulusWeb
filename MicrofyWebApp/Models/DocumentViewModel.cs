@@ -77,6 +77,7 @@ namespace MicrofyWebApp.Models
             }
 
         }
+        public string filename { get { return Path.GetFileName(url); } }
     }
     public class SubPhase
     {
@@ -138,6 +139,8 @@ namespace MicrofyWebApp.Models
             }
 
         }
+        public string filename { get { return Path.GetFileName(url); } }
+
     }
     public class CreateDocuments
     {

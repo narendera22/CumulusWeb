@@ -35,7 +35,7 @@ namespace MicrofyWebApp.Controllers
         string PhaseCode = string.Empty;
         string Activityurl = string.Empty;
         string ActivityCode = string.Empty;
-
+        string userid = string.Empty;
         private IConfiguration _configuration;
 
 
@@ -52,12 +52,13 @@ namespace MicrofyWebApp.Controllers
             PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
             Activityurl = _configuration.GetValue<string>("Values:ActivityBaseUrl");
             ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
+
         }
         public async Task<IActionResult> MicrofyAsync()
         {
-            string username = (string)_cache.Get("_UserId");
-
-            if (username == null)
+            //string username = (string)_cache.Get("_UserId");
+            userid = HttpContext.Session.GetString("_userId");
+            if (userid == null)
             {
                 return RedirectToAction("Login", "Login");
             }
@@ -78,7 +79,7 @@ namespace MicrofyWebApp.Controllers
                     PhaseModel = JsonConvert.DeserializeObject<PhaseViewModel>(Phase);
                     documentModel = await GetDocumentListAsync();
                     PhaseModel.documentRepository = documentModel.documentRepository;
-                    PhaseModel.UserRole = (string)_cache.Get("_UserRole");
+                    PhaseModel.UserRole = HttpContext.Session.GetString("_UserRole");
 
                 }
             }
@@ -94,7 +95,7 @@ namespace MicrofyWebApp.Controllers
                 string SubPhase = "SubPhase=" + subphase;
                 string Requestapi = $"api/Upload?{AssetCode}&{Phase}&{SubPhase}";
                 FileUploadResponse FileUploadReponseValue = new FileUploadResponse();
-                
+
                 using (var br = new BinaryReader(file.OpenReadStream()))
                 {
                     data = br.ReadBytes((int)file.OpenReadStream().Length);
@@ -141,11 +142,9 @@ namespace MicrofyWebApp.Controllers
                     DocModel = await GetDocumentListAsync();
                     DocModel.selectedPhase = create.Phase;
                     DocModel.selectedSubPhases = create.SubPhase;
-                    DocModel.UserRole = (string)_cache.Get("_UserRole");
-
-                    string username = (string)_cache.Get("_UserId");
-                    //bool Activity = ActivityTracker("NewDocument", $"User {username} has posted a new document {Path.GetFileName(create.URL)} at {create.URL}");
-
+                    DocModel.UserRole = HttpContext.Session.GetString("_UserRole");
+                    userid = HttpContext.Session.GetString("_userId");
+                    //bool Activity = ActivityTracker("NewDocument", $"User {userid} has posted a new document {Path.GetFileName(create.URL)} at {create.URL}");
                 }
             }
 
@@ -164,7 +163,7 @@ namespace MicrofyWebApp.Controllers
 
             DocModel.selectedPhase = Phase;
             DocModel.selectedSubPhases = SubPhase;
-            DocModel.UserRole = (string)_cache.Get("_UserRole");
+            DocModel.UserRole = HttpContext.Session.GetString("_UserRole");
 
             return PartialView("VW_Document_Repos_Partial", DocModel);
         }
@@ -198,7 +197,8 @@ namespace MicrofyWebApp.Controllers
 
                 }
             }
-            if ( DocRepos != null){
+            if (DocRepos != null)
+            {
                 DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
             }
             return DocModel;
@@ -250,8 +250,9 @@ namespace MicrofyWebApp.Controllers
 
         public bool ActivityTracker(string ActivityType, string ActivityDetails)
         {
+            userid = HttpContext.Session.GetString("_userId");
             ActivityTracker activity = new ActivityTracker();
-            activity.UserName = (string)_cache.Get("_UserId");
+            activity.UserName = userid;
             activity.ActivityType = ActivityType;
             activity.ActivityDetails = ActivityDetails;
 

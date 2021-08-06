@@ -30,17 +30,20 @@ namespace MicrofyWebApp.Controllers
         string DefaultPassword = string.Empty;
         string Activityurl = string.Empty;
         string ActivityCode = string.Empty;
+        string userid = string.Empty;
 
         public LoginController(ILogger<LoginController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _logger = logger;
             _cache = memoryCache;
             _configuration = configuration;
+            
             Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
             Usercode = _configuration.GetValue<string>("Values:UsersCode");
             DefaultPassword = _configuration.GetValue<string>("Values:DefaultPassword");
             Activityurl = _configuration.GetValue<string>("Values:ActivityBaseUrl");
             ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
+          
         }
 
         public IActionResult Login()
@@ -49,11 +52,12 @@ namespace MicrofyWebApp.Controllers
         }
         public IActionResult Logout()
         {
-            _cache.Remove("_UserId");
+            //_cache.Remove("_UserId");
             _cache.Remove("_GetUseDetailsList");
             _cache.Remove("_GetDocList");
-            _cache.Remove("_UserRole");
-            _cache.Remove("_UserLoginResponse");
+            HttpContext.Session.Remove("_UserRole");
+            HttpContext.Session.Remove("_AuthKey");
+            HttpContext.Session.Remove("_userId");
             return RedirectToAction("Login");
         }
 
@@ -91,16 +95,17 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<IActionResult> MyProfileAsync()
         {
-            string Userid = (string)_cache.Get("_UserId");
+            string authKey = HttpContext.Session.GetString("_AuthKey");
+            userid = HttpContext.Session.GetString("_userId");
 
-            if (Userid == null)
+            if (userid == null)
             {
                 return RedirectToAction("Login");
             }
             UserViewModel userViewModel = new UserViewModel();
             string userResponse = string.Empty;
-            string JWTResponse= (string)_cache.Get("_UserLoginResponse");
-            userResponse = await GetLoginUserDetails(JWTResponse, Userid); ;
+
+            userResponse = await GetLoginUserDetails(authKey, userid); ;
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(userResponse);
 
             return View(userViewModel);
@@ -127,14 +132,18 @@ namespace MicrofyWebApp.Controllers
 
                         if (UserResponse != null || UserResponse != string.Empty)
                         {
-                            _cache.Set("_UserLoginResponse", UserResponse, cacheEntryOptions);
-                            _cache.Set("_UserId", loginDetails.UserId, cacheEntryOptions);
+                            //_cache.Set("_AuthKey", UserResponse, cacheEntryOptions);
+                            //_cache.Set("_UserId", loginDetails.UserId, cacheEntryOptions);
+                            HttpContext.Session.SetString("_userId", loginDetails.UserId);
+                            HttpContext.Session.SetString("_AuthKey", UserResponse);
                             LoginUserResponse = await GetLoginUserDetails(UserResponse, loginDetails.UserId);
                             _cache.Set("_GetUseDetailsList", LoginUserResponse, cacheEntryOptions);
 
                         }
                         userViewModel = JsonConvert.DeserializeObject<UserViewModel>(LoginUserResponse);
-                        _cache.Set("_UserRole", userViewModel.userRole, cacheEntryOptions);
+                        HttpContext.Session.SetString("_UserRole", userViewModel.userRole);
+
+                        //_cache.Set("_UserRole", userViewModel.userRole, cacheEntryOptions);
                         userViewModel.StatusCode = Res.IsSuccessStatusCode;
                         //bool Activity = ActivityTracker("LogIn", $"User {loginDetails.UserId} logged in");
                     }
@@ -177,11 +186,12 @@ namespace MicrofyWebApp.Controllers
         [HttpPost]
         public async Task<UserViewModel> UpdateUser(UserViewModel users)
         {
+            string authKey = HttpContext.Session.GetString("_AuthKey");
+
             string UserResponse = string.Empty;
             var createDoc = JsonConvert.SerializeObject(users);
             UserViewModel userViewModel = new UserViewModel();
             string Requestapi = $"api/UpdateUser/{users.username}?{Usercode}";
-            string JWTResponse = (string)_cache.Get("_UserLoginResponse");
             if (users.password == string.Empty || users.password == null)
             {
                 users.password = DefaultPassword;
@@ -189,7 +199,7 @@ namespace MicrofyWebApp.Controllers
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
-                client.DefaultRequestHeaders.Add("Authorization", JWTResponse);
+                client.DefaultRequestHeaders.Add("Authorization", authKey);
                 var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(users), Encoding.UTF8, "application/json")).Result;
 
                 if (result.IsSuccessStatusCode)
@@ -209,15 +219,17 @@ namespace MicrofyWebApp.Controllers
 
         public async Task<IActionResult> ListUserAsync()
         {
-            string username = (string)_cache.Get("_UserId");
+            //string username = (string)_cache.Get("_UserId");
 
-            if (username == null)
+            userid = HttpContext.Session.GetString("_userId");
+            string authKey = HttpContext.Session.GetString("_AuthKey");
+
+            if (userid == null)
             {
                 return RedirectToAction("Login");
             }
             UserViewModel userViewModel = new UserViewModel();
             string userResponse = string.Empty;
-            string JWTResponse = (string)_cache.Get("_UserLoginResponse");
             string Requestapi = $"api/GetUserList?{Usercode}";
 
             using (var client = new HttpClient())
@@ -225,7 +237,7 @@ namespace MicrofyWebApp.Controllers
                 client.BaseAddress = new Uri(Userurl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("Authorization", JWTResponse);
+                client.DefaultRequestHeaders.Add("Authorization", authKey);
                 HttpResponseMessage Res = await client.GetAsync(Requestapi);
                 if (Res.IsSuccessStatusCode)
                 {
@@ -238,22 +250,24 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<bool> ActivateDeactivate(string username)
         {
+            string authKey = HttpContext.Session.GetString("_AuthKey");
+
             string userResponse = string.Empty;
             string Requestapi = $"api/Delete/{username}?{Usercode}";
-            string JWTResponse = (string)_cache.Get("_UserLoginResponse");
+            //string JWTResponse = (string)_cache.Get("_UserLoginResponse");
 
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Userurl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("Authorization", JWTResponse);
+                client.DefaultRequestHeaders.Add("Authorization", authKey);
 
                 HttpResponseMessage Res = await client.DeleteAsync(Requestapi);
                 if (Res.IsSuccessStatusCode)
                 {
                     userResponse = Res.Content.ReadAsStringAsync().Result;
-                    //bool Activity = ActivityTracker("DeactivateUser", $"User {(string)_cache.Get("_UserId")} has successfully deactivated {username}");
+                    //bool Activity = ActivityTracker("DeactivateUser", $"User {userid} has successfully deactivated {username}");
 
                 }
 
@@ -263,8 +277,10 @@ namespace MicrofyWebApp.Controllers
 
         public bool ActivityTracker(string ActivityType, string ActivityDetails)
         {
+            userid = HttpContext.Session.GetString("_userId");
+
             ActivityTracker activity = new ActivityTracker();
-            activity.UserName = (string)_cache.Get("_UserId");
+            activity.UserName = userid;
             activity.ActivityType = ActivityType;
             activity.ActivityDetails = ActivityDetails;
 

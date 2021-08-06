@@ -208,7 +208,33 @@ a:focus {
   background: #fff;
 } */
 
+i.fas.fa-file-word.fa-3x {
+    color: #2294ff !important;
+}
 
+i.fas.fa-file-excel.fa-3x {
+    color: #2cce14 !important;
+}
+
+i.fas.fa-file-powerpoint.fa-3x {
+    color: #ff7511 !important;
+}
+
+i.fas.fa-file-pdf.fa-3x {
+    color: #f11639 !important;
+}
+
+i.fas.fa-file-csv.fa-3x {
+    color: #717171 !important;
+}
+
+i.fas.fa-file-image.fa-3x {
+    color: #717171 !important;
+}
+
+i.fas.fa-file-alt.fa-3x {
+    color: #717171 !important;
+}
 
 /* #sidebar ul li.active>a,
 a[aria-expanded="true"] {

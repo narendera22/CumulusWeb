@@ -24,6 +24,13 @@ namespace MicrofyWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSession(options =>
+              {
+                  options.Cookie.Name = "MicrofySession";
+                  options.IdleTimeout = TimeSpan.FromSeconds(8000);
+                  options.Cookie.IsEssential = true;
+              });
+            
             services.AddRazorPages();
             services.AddSingleton<IConfiguration>(Configuration);
         }
@@ -46,6 +53,8 @@ namespace MicrofyWebApp
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthorization();
 
