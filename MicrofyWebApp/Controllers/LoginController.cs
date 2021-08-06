@@ -184,7 +184,7 @@ namespace MicrofyWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<UserViewModel> UpdateUser(UserViewModel users)
+        public async Task<UserViewModel> UpdateUser(UserViewModel users,ActivityTracker activityTracker)
         {
             string authKey = HttpContext.Session.GetString("_AuthKey");
 
@@ -206,6 +206,10 @@ namespace MicrofyWebApp.Controllers
                 {
                     userViewModel.StatusCode = result.IsSuccessStatusCode;
                     userViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+                    if (activityTracker.ActivityType != "ChangePassword")
+                        activityTracker.ActivityDetails = $"User {userid} {activityTracker.ActivityDetails}";
+                    //bool Activity = ActivityTracker(activityTracker.ActivityType,activityTracker.ActivityDetails );
+
                 }
                 else
                 {

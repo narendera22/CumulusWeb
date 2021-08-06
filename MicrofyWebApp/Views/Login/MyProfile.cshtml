@@ -25,8 +25,9 @@
             text-decoration: none;
             background-color: transparent;
         }
+
         .justify-content-lg-center {
-            justify-content: right!important;
+            justify-content: right !important;
         }
     </style>
 </head>
@@ -35,7 +36,7 @@
         <form class="well form-horizontal" action=" " method="post" id="MyProfile_Form">
             <fieldset>
                 <div class="imglogo" style="display:flex;">
-                    <img id="img_logo" alt="Logo" src="~/Image/microfy.png" onclick="@("window.location.href='" + @Url.Action("Microfy", "Home") + "'");"/>
+                    <img id="img_logo" alt="Logo" src="~/Image/microfy.png" onclick="@("window.location.href='" + @Url.Action("Microfy", "Home") + "'");" />
                     <div class=" col-lg-8" style="padding-top:40px">
                         <center><h2><b>My Profile</b></h2></center>
                     </div>
@@ -113,7 +114,7 @@
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                                 <input name="user_password" type="password" id="user_password" title="Password must contain: Minimum 8 characters atleast 1 Alphabet and 1 Number"
-                                       class="form-control" placeholder="Enter Password" required  />
+                                       class="form-control" placeholder="Enter Password" required />
                             </div>
                         </div>
                     </div>
@@ -209,10 +210,15 @@
         "userRole": role,
         "isActive": true,
         "projects": Projects
-    }
+        }
+        var ActivityTracker = {
+            "UserName": userid,
+            "ActivityType": "ChangePassword",
+            "ActivityDetails": "User " + userid+ " has successfully changed password"
+        }
 
         var redirecturl = "/Login/UpdateUser";
-        $.post(redirecturl, UserDetails, function (data) {
+        $.post(redirecturl, { "users": UserDetails, "activityTracker": ActivityTracker}, function (data) {
             var title = "";
             var type = "";
             if (data.statusCode == true) {
