@@ -67,7 +67,7 @@
 
                     </div>
                     <div class="row col-md-12 ml-2" style="padding-top: 5px;">
-                        @Html.Raw(System.Web.HttpUtility.HtmlDecode(doc.description).Replace("<br />", "\r\n"))
+                        @Html.Raw(System.Web.HttpUtility.HtmlDecode(doc.description).Replace("\r\n", "<br />"))
                     </div>
                     <table class="table ml-2">
                         <tr class="col-md-12">
