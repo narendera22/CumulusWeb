@@ -6,6 +6,7 @@
     string tags = string.Empty;
     string filename = string.Empty;
     string filetype = string.Empty;
+    string url = string.Empty;
     @foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
     {
         if (p.documents != null)
@@ -17,6 +18,7 @@
                 tags = string.Join(",", doc.tags);
                 filename = doc.filename;
                 filetype = doc.filetype;
+                url = doc.url;
             }
         }
         else if (p.subphase != null)
@@ -32,6 +34,7 @@
                         tags = string.Join(",", subdoc.tags);
                         filename = subdoc.filename;
                         filetype = subdoc.filetype;
+                        url = subdoc.url;
                     }
                 }
             }
@@ -49,14 +52,20 @@
         <div class="card-body">
             <div class="col-md-6">
                 <div class="form-group" style="margin-bottom: 2px;">
-                    <label>Name</label>
+                    <label><span style="color:red;">*</span>  Name</label>
                     <input type="text" class="form-control" value="@documentname" required onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode==32)" id="txtname" placeholder="Enter Document name">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group" style="margin-bottom: 2px;">
                     <label>Description</label>
-                    <textarea id="txtdescp" class="form-control" name="txtdescp" rows="4" cols="50" placeholder="Enter Description">@description</textarea>
+                    @*<textarea id="txtdescp" class="form-control" name="txtdescp" rows="4" cols="50" placeholder="Enter Description">@description</textarea>*@
+                    @*<input name="htmlcode" id="inp_htmlcode" type="hidden" />*@
+                    <div id="div_editor1" class="richtexteditor" style="width: 960px;margin:0 auto;">
+                    </div>
+                    <div id="div_savedhtml" style="display:none;border:solid 1px gray;margin:10px;padding:10px;">
+                        @Html.Raw(System.Web.HttpUtility.HtmlDecode(description).Replace("\r\n", "<br />"))
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
@@ -68,11 +77,12 @@
             <div class="col-md-6">
                 <div class="mt-3 mb-3" style="display:flex;">
                     <i class="fas @filetype fa-3x"></i>
-                    <a href="#" style="padding-top: 15px"> @filename</a>
+                    <a href="#" style="padding-top: 15px" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = url, phase=Model.selectedPhase,subphase=Model.selectedSubPhases }) + "'");"> @filename</a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mt-3 mb-3">
+                    <label><span style="color:red;">*</span>  Import Document</label><br/>
                     <input type="file" id="fileToUpload" name="file" required />
                 </div>
             </div>
@@ -99,6 +109,15 @@
 
 <script type="text/javascript">
     $(function () {
+        debugger;
+
+        var editor1 = new RichTextEditor(document.getElementById("div_editor1"));
+        //editor1.attachEvent("change", function () {
+        //    document.getElementById("inp_htmlcode").value = editor1.getHTMLCode();
+        //});
+        var div_savedhtml = document.getElementById("div_savedhtml");
+        editor1.setHTMLCode(div_savedhtml.innerHTML);
+
         $("#upload").submit(function (e) {
             //debugger;
             e.preventDefault();
@@ -133,7 +152,7 @@
                     //debugger;
                     //console.log(response);
                     if (response.statuscode) {
-                        DocumentSave(response.url);
+                        DocumentSave(response.url, editor1.getHTMLCode());
                     }
                     else {
                         $.alert({

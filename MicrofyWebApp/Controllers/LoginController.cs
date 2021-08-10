@@ -13,8 +13,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection.Metadata;
 using System.Text;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 

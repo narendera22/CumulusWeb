@@ -113,10 +113,9 @@ function fn_cancel() {
     return false;
 }
 
-function DocumentSave(url) {
+function DocumentSave(url,description) {
     //var tags = [];
     var name = $('#txtname').val();
-    var description = $('#txtdescp').val();
     var tags = $('#txtTags').val().split(",").map(function (value) {
         return value.trim();
     });
