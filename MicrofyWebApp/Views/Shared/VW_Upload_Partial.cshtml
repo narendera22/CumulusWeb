@@ -152,7 +152,8 @@
                     //debugger;
                     //console.log(response);
                     if (response.statuscode) {
-                        DocumentSave(response.url, editor1.getHTMLCode());
+                        var description = htmlEncode(editor1.getHTMLCode());
+                        DocumentSave(response.url, description);
                     }
                     else {
                         $.alert({
