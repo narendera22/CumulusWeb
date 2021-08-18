@@ -8,13 +8,13 @@
         </nav>
         <div class="card-body">
             <div class="col-md-6">
-                <div class="form-group" style="margin-bottom: 2px;">
+                <div class="form-group" style="margin-bottom: 2px; margin-top:2px">
                     <label><span style="color:red;">*</span>  Name</label>
                     <input type="text" class="form-control" required onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode==32)" id="txtname" placeholder="Enter Document name">
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="form-group" style="margin-bottom: 2px;">
+                <div class="form-group" style="margin-bottom: 2px; margin-top: 2px">
                     <label><span style="color:red;">*</span>  Description</label>
                     @*<textarea id="txtdescp" class="form-control" required name="txtdescp" rows="4" cols="50" placeholder="Enter Description"></textarea>*@
                     @*<input name="htmlcode" id="inp_htmlcode" type="hidden" />*@
@@ -23,10 +23,22 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="form-group" style="margin-bottom: 2px;">
+            <div class="col-md-12">
+                <div class="form-group" style="margin-bottom: 2px; margin-top: 2px">
                     <label>Tags</label>
-                    <input type="text" class="form-control" id="txtTags" placeholder="Enter Tags with comma">
+                    <div id="dynamic-field-1" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
+                        <select name="role" style="margin-right:10px;" id="tagsddl-1" class="col-md-2 form-control selectpicker">
+                            <option value="AzureService">Azure Services</option>
+                            <option value="ProcessRelated">Process Related</option>
+                            <option value="ManagementRelated">Management Related</option>
+                        </select>
+                        <input type="text" class="col-md-4 form-control" id="txtkey-1" placeholder="key" onkeydown="addtags($(this))">
+                        <label style="padding-top:5px;">&emsp;:&emsp;</label>
+                        <input type="text" class="col-md-4 form-control" id="txtvalue-1" placeholder="value">
+                        <a href="#" class="delete" title="delete Tags" style="padding:5px; display:none;" onclick="deletetags($(this)); return false;">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
@@ -82,6 +94,30 @@
                 });
                 return false;
             }
+            var keyarr = [];
+            var $tags = $('.dynamic-field');
+            $tags.each(function (key, value) {
+                var tagkey = $("#txtkey-" + (key + 1)).val();
+                if (tagkey != "")
+                    keyarr.push(tagkey);
+            });
+
+            var countuniqkey = keyarr.reduce(function (values, v) {
+                if (!values.set[v]) {
+                    values.set[v] = 1;
+                    values.count++;
+                }
+                return values;
+            }, { set: {}, count: 0 }).count;
+
+            if (keyarr.length > countuniqkey) {
+                $.alert({
+                    title: 'Error!!',
+                    content: "Tag Key should be unique for all type",
+                    type: 'red',
+                });
+                return false;
+            }
             var file = jQuery("#fileToUpload").get(0).files[0];
             var reg = /(.*?)\.(txt|doc|docx|xls|xlsx|ppt|pptx|zip|jpg|jpeg|png|gif|pdf|bmp|csv)$/;
             if (!reg.exec(file.name)) {
@@ -93,6 +129,17 @@
                 return false;
             }
 
+            var tag = [];
+            $tags.each(function (key, value) {
+                var tagkey = $("#txtkey-" + (key + 1)).val();
+                var tagval = $("#txtvalue-" + (key + 1)).val();
+                if (tagkey != "") {
+                    var obj = {};
+                    obj[tagkey] = tagval;
+                    tag.push(obj);
+                }
+            });
+           
             $.ajax({
                 url: "/Home/Upload",
                 type: "POST",
@@ -101,6 +148,7 @@
                     data.append("phase", phase);
                     data.append("subphase", subphase);
                     data.append("file", jQuery("#fileToUpload").get(0).files[0]);
+                    data.append("tags", JSON.stringify(tag));
                     return data;
                 }(),
                 contentType: false,
@@ -121,22 +169,6 @@
             });
         });
     });
-
-    function htmlEncode(s) {
-        var ntable = {
-            "&": "amp",
-            "<": "lt",
-            ">": "gt",
-            "\"": "quot"
-        };
-        s = s.replace(/[&<>"]/g, function (ch) {
-            return "&" + ntable[ch] + ";";
-        })
-        s = s.replace(/[^ -\x7e]/g, function (ch) {
-            return "&#" + ch.charCodeAt(0).toString() + ";";
-        });
-        return s;
-    }
 
 
 </script>

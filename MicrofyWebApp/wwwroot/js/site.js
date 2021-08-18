@@ -2,6 +2,11 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+var className = ".dynamic-field";
+var count = 0;
+var field = "";
+var maxFields = 10;
+
 $(document).ready(function () {
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
@@ -113,21 +118,55 @@ function fn_cancel() {
     return false;
 }
 
-function DocumentSave(url,description) {
-    //var tags = [];
+function DocumentSave(url, description) {
+    var tag = [];
+    var azuretag = [];
+    var processtag = [];
+    var managementtag = [];
+    var tags = {};
+    
     var name = $('#txtname').val();
-    var tags = $('#txtTags').val().split(",").map(function (value) {
-        return value.trim();
-    });
+    //var tags = $('#txtTags').val().split(",").map(function (value) {
+    //    return value.trim();
+    //});
     //$.each(txttags, function (i) {
     //    alert(array[i]);
     //});
     //tags.push(txttags);
 
+    var $tags = $(className);
+    
+    $tags.each(function (key, value) {
+        var tagstype = $("#tagsddl-" + (key + 1)).val()
+        var tagkey = $("#txtkey-" + (key + 1)).val();
+        var tagval = $("#txtvalue-" + (key + 1)).val();
+        if (tagkey != "") {
+            var AzureServices = {};
+            var ProcessRelated = {};
+            var ManagementRelated = {};
+            if (tagstype === "AzureService") {
+                AzureServices[tagkey] = tagval;
+                azuretag.push(AzureServices);
+            }
+            else if (tagstype === "ProcessRelated") {
+                ProcessRelated[tagkey] = tagval;
+                processtag.push(ProcessRelated);
+            }
+            else if (tagstype === "ManagementRelated") {
+                ManagementRelated[tagkey] = tagval;
+                managementtag.push(ManagementRelated);
+            }
+        }
+    });
+    tags = {
+        "AzureService": azuretag,
+        "ProcessRelated": processtag,
+        "ManagementRelated": managementtag
+    };
+    tag.push(tags);
     var active = GetActivePhase();
     var phase = active.phase;
     var subphase = active.subphase;
-
 
     var documentDet = {
         "Phase": phase,
@@ -135,7 +174,7 @@ function DocumentSave(url,description) {
         "DocumentName": name,
         "Description": description,
         "URL": url,
-        "Tags": tags
+        "Tags": tag
     }
     var redirecturl = "/Home/CreateDocument";
     $.post(redirecturl, documentDet, function (data) {
@@ -154,6 +193,21 @@ function DocumentSave(url,description) {
         });
     });
     return false;
+}
+function htmlEncode(s) {
+    var ntable = {
+        "&": "amp",
+        "<": "lt",
+        ">": "gt",
+        "\"": "quot"
+    };
+    s = s.replace(/[&<>"]/g, function (ch) {
+        return "&" + ntable[ch] + ";";
+    })
+    s = s.replace(/[^ -\x7e]/g, function (ch) {
+        return "&#" + ch.charCodeAt(0).toString() + ";";
+    });
+    return s;
 }
 
 
@@ -227,5 +281,55 @@ function ViewDocuments(phase, subphase) {
                 $(this).click();
             }
         });
+    }
+}
+
+function addtags(e) {
+    if (totalFields() != maxFields) {
+        if (e.parent().data('tags') === 'hold') { return false; }
+        else { e.parent().data('tags', 'hold'); }
+        count = totalFields() + 1;
+        field = $("#dynamic-field-1").clone();
+        field.attr("id", "dynamic-field-" + count);
+        field.find("#txtkey-1").attr("id", "txtkey-" + count);
+        field.find("#txtvalue-1").attr("id", "txtvalue-" + count);
+        field.find("#tagsddl-1").val("AzureService");
+        field.find("#tagsddl-1").attr("id", "tagsddl-" + count);
+        field.attr('data-tags', 'add');
+        field.find("input").val("");
+        field.find("a.delete").show();
+        $(className + ":last").after($(field));
+
+    }
+}
+
+function totalFields() {
+    return $(className).length;
+}
+
+function deletetags(e) {
+    e.parent().remove();
+    count = totalFields();
+    if (count <= 1) { $(".dynamic-field").data('tags', 'add'); }
+    else {
+        $(className + ":last").data('tags', 'add')
+    }
+    return false;
+}
+
+function ViewTag() {
+    if (totalFields() != maxFields) {
+        count = totalFields() + 1;
+        field = $("#dynamic-field-1").clone();
+        field.attr("id", "dynamic-field-" + count);
+        field.find("#txtkey-1").attr("id", "txtkey-" + count);
+        field.find("#txtvalue-1").attr("id", "txtvalue-" + count);
+        field.find("#tagsddl-1").val("AzureService");
+        field.find("#tagsddl-1").attr("id", "tagsddl-" + count);
+        field.attr('data-tags', 'add');
+        field.find("input").val("");
+        field.find("a.delete").show();
+        $(className + ":last").after($(field));
+
     }
 }

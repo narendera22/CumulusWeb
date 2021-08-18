@@ -84,7 +84,7 @@ namespace MicrofyWebApp.Controllers
             return View(PhaseModel);
         }
         [HttpPost]
-        public async Task<FileUploadResponse> UploadAsync(string phase, string subphase, IFormFile file)
+        public async Task<FileUploadResponse> UploadAsync(string phase, string subphase, IFormFile file, string tags)
         {
             using (var client = new HttpClient())
             {
@@ -101,6 +101,7 @@ namespace MicrofyWebApp.Controllers
                     MultipartFormDataContent multiContent = new MultipartFormDataContent();
                     multiContent.Add(bytes, "file", file.FileName);
                     client.BaseAddress = new Uri(Asseturl);
+                    client.DefaultRequestHeaders.Add("Tags", tags);
                     var response = client.PostAsync(Requestapi, multiContent).Result;
                     if (response.IsSuccessStatusCode)
                     {
@@ -145,7 +146,6 @@ namespace MicrofyWebApp.Controllers
                     //bool Activity = ActivityTracker("NewDocument", $"User {userid} has posted a new document {Path.GetFileName(create.URL)} at {create.URL}");
                 }
             }
-
             return PartialView("VW_Document_Repos_Partial", DocModel);
 
         }
@@ -195,6 +195,9 @@ namespace MicrofyWebApp.Controllers
 
                 }
             }
+            //var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"document.json"}");
+            //var JSON = System.IO.File.ReadAllText(folderDetails);
+            //DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(JSON);
             if (DocRepos != null)
             {
                 DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);

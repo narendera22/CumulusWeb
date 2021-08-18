@@ -27,7 +27,7 @@ namespace MicrofyWebApp
             services.AddSession(options =>
               {
                   options.Cookie.Name = "MicrofySession";
-                  options.IdleTimeout = TimeSpan.FromSeconds(8000);
+                  options.IdleTimeout = TimeSpan.FromSeconds(1800);
                   options.Cookie.IsEssential = true;
               });
             

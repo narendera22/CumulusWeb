@@ -3,10 +3,12 @@
     var document = Model.documentRepository;
     string documentname = string.Empty;
     string description = string.Empty;
-    string tags = string.Empty;
+    //var tags;
     string filename = string.Empty;
     string filetype = string.Empty;
     string url = string.Empty;
+    var i = 1;
+
     @foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
     {
         if (p.documents != null)
@@ -15,7 +17,8 @@
             {
                 documentname = doc.name;
                 description = doc.description;
-                tags = string.Join(",", doc.tags);
+                // tags = string.Join(",", doc.tags);
+                //tags = doc.tags;
                 filename = doc.filename;
                 filetype = doc.filetype;
                 url = doc.url;
@@ -31,7 +34,8 @@
                     {
                         documentname = subdoc.name;
                         description = subdoc.description;
-                        tags = string.Join(",", subdoc.tags);
+                        //tags = string.Join(",", subdoc.tags);
+                        //tags = subdoc.tags;
                         filename = subdoc.filename;
                         filetype = subdoc.filetype;
                         url = subdoc.url;
@@ -68,22 +72,207 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group" style="margin-bottom: 2px;">
-                    <label>Tags</label>
-                    <input type="text" class="form-control" value="@tags" id="txtTags" placeholder="Enter Tags with comma">
-                </div>
-            </div>
+            @foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
+            {
+                if (p.documents != null)
+                {
+                    foreach (var doc in p.documents.Where(j => j.name == Model.selectedDocName))
+                    {
+
+                        <div class="col-md-12">
+                            <div class="form-group" style="margin-bottom: 2px;">
+                                <label>Tags</label>
+                                @*<input type="text" class="form-control" value="@tags" id="txtTags" placeholder="Enter Tags with comma">*@
+                                @foreach (var tags in doc.tags)
+                                {
+                                    if (tags.AzureService != null)
+                                    {
+                                        foreach (var type in tags.AzureService)
+                                        {
+                                            foreach (var keyval in type)
+                                            {
+                                                <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
+                                                    <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-2 form-control selectpicker">
+                                                        <option value="AzureService" selected>Azure Services</option>
+                                                        <option value="ProcessRelated">Process Related</option>
+                                                        <option value="ManagementRelated">Management Related</option>
+                                                    </select>
+                                                    <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
+                                                    <label style="padding-top:5px;">&emsp;:&emsp;</label>
+                                                    <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
+                                                    <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                </div>
+                                            }
+                                            i = i + 1;
+                                        }
+                                    }
+                                }
+                                @foreach (var tags in doc.tags)
+                                {
+                                    if (tags.ProcessRelated != null)
+                                    {
+                                        foreach (var type in tags.ProcessRelated)
+                                        {
+                                            foreach (var keyval in type)
+                                            {
+                                                <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
+                                                    <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-2 form-control selectpicker">
+                                                        <option value="AzureService">Azure Services</option>
+                                                        <option value="ProcessRelated" selected>Process Related</option>
+                                                        <option value="ManagementRelated">Management Related</option>
+                                                    </select>
+                                                    <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
+                                                    <label style="padding-top:5px;">&emsp;:&emsp;</label>
+                                                    <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
+                                                    <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                </div>
+                                            }
+                                            i = i + 1;
+                                        }
+                                    }
+                                }
+                                @foreach (var tags in doc.tags)
+                                {
+                                    if (tags.ManagementRelated != null)
+                                    {
+                                        foreach (var type in tags.ManagementRelated)
+                                        {
+                                            foreach (var keyval in type)
+                                            {
+                                                <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
+                                                    <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-2 form-control selectpicker">
+                                                        <option value="AzureService">Azure Services</option>
+                                                        <option value="ProcessRelated">Process Related</option>
+                                                        <option value="ManagementRelated" selected>Management Related</option>
+                                                    </select>
+                                                    <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
+                                                    <label style="padding-top:5px;">&emsp;:&emsp;</label>
+                                                    <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
+                                                    <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                </div>
+                                            }
+                                            i = i + 1;
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                    }
+                }
+                else if (p.subphase != null)
+                {
+                    foreach (var sub in p.subphase.Where(i => i.name == Model.selectedSubPhases))
+                    {
+                        if (sub.documents != null)
+                        {
+                            foreach (var subdoc in sub.documents.Where(j => j.name == Model.selectedDocName))
+                            {
+                                <div class="col-md-12">
+                                    <div class="form-group" style="margin-bottom: 2px;">
+                                        <label>Tags</label>
+                                        @*<input type="text" class="form-control" value="@tags" id="txtTags" placeholder="Enter Tags with comma">*@
+                                        @foreach (var tags in subdoc.tags)
+                                        {
+                                            if (tags.AzureService != null)
+                                            {
+                                                foreach (var type in tags.AzureService)
+                                                {
+                                                    foreach (var keyval in type)
+                                                    {
+                                                        <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
+                                                            <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-2 form-control selectpicker">
+                                                                <option value="AzureService" selected>Azure Services</option>
+                                                                <option value="ProcessRelated">Process Related</option>
+                                                                <option value="ManagementRelated">Management Related</option>
+                                                            </select>
+                                                            <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
+                                                            <label style="padding-top:5px;">&emsp;:&emsp;</label>
+                                                            <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
+                                                            <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                    i = i + 1;
+                                                }
+                                            }
+                                        }
+                                        @foreach (var tags in subdoc.tags)
+                                        {
+                                            if (tags.ProcessRelated != null)
+                                            {
+                                                foreach (var type in tags.ProcessRelated)
+                                                {
+                                                    foreach (var keyval in type)
+                                                    {
+                                                        <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
+                                                            <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-2 form-control selectpicker">
+                                                                <option value="AzureService">Azure Services</option>
+                                                                <option value="ProcessRelated" selected>Process Related</option>
+                                                                <option value="ManagementRelated">Management Related</option>
+                                                            </select>
+                                                            <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
+                                                            <label style="padding-top:5px;">&emsp;:&emsp;</label>
+                                                            <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
+                                                            <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                    i = i + 1;
+                                                }
+                                            }
+                                        }
+                                        @foreach (var tags in subdoc.tags)
+                                        {
+                                            if (tags.ManagementRelated != null)
+                                            {
+                                                foreach (var type in tags.ManagementRelated)
+                                                {
+                                                    foreach (var keyval in type)
+                                                    {
+                                                        <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
+                                                            <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-2 form-control selectpicker">
+                                                                <option value="AzureService">Azure Services</option>
+                                                                <option value="ProcessRelated">Process Related</option>
+                                                                <option value="ManagementRelated" selected>Management Related</option>
+                                                            </select>
+                                                            <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
+                                                            <label style="padding-top:5px;">&emsp;:&emsp;</label>
+                                                            <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
+                                                            <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                    i = i + 1;
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                }
+            }
             <div class="col-md-6">
                 <div class="mt-3 mb-3" style="display:flex;">
                     <i class="fas @filetype fa-3x"></i>
-                    <a href="#" style="padding-top: 15px" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = url, phase=Model.selectedPhase,subphase=Model.selectedSubPhases }) + "'");"> @filename</a>
+                    <a href="#" id="fileurl" style="padding-top: 15px; padding-left:5px;" data-url="@url" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = url, phase = Model.selectedPhase, subphase = Model.selectedSubPhases }) + "'");"> @filename</a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mt-3 mb-3">
-                    <label><span style="color:red;">*</span>  Import Document</label><br/>
-                    <input type="file" id="fileToUpload" name="file" required />
+                    <label><span style="color:red;">*</span>  Import Document</label><br />
+                    <input type="file" id="fileToUpload" name="file" />
                 </div>
             </div>
             <div class="col-md-12">
@@ -110,31 +299,80 @@
 <script type="text/javascript">
     $(function () {
         debugger;
-
+        $("#dynamic-field-1").find("a").hide();
+        ViewTag();
         var editor1 = new RichTextEditor(document.getElementById("div_editor1"));
-        //editor1.attachEvent("change", function () {
-        //    document.getElementById("inp_htmlcode").value = editor1.getHTMLCode();
-        //});
+
         var div_savedhtml = document.getElementById("div_savedhtml");
         editor1.setHTMLCode(div_savedhtml.innerHTML);
 
         $("#upload").submit(function (e) {
-            //debugger;
+            debugger;
             e.preventDefault();
-            var active = GetActivePhase();
-            var phase = active.phase;
-            var subphase = active.subphase;
 
-            var file = jQuery("#fileToUpload").get(0).files[0];
-            var reg = /(.*?)\.(txt|doc|docx|xls|xlsx|ppt|pptx|zip|jpg|jpeg|png|gif|pdf|bmp|csv)$/;
-            if (!reg.exec(file.name)) {
+            var keyarr = [];
+            var $tags = $('.dynamic-field');
+            $tags.each(function (key, value) {
+                var tagkey = $("#txtkey-" + (key + 1)).val();
+                if (tagkey != "")
+                    keyarr.push(tagkey);
+            });
+            
+            var countuniqkey = keyarr.reduce(function (values, v) {
+                if (!values.set[v]) {
+                    values.set[v] = 1;
+                    values.count++;
+                }
+                return values;
+            }, { set: {}, count: 0 }).count;
+
+            if (keyarr.length > countuniqkey) {
                 $.alert({
                     title: 'Error!!',
-                    content: "Choose valid file",
+                    content: "Tag Key should be unique for all type",
                     type: 'red',
                 });
                 return false;
             }
+
+            var description = htmlEncode(editor1.getHTMLCode());
+            var active = GetActivePhase();
+            var phase = active.phase;
+            var subphase = active.subphase;
+            if ($("#fileToUpload").val() == "" && $('#fileurl').data('url') == "") {
+                $.alert({
+                    title: 'Error!!',
+                    content: "Choose document file to upload",
+                    type: 'red',
+                });
+                return false;
+            }
+            else if ($('#fileurl').data('url') != "" && $("#fileToUpload").val() == "") {
+                DocumentSave($('#fileurl').data('url'), description);
+                return false;
+            }
+            if ($("#fileToUpload").val() != "") {
+                var file = jQuery("#fileToUpload").get(0).files[0];
+                var reg = /(.*?)\.(txt|doc|docx|xls|xlsx|ppt|pptx|zip|jpg|jpeg|png|gif|pdf|bmp|csv)$/;
+                if (!reg.exec(file.name)) {
+                    $.alert({
+                        title: 'Error!!',
+                        content: "Choose valid file",
+                        type: 'red',
+                    });
+                    return false;
+                }
+            }
+            var tag = [];
+            $tags.each(function (key, value) {
+                var tagkey = $("#txtkey-" + (key + 1)).val();
+                var tagval = $("#txtvalue-" + (key + 1)).val();
+                if (tagkey != "") {
+                    var obj = {};
+                    obj[tagkey] = tagval;
+                    tag.push(obj);
+                }
+            });
 
             $.ajax({
                 url: "/Home/Upload",
@@ -144,6 +382,7 @@
                     data.append("phase", phase);
                     data.append("subphase", subphase);
                     data.append("file", jQuery("#fileToUpload").get(0).files[0]);
+                    data.append("tags", JSON.stringify(tag));
                     return data;
                 }(),
                 contentType: false,
@@ -152,7 +391,7 @@
                     //debugger;
                     //console.log(response);
                     if (response.statuscode) {
-                        var description = htmlEncode(editor1.getHTMLCode());
+
                         DocumentSave(response.url, description);
                     }
                     else {
