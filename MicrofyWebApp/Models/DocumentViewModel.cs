@@ -28,7 +28,7 @@ namespace MicrofyWebApp.Models
         public string description { get; set; }
         public string url { get; set; }
         //public List<Dictionary<string,string>> Tags { get; set; }
-        public List<string> tags { get; set; }
+        public List<Tag> tags { get; set; }
         public string filetype
         {
             get
@@ -77,6 +77,7 @@ namespace MicrofyWebApp.Models
             }
 
         }
+        public string filename { get { return Path.GetFileName(url); } }
     }
     public class SubPhase
     {
@@ -89,7 +90,7 @@ namespace MicrofyWebApp.Models
         public string description { get; set; }
         public string url { get; set; }
         //public List<Dictionary<string,string>> Tags { get; set; }
-        public List<string> tags { get; set; }
+        public List<Tag> tags { get; set; }
         public string filetype
         {
             get
@@ -138,6 +139,8 @@ namespace MicrofyWebApp.Models
             }
 
         }
+        public string filename { get { return Path.GetFileName(url); } }
+
     }
     public class CreateDocuments
     {
@@ -146,8 +149,8 @@ namespace MicrofyWebApp.Models
         public string DocumentName { get; set; }
         public string Description { get; set; }
         public string URL { get; set; }
-        //public List<Dictionary<string,string>> Tags { get; set; }
-        public List<string> Tags { get; set; }
+        public List<Tag> Tags { get; set; }
+        //public List<string> Tags { get; set; }
 
 
     }
@@ -158,5 +161,18 @@ namespace MicrofyWebApp.Models
         public string url { get; set; }
         public bool isDuplicate { get; set; }
         public string errorMessage { get; set; }
+    }
+
+    public class ActivityTracker
+    {
+        public string UserName { get; set; }
+        public string ActivityType { get; set; }
+        public string ActivityDetails { get; set; }
+    }
+    public class Tag
+    {
+        public List<Dictionary<string, string>> AzureService { get; set; }
+        public List<Dictionary<string, string>> ProcessRelated { get; set; }
+        public List<Dictionary<string, string>> ManagementRelated { get; set; }
     }
 }

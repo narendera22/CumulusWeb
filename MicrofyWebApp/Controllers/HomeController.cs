@@ -13,8 +13,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection.Metadata;
 using System.Text;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
@@ -33,7 +31,9 @@ namespace MicrofyWebApp.Controllers
         string DocCode = string.Empty;
         string AssetCode = string.Empty;
         string PhaseCode = string.Empty;
-
+        string Activityurl = string.Empty;
+        string ActivityCode = string.Empty;
+        string userid = string.Empty;
         private IConfiguration _configuration;
 
 
@@ -48,12 +48,15 @@ namespace MicrofyWebApp.Controllers
             AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
             Phaseurl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
             PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
+            Activityurl = _configuration.GetValue<string>("Values:ActivityBaseUrl");
+            ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
+
         }
         public async Task<IActionResult> MicrofyAsync()
         {
-            string username = (string)_cache.Get("_UserId");
-
-            if (username == null)
+            //string username = (string)_cache.Get("_UserId");
+            userid = HttpContext.Session.GetString("_userId");
+            if (userid == null)
             {
                 return RedirectToAction("Login", "Login");
             }
@@ -74,14 +77,14 @@ namespace MicrofyWebApp.Controllers
                     PhaseModel = JsonConvert.DeserializeObject<PhaseViewModel>(Phase);
                     documentModel = await GetDocumentListAsync();
                     PhaseModel.documentRepository = documentModel.documentRepository;
-                    PhaseModel.UserRole = (string)_cache.Get("_UserRole");
+                    PhaseModel.UserRole = HttpContext.Session.GetString("_UserRole");
 
                 }
             }
             return View(PhaseModel);
         }
         [HttpPost]
-        public async Task<FileUploadResponse> UploadAsync(string phase, string subphase, IFormFile file)
+        public async Task<FileUploadResponse> UploadAsync(string phase, string subphase, IFormFile file, string tags)
         {
             using (var client = new HttpClient())
             {
@@ -90,6 +93,7 @@ namespace MicrofyWebApp.Controllers
                 string SubPhase = "SubPhase=" + subphase;
                 string Requestapi = $"api/Upload?{AssetCode}&{Phase}&{SubPhase}";
                 FileUploadResponse FileUploadReponseValue = new FileUploadResponse();
+
                 using (var br = new BinaryReader(file.OpenReadStream()))
                 {
                     data = br.ReadBytes((int)file.OpenReadStream().Length);
@@ -97,11 +101,14 @@ namespace MicrofyWebApp.Controllers
                     MultipartFormDataContent multiContent = new MultipartFormDataContent();
                     multiContent.Add(bytes, "file", file.FileName);
                     client.BaseAddress = new Uri(Asseturl);
+                    client.DefaultRequestHeaders.Add("Tags", tags);
                     var response = client.PostAsync(Requestapi, multiContent).Result;
                     if (response.IsSuccessStatusCode)
                     {
                         FileUploadReponseValue.statuscode = response.IsSuccessStatusCode;
                         FileUploadReponseValue.url = await response.Content.ReadAsStringAsync();
+                        //bool Activity = ActivityTracker("UploadDocument", $"New Document uploaded in url {FileUploadReponseValue.url}");
+
                     }
                     else
                     {
@@ -134,10 +141,11 @@ namespace MicrofyWebApp.Controllers
                     DocModel = await GetDocumentListAsync();
                     DocModel.selectedPhase = create.Phase;
                     DocModel.selectedSubPhases = create.SubPhase;
-                    DocModel.UserRole = (string)_cache.Get("_UserRole");
+                    DocModel.UserRole = HttpContext.Session.GetString("_UserRole");
+                    userid = HttpContext.Session.GetString("_userId");
+                    //bool Activity = ActivityTracker("NewDocument", $"User {userid} has posted a new document {Path.GetFileName(create.URL)} at {create.URL}");
                 }
             }
-
             return PartialView("VW_Document_Repos_Partial", DocModel);
 
         }
@@ -153,7 +161,7 @@ namespace MicrofyWebApp.Controllers
 
             DocModel.selectedPhase = Phase;
             DocModel.selectedSubPhases = SubPhase;
-            DocModel.UserRole = (string)_cache.Get("_UserRole");
+            DocModel.UserRole = HttpContext.Session.GetString("_UserRole");
 
             return PartialView("VW_Document_Repos_Partial", DocModel);
         }
@@ -187,7 +195,11 @@ namespace MicrofyWebApp.Controllers
 
                 }
             }
-            if ( DocRepos != null){
+            //var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"document.json"}");
+            //var JSON = System.IO.File.ReadAllText(folderDetails);
+            //DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(JSON);
+            if (DocRepos != null)
+            {
                 DocModel = JsonConvert.DeserializeObject<DocumentViewModel>(value: DocRepos);
             }
             return DocModel;
@@ -218,7 +230,7 @@ namespace MicrofyWebApp.Controllers
             string Phase = "Phase=" + phase;
             string SubPhase = "SubPhase=" + subphase;
             string Requestapi = $"api/Download/{filename}?{AssetCode}&{Phase}&{SubPhase}";
-
+            bool Activity;
             using (var client = new HttpClient())
             {
 
@@ -226,7 +238,7 @@ namespace MicrofyWebApp.Controllers
                 Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
                 HttpResponseMessage file = new HttpResponseMessage();
                 file = response.Result;
-
+                Activity = ActivityTracker("DownloadDocument", $"Downloaded document from url {url}");
                 return File(file.Content.ReadAsByteArrayAsync().Result, "application/octet-stream", filename);
             }
 
@@ -235,6 +247,28 @@ namespace MicrofyWebApp.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public bool ActivityTracker(string ActivityType, string ActivityDetails)
+        {
+            userid = HttpContext.Session.GetString("_userId");
+            ActivityTracker activity = new ActivityTracker();
+            activity.UserName = userid;
+            activity.ActivityType = ActivityType;
+            activity.ActivityDetails = ActivityDetails;
+
+            string Requestapi = $"api/TrackActivity?{ActivityCode}";
+            var resp = false;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Activityurl);
+                var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(activity), Encoding.UTF8, "application/json")).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    resp = result.IsSuccessStatusCode;
+                }
+            }
+            return resp;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

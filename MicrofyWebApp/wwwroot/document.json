@@ -1,122 +1,100 @@
-{
+﻿{
+  "_id": "ObjectId(\"60e344501f06510764d1aa38\")",
   "documentRepository": [
     {
       "phase": "Pre - Plan",
       "documents": [
         {
           "name": "SOW Template - COTS Containerization",
-          "description": "SOW Template for a project involving migration of COTS application into Azure Kubernetes service. The project scope includes - setup of AKS infrastructure, Containerization of COTS product and deploy inside AKS cluster and setting up of DevOps pipeline. ",
-          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/SOW_Template.docx",
+          "description": "<p>SOWTemplate for a project involving migration of COTS application into Azure Kubernetes service. The project scope includes - setup of AKS infrastructure, Containerization of COTS product and deploy inside AKS cluster and setting up of DevOps pipeline. \n\nSOWTemplate for a project involving migration of COTS application into Azure Kubernetes service. The project scope includes - setup of AKS infrastructure, Containerization of COTS product and deploy inside AKS cluster and setting up of DevOps pipeline.</p>\r\n<p><br /></p>\r\n<p><span style=\"color: rgb(65, 65, 65); font-size: 14px\">SOWTemplate for a project involving migration of COTS application into Azure Kubernetes service. The project scope includes - setup of AKS infrastructure, Containerization of COTS product and deploy inside AKS cluster and setting up of DevOps pipeline. SOWTemplate for a project involving migration of COTS application into Azure Kubernetes service. The project scope includes - setup of AKS infrastructure, Containerization of COTS product and deploy inside AKS cluster and setting up of DevOps pipeline.</span><br /></p>",
+          "url": "https://microfystorage.blob.core.windows.net/documents/Pre%20-%20Plan/Sampletextdoc_2021-07-20%2520%25282%2529.txt",
           "tags": [
-            "SOW",
-            "Word",
-            "Container",
-            "Kubernetes",
-            "JBOSS",
-            "Twistlock",
-            "Sumologic",
-            "AppDynamics",
-            "Mongo",
-            "Memcached",
-            "AKS",
-            "APIM",
-            "VM",
-            "Application Gateway"
+            {
+              "AzureService": [
+                { "Technology": "Container" },
+                { "Technology": "Kubernetes" },
+                { "Technology": "Twistlock" },
+                { "Technology": "Memcached" },
+                { "Service": "AKS" },
+                { "Service": "APIM" },
+                { "Service": "Application Gateway" }
+              ]
+            },
+            {
+              "ProcessRelated": [
+                { "Type": "SOW" },
+                { "Document Type": "Word" }
+              ]
+            },
+            { "ManagementRelated": [] }
           ]
         },
         {
           "name": "Skill Mapping",
-          "description": "Job Description of different roles required for a AKS migration project.",
-          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/Roles JD.xlsx",
+          "description": "Job description of different roles required for a AKS migration project.",
+          "url": "https://microfystorage.blob.core.windows.net/documents/Pre%20-%20Plan/Roles%2520JD.xlsx",
           "tags": [
-            "Job Description",
-            "Excel",
-            "Solution Architect",
-            "Kubernetes Engineer",
-            "DevOps Engineer"
+            { "AzureService": [] },
+            {
+              "ProcessRelated": [
+                { "Type": "Job description" },
+                { "Document Type": "Excel" }
+              ]
+            },
+            { "ManagementRelated": [] }
           ]
+
         },
         {
           "name": "High Level Plan",
-          "description": "High level planning is focusing on establishing your project's requirements and deliverables, and then tracking them over time. It's different from a detailed project plan, consisting of all the tasks needed to complete the project. One could say that a high level plan is a manager's view of the project.",
-          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/High Level Plan.xlsx",
+          "description": "A risk management plan is a document that a project manager prepares to foresee risks, estimate impacts, and define responses to risks. It also contains a risk assessment matrix. A risk is an uncertain event or condition that, if it occurs, has a positive or negative effect on a project's objectives.",
+          "url": "https://microfystorage.blob.core.windows.net/documents/Pre%20-%20Plan/High%2520Level%2520Plan.xlsx",
           "tags": [
-            "High Level Plan"
-          ]
-        },
-        {
-          "name": "Risk & Mitigations",
-          "description": "A risk management plan is a document that a project manager prepares to foresee risks, estimate impacts, and define responses to risks. It also contains a risk assessment matrix. A risk is an uncertain event or condition that, if it occurs, has a positive or negative effect on a project's objectives.,",
-          "url": "",
-          "tags": [
-            "Risk",
-            "Mitigation"
+            { "AzureService": [] },
+            {
+              "ProcessRelated": [
+                { "Type": "Risk" },
+                { "Plan": "Mitigation" },
+                { "Plan": "HLP" }
+              ]
+            },
+            { "ManagementRelated": [] }
           ]
         },
         {
           "name": "RACI",
           "description": "An Indicative RACI matrix to defining the responsibilities of three stakeholders - Customer, Microsoft and TCS. This is currently focused for the AKS migration project involving COTS application containerization and migration.",
-          "url": "https://microfystorage.blob.core.windows.net/documentrepository/01.Preinitiation/RACI.xlsx",
+          "url": "https://microfystorage.blob.core.windows.net/documents/Pre%20-%20Plan/RACI.xlsx",
           "tags": [
-            "RACI Matrix",
-            "Excel"
+            { "AzureService": [] },
+            {
+              "ProcessRelated": [
+                { "Type": "RACI Matrix" },
+                { "Document Type": "Excel" }
+              ]
+            },
+            { "ManagementRelated": [] }
           ]
         }
+
       ]
     },
     {
       "phase": "Plan",
-      "Documents": [
-        {
-          "name": "List of Activities",
-          "description": "List of Activities",
-          "url": "",
-          "tags": [
-            "Activity List"
-          ]
-        },
+      "documents": [
         {
           "name": "Design Discovery questionnaire",
           "description": "Design and Discovery Questionnaire",
-          "url": "https://microfystorage.blob.core.windows.net/documentrepository/02.Initiation/Design Discovery - Questionnaire - Detail.docx",
+          "url": "https://microfystorage.blob.core.windows.net/documents/Plan/Design%2520Discovery%2520-%2520Questionnaire%2520-%2520Detail.docx",
           "tags": [
-            "Design",
-            "Discovery"
-          ]
-        },
-        {
-          "name": "Recommendation of Tools / Framework",
-          "description": "Tools and Framework recommendation",
-          "url": "",
-          "tags": [
-            "Tools",
-            "Framework"
-          ]
-        },
-        {
-          "name": "Patterns",
-          "description": "Patterns",
-          "url": "",
-          "tags": [
-            "Tools",
-            "Framework"
-          ]
-        },
-        {
-          "name": "Reference  Architecture",
-          "description": "Reference  Architecture",
-          "url": "",
-          "tags": [
-            "Architecture",
-            "Reference"
-          ]
-        },
-        {
-          "name": "Guidelines",
-          "description": "Guidelines",
-          "url": "",
-          "tags": [
-            "Guidelines"
+            { "AzureService": [] },
+            {
+              "ProcessRelated": [
+                { "Type": "Design" },
+                { "Type": "Discovery" }
+              ]
+            },
+            { "ManagementRelated": [] }
           ]
         }
       ]
@@ -125,11 +103,19 @@
       "phase": "Ready",
       "documents": [
         {
-          "name": "Design Documents",
-          "description": "Design Documents",
-          "url": "",
+          "name": "DevOps Design Process",
+          "description": "The DevOps process flow is all about agility and automation. Each phase in the DevOps lifecycle focuses on closing the loop between development and operations and driving production through continuous development, integration, testing, monitoring and feedback, delivery, and deployment",
+          "url": "https://microfystorage.blob.core.windows.net/documents/Ready/AzureModernizationPracticeDevopsProcessDocument.docx",
           "tags": [
-            "Activity List"
+            { "AzureService": [] },
+            {
+              "ProcessRelated": [
+                { "Type": "DevOps" },
+                { "Process": "CICD" },
+                { "Process": "Infrastructure-as-code" }
+              ]
+            },
+            { "ManagementRelated": [] }
           ]
         }
       ]
@@ -139,188 +125,84 @@
       "subphase": [
         {
           "name": "Refactor Application",
-          "Documents": [
+          "documents": [
             {
-              "name": "Migration Approach - WAS to Tomcat",
-              "description": "Migration Approach - WAS to Tomcat",
-              "url": "",
+              "name": "Nginix Ingress Controller Setup",
+              "description": "This is the documentation for the NGINX Ingress Controller. It is built around the Kubernetes Ingress resource, using a ConfigMap to store the NGINX configuration.",
+              "url": "https://microfystorage.blob.core.windows.net/documents/Adopt/Refactor%20Application/Nginx-Ingress-Controller%2520Setup.docx",
               "tags": [
-                "Migration",
-                "WAS to Tomcat"
-              ]
-            },
-            {
-              "name": "Migration Approach - Weblogic to Tomcat",
-              "description": "Migration Approach - Weblogic to Tomcat",
-              "url": "",
-              "tags": [
-                "Migration",
-                "Weblogic to Tomcat"
-              ]
-            },
-            {
-              "name": "Migration Approach - .Net Framework to CoreDotNet",
-              "description": "Migration Approach - .Net Framework to CoreDotNet",
-              "url": "",
-              "tags": [
-                "Migration",
-                ".Net Framework to CoreDotNet"
-              ]
-            },
-            {
-              "name": "Refactor - Keyvault Intergation",
-              "description": "Refactor - Keyvault Intergation",
-              "url": "",
-              "tags": [
-                "Refactor",
-                "Key Vault"
-              ]
-            },
-            {
-              "name": "Refactor - Property Externalization",
-              "description": "Refactor - Property Externalization",
-              "url": "",
-              "tags": [
-                "Refactor",
-                "Property Externalization"
-              ]
-            },
-            {
-              "name": "Refactor - AD Integration",
-              "description": "Refactor - AD Integration",
-              "url": "",
-              "tags": [
-                "Refactor",
-                "AD"
+                { "AzureService": [] },
+                {
+                  "ProcessRelated": [
+                    { "Type": "Nginix" },
+                    { "Type": "Ingress Controller" },
+                    { "Type": "Estio" }
+                  ]
+                },
+                { "ManagementRelated": [] }
               ]
             }
           ]
         },
         {
           "name": "Containerize & Orchestrate",
-          "Documents": [
+          "documents": [
             {
-              "name": "Basic Building blocks - Java - Tomcat",
-              "description": "Basic Building blocks - Java - Tomcat",
-              "url": "",
+              "name": "AKS Setup Process Template",
+              "description": "Deploy and manage containerized applications more easily with a fully managed Kubernetes service from azure. Azure Kubernetes Service (AKS) offers serverless Kubernetes, an integrated continuous integration and continuous delivery (CI/CD) experience and enterprise-grade security and governance. Unite your development and operations teams on a single platform to rapidly build, deliver and scale applications with confidence.",
+              "url": "https://microfystorage.blob.core.windows.net/documents/Adopt/Containerize%20/AKS_Cluster_Sizing%2520v1.4.xlsx",
               "tags": [
-                "Building Blocks",
-                "Java Tomcat"
-              ]
-            },
-            {
-              "name": "Basic Building blocks - .Net Core -IIS - Template for Docker file",
-              "description": "Basic Building blocks - .Net Core -IIS - Template for Docker file",
-              "url": "",
-              "tags": [
-                "Building Blocks",
-                ".Net Core",
-                "Dockerfile"
-              ]
-            },
-            {
-              "name": "Basic Building blocks - .Net Core -IIS - Helm Chart",
-              "description": "Basic Building blocks - .Net Core -IIS - Helm Chart",
-              "url": "",
-              "tags": [
-                "Building Blocks",
-                ".Net Core",
-                "Helm Chart"
-              ]
-            },
-            {
-              "name": "Basic Building blocks - .Net Core -IIS - One pager Steps",
-              "description": "Basic Building blocks - .Net Core -IIS - One pager Steps",
-              "url": "",
-              "tags": [
-                "Building Blocks",
-                ".Net Core",
-                "One pager Steps"
-              ]
-            },
-            {
-              "name": "Lessons Learnt",
-              "description": "Lessons Learnt",
-              "url": "",
-              "tags": [
-                "Lessons Learnt"
-              ]
-            },
-            {
-              "name": "Troubleshooting Guidelines",
-              "description": "Troubleshooting Guidelines",
-              "url": "",
-              "tags": [
-                "Troubleshooting Guidelines"
+                {
+                  "Azure Service": [
+                    { "Service": "AKS" }
+                  ]
+                },
+                {
+                  "ProcessRelated": [
+                    { "Process": "CICD" }
+                  ]
+                },
+                { "ManagementRelated": [] }
               ]
             }
           ]
         },
         {
           "name": "Automation",
-          "Documents": [
+          "documents": [
             {
               "name": "Terraform Template for AKS setup",
-              "description": "Terraform Template for AKS setup",
-              "url": "",
+              "description": "Manages a Managed Kubernetes Cluster (also known as AKS / Azure Kubernetes Service)",
+              "url": "https://microfystorage.blob.core.windows.net/documents/Adopt/Automation/Terraform%20for%20AKS.txt",
               "tags": [
-                "Terraform",
-                "AKS"
-              ]
-            },
-            {
-              "name": "Azure DevOps CI",
-              "description": "Azure DevOps CI",
-              "url": "",
-              "tags": [
-                "Azure DevOps CI"
-              ]
-            },
-            {
-              "name": "Azure DevOps CD",
-              "description": "Azure DevOps CD",
-              "url": "",
-              "tags": [
-                "Azure DevOps CD"
-              ]
-            },
-            {
-              "name": "Azure DevOps dashboard",
-              "description": "Azure DevOps dashboard [Debkanta]",
-              "url": "",
-              "tags": [
-                "Dashboard",
-                "DevOps"
-              ]
-            },
-            {
-              "name": "DevOps Runbook",
-              "description": "DevOps Runbook",
-              "url": "",
-              "tags": [
-                "Runbook",
-                "DevOps"
+                {
+                  "AzureService": [
+                    { "Service": "AKS" },
+                    { "Service": "Terraform" }
+                  ]
+                },
+                { "ProcessRelated": [] },
+                { "ManagementRelated": [] }
               ]
             }
           ]
         },
         {
           "name": "Validate",
-          "Documents": [
+          "documents": [
             {
               "name": "Testing Strategy",
-              "description": "Testing Strategy",
-              "url": "",
+              "description": "Containerization is a method of isolating and encapsulating an application in its own operating environment which is lighter, faster, and quicker to start than a virtual machine. Virtualization, the original concept of containers, is distinctly different from and an improvement over the virtual machine. Also known as virtualization, this method operates en suite with automated testing methods like Selenium, Webdriver, and Cucumber to many advantages which we will look at here. With these methods a code change can go through the entire development pipeline in seconds with zero human intervention! Let’s see how such an ideal strategy is composed.\n\nContainers enable developers to package an application with all its dependencies in an operating environment which is independent of any local machine settings that might affect behavior in testing. A Linux developer is then free from concern about variations on a tester’s local  machine, and enjoys absolute portability of deployment.",
+              "url": "https://microfystorage.blob.core.windows.net/documents/Adopt/Validate/Testing%2520Strategy.docx",
               "tags": [
-                "Testing Strategy"
-              ]
-            },
-            {
-              "name": "Testing tools",
-              "description": "Testing tools",
-              "url": "",
-              "tags": [
-                "Testing tools"
+                { "AzureService": [] },
+                {
+                  "ProcessRelated": [
+                    { "Type": "Containerization" },
+                    { "Type": "Testing" }
+                  ]
+                },
+                { "ManagementRelated": [] }
               ]
             }
           ]
@@ -329,5 +211,5 @@
     }
   ],
   "Uploaded By": "System",
-  "Uploaded On": "7/7/2021 4:08:12 PM"
+  "Uploaded On": "8/10/2021 1:44:58 PM"
 }
