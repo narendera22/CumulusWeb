@@ -13,13 +13,13 @@
                     <input type="text" class="form-control" required onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode==32)" id="txtname" placeholder="Enter Document name">
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="form-group" style="margin-bottom: 2px; margin-top: 2px">
                     <label><span style="color:red;">*</span>  Description</label>
-                    @*<textarea id="txtdescp" class="form-control" required name="txtdescp" rows="4" cols="50" placeholder="Enter Description"></textarea>*@
+                    <textarea id="txtdescp" class="form-control" required name="txtdescp" rows="4" cols="50" placeholder="Enter Description"></textarea>
                     @*<input name="htmlcode" id="inp_htmlcode" type="hidden" />*@
-                    <div id="div_editor1" class="richtexteditor" style="width: 960px;margin:0 auto;">
-                    </div>
+                    @*<div id="div_editor1" class="richtexteditor" style="width: 960px;margin:0 auto;">
+                    </div>*@
                 </div>
             </div>
 
@@ -71,7 +71,7 @@
 
 <script type="text/javascript">
     $(function () {
-        var editor1 = new RichTextEditor(document.getElementById("div_editor1"));
+        //var editor1 = new RichTextEditor(document.getElementById("div_editor1"));
         //editor1.attachEvent("change", function () {
         //    document.getElementById("inp_htmlcode").value = editor1.getHTMLCode();
         //});
@@ -82,18 +82,21 @@
         $("#upload").submit(function (e) {
             debugger;
             e.preventDefault();
+
+            var arrayOfRows = document.getElementById("txtdescp").value.split("\n");
+
             var active = GetActivePhase();
             var phase = active.phase;
             var subphase = active.subphase;
-            var description = editor1.getHTMLCode();
-            if (description == "") {
-                $.alert({
-                    title: 'Error!!',
-                    content: "Enter document description",
-                    type: 'red',
-                });
-                return false;
-            }
+            //var description = editor1.getHTMLCode();
+            //if (description == "") {
+            //    $.alert({
+            //        title: 'Error!!',
+            //        content: "Enter document description",
+            //        type: 'red',
+            //    });
+            //    return false;
+            //}
             var keyarr = [];
             var $tags = $('.dynamic-field');
             $tags.each(function (key, value) {
@@ -156,7 +159,8 @@
                 success: function (response) {
                     //debugger;
                     //console.log(response);
-                    var description = htmlEncode(editor1.getHTMLCode());
+                    //var description = htmlEncode(editor1.getHTMLCode());
+                    var description = htmlEncode(arrayOfRows.join('<br />'));
                     DocumentSave(response.url, description);
                 },
                 error: function (jqXHR, textStatus, errorMessage) {

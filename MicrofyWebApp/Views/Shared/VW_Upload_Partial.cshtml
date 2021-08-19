@@ -60,16 +60,16 @@
                     <input type="text" class="form-control" value="@documentname" required onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode==32)" id="txtname" placeholder="Enter Document name">
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="form-group" style="margin-bottom: 2px;">
                     <label>Description</label>
-                    @*<textarea id="txtdescp" class="form-control" name="txtdescp" rows="4" cols="50" placeholder="Enter Description">@description</textarea>*@
+                    <textarea id="txtdescp" class="form-control" name="txtdescp" rows="4" cols="50" placeholder="Enter Description">@Html.Raw(System.Web.HttpUtility.HtmlDecode(description).Replace("<br />","\r\n" ))</textarea>
                     @*<input name="htmlcode" id="inp_htmlcode" type="hidden" />*@
-                    <div id="div_editor1" class="richtexteditor" style="width: 960px;margin:0 auto;">
+                    @*<div id="div_editor1" class="richtexteditor" style="width: 960px;margin:0 auto;">
                     </div>
                     <div id="div_savedhtml" style="display:none;border:solid 1px gray;margin:10px;padding:10px;">
                         @Html.Raw(System.Web.HttpUtility.HtmlDecode(description).Replace("\r\n", "<br />"))
-                    </div>
+                    </div>*@
                 </div>
             </div>
             @foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
@@ -301,10 +301,10 @@
         debugger;
         $("#dynamic-field-1").find("a").hide();
         ViewTag();
-        var editor1 = new RichTextEditor(document.getElementById("div_editor1"));
+        //var editor1 = new RichTextEditor(document.getElementById("div_editor1"));
 
-        var div_savedhtml = document.getElementById("div_savedhtml");
-        editor1.setHTMLCode(div_savedhtml.innerHTML);
+        //var div_savedhtml = document.getElementById("div_savedhtml");
+        //editor1.setHTMLCode(div_savedhtml.innerHTML);
 
         $("#upload").submit(function (e) {
             debugger;
@@ -334,8 +334,9 @@
                 });
                 return false;
             }
-
-            var description = htmlEncode(editor1.getHTMLCode());
+            var arrayOfRows = document.getElementById("txtdescp").value.split("\n");
+            /*var description = htmlEncode(editor1.getHTMLCode());*/
+            var description = htmlEncode(arrayOfRows.join('<br />'));
             var active = GetActivePhase();
             var phase = active.phase;
             var subphase = active.subphase;
