@@ -124,7 +124,7 @@ function DocumentSave(url, description) {
     var processtag = [];
     var managementtag = [];
     var tags = {};
-    
+
     var name = $('#txtname').val();
     //var tags = $('#txtTags').val().split(",").map(function (value) {
     //    return value.trim();
@@ -135,25 +135,25 @@ function DocumentSave(url, description) {
     //tags.push(txttags);
 
     var $tags = $(className);
-    
+
     $tags.each(function (key, value) {
         var tagstype = $("#tagsddl-" + (key + 1)).val()
-        var tagkey = $("#txtkey-" + (key + 1)).val();
+        //var tagkey = $("#txtkey-" + (key + 1)).val();
         var tagval = $("#txtvalue-" + (key + 1)).val();
-        if (tagkey != "") {
+        if (tagval != "") {
             var AzureServices = {};
             var ProcessRelated = {};
             var ManagementRelated = {};
             if (tagstype === "AzureService") {
-                AzureServices[tagkey] = tagval;
+                AzureServices[tagstype + (key + 1)] = tagval;
                 azuretag.push(AzureServices);
             }
             else if (tagstype === "ProcessRelated") {
-                ProcessRelated[tagkey] = tagval;
+                ProcessRelated[tagstype + (key + 1)] = tagval;
                 processtag.push(ProcessRelated);
             }
             else if (tagstype === "ManagementRelated") {
-                ManagementRelated[tagkey] = tagval;
+                ManagementRelated[tagstype + (key + 1)] = tagval;
                 managementtag.push(ManagementRelated);
             }
         }
@@ -291,7 +291,7 @@ function addtags(e) {
         count = totalFields() + 1;
         field = $("#dynamic-field-1").clone();
         field.attr("id", "dynamic-field-" + count);
-        field.find("#txtkey-1").attr("id", "txtkey-" + count);
+        //field.find("#txtkey-1").attr("id", "txtkey-" + count);
         field.find("#txtvalue-1").attr("id", "txtvalue-" + count);
         field.find("#tagsddl-1").val("AzureService");
         field.find("#tagsddl-1").attr("id", "tagsddl-" + count);
@@ -322,7 +322,7 @@ function ViewTag() {
         count = totalFields() + 1;
         field = $("#dynamic-field-1").clone();
         field.attr("id", "dynamic-field-" + count);
-        field.find("#txtkey-1").attr("id", "txtkey-" + count);
+        //field.find("#txtkey-1").attr("id", "txtkey-" + count);
         field.find("#txtvalue-1").attr("id", "txtvalue-" + count);
         field.find("#tagsddl-1").val("AzureService");
         field.find("#tagsddl-1").attr("id", "tagsddl-" + count);

@@ -19,7 +19,7 @@
                     <textarea id="txtdescp" class="form-control" required name="txtdescp" rows="4" cols="50" placeholder="Enter Description"></textarea>
                     @*<input name="htmlcode" id="inp_htmlcode" type="hidden" />*@
                     @*<div id="div_editor1" class="richtexteditor" style="width: 960px;margin:0 auto;">
-                    </div>*@
+                        </div>*@
                 </div>
             </div>
 
@@ -29,12 +29,12 @@
                     <div id="dynamic-field-1" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
                         <select name="role" style="margin-right:10px;" id="tagsddl-1" class="col-md-3 form-control selectpicker">
                             <option value="AzureService">Azure Services</option>
-                            <option value="ProcessRelated">Process Related</option>
-                            <option value="ManagementRelated">Management Related</option>
+                            <option value="ProcessRelated">Process</option>
+                            @*<option value="ManagementRelated">Management Related</option>*@
                         </select>
-                        <input type="text" class="col-md-4 form-control" id="txtkey-1" placeholder="key" onkeydown="addtags($(this))">
-                        <label style="padding-top:5px;">&emsp;:&emsp;</label>
-                        <input type="text" class="col-md-4 form-control" id="txtvalue-1" placeholder="value">
+                        @*<input type="text" class="col-md-4 form-control" id="txtkey-1" placeholder="key" onkeydown="addtags($(this))">
+                            <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                        <input type="text" class="col-md-4 form-control" id="txtvalue-1" placeholder="value" onkeydown="addtags($(this))">
                         <a href="#" class="delete" title="delete Tags" style="padding:5px; display:none;" onclick="deletetags($(this)); return false;">
                             <i class="fas fa-trash-alt"></i>
                         </a>
@@ -99,28 +99,28 @@
             //}
             var keyarr = [];
             var $tags = $('.dynamic-field');
-            $tags.each(function (key, value) {
-                var tagkey = $("#txtkey-" + (key + 1)).val();
-                if (tagkey != "")
-                    keyarr.push(tagkey);
-            });
+            //$tags.each(function (key, value) {
+            //    var tagkey = $("#txtkey-" + (key + 1)).val();
+            //    if (tagkey != "")
+            //        keyarr.push(tagkey);
+            //});
 
-            var countuniqkey = keyarr.reduce(function (values, v) {
-                if (!values.set[v]) {
-                    values.set[v] = 1;
-                    values.count++;
-                }
-                return values;
-            }, { set: {}, count: 0 }).count;
+            //var countuniqkey = keyarr.reduce(function (values, v) {
+            //    if (!values.set[v]) {
+            //        values.set[v] = 1;
+            //        values.count++;
+            //    }
+            //    return values;
+            //}, { set: {}, count: 0 }).count;
 
-            if (keyarr.length > countuniqkey) {
-                $.alert({
-                    title: 'Error!!',
-                    content: "Tag Key should be unique for all type",
-                    type: 'red',
-                });
-                return false;
-            }
+            //if (keyarr.length > countuniqkey) {
+            //    $.alert({
+            //        title: 'Error!!',
+            //        content: "Tag Key should be unique for all type",
+            //        type: 'red',
+            //    });
+            //    return false;
+            //}
             var file = jQuery("#fileToUpload").get(0).files[0];
             var reg = /(.*?)\.(txt|doc|docx|xls|xlsx|ppt|pptx|zip|jpg|jpeg|png|gif|pdf|bmp|csv)$/;
             if (!reg.exec(file.name)) {
@@ -134,15 +134,15 @@
 
             var tag = [];
             $tags.each(function (key, value) {
-                var tagkey = $("#txtkey-" + (key + 1)).val();
+                var tagkey = $("#tagsddl-" + (key + 1)).val();
                 var tagval = $("#txtvalue-" + (key + 1)).val();
-                if (tagkey != "") {
+                if (tagval != "") {
                     var obj = {};
-                    obj[tagkey] = tagval;
+                    obj[tagkey + (key + 1)] = tagval;
                     tag.push(obj);
                 }
             });
-           
+
             $.ajax({
                 url: "/Home/Upload",
                 type: "POST",
