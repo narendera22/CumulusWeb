@@ -98,8 +98,11 @@
                                                         @*<option value="ManagementRelated">Management Related</option>*@
                                                     </select>
                                                     @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
-                                                        <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                            <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
                                                     <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value" onkeydown="addtags($(this))">
+                                                    <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
+                                                        <i class="fas fa-plus"></i>
+                                                    </a>
                                                     <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </a>
@@ -124,8 +127,11 @@
                                                         @*<option value="ManagementRelated">Management Related</option>*@
                                                     </select>
                                                     @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
-                                                        <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                            <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
                                                     <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value" onkeydown="addtags($(this))">
+                                                    <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
+                                                        <i class="fas fa-plus"></i>
+                                                    </a>
                                                     <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </a>
@@ -136,31 +142,31 @@
                                     }
                                 }
                                 @*@foreach (var tags in doc.tags)
-                                {
-                                    if (tags.ManagementRelated != null)
-                                    {
-                                        foreach (var type in tags.ManagementRelated)
-                                        {
-                                            foreach (var keyval in type)
-                                            {
-                                                <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
-                                                    <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-3 form-control selectpicker">
-                                                        <option value="AzureService">Azure Services</option>
-                                                        <option value="ProcessRelated">Process</option>
-                                                        <option value="ManagementRelated" selected>Management Related</option>
-                                                    </select>
-                                                    <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
-                                                        <label style="padding-top:5px;">&emsp;:&emsp;</label>
-                                                    <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
-                                                    <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </a>
-                                                </div>
-                                            }
-                                            i = i + 1;
-                                        }
-                                    }
-                                }*@
+        {
+            if (tags.ManagementRelated != null)
+            {
+                foreach (var type in tags.ManagementRelated)
+                {
+                    foreach (var keyval in type)
+                    {
+                        <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
+                            <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-3 form-control selectpicker">
+                                <option value="AzureService">Azure Services</option>
+                                <option value="ProcessRelated">Process</option>
+                                <option value="ManagementRelated" selected>Management Related</option>
+                            </select>
+                            <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
+                                <label style="padding-top:5px;">&emsp;:&emsp;</label>
+                            <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
+                            <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    }
+                    i = i + 1;
+                }
+            }
+        }*@
                             </div>
                         </div>
 
@@ -195,6 +201,9 @@
                                                             @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
                                                                 <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
                                                             <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value" onkeydown="addtags($(this))">
+                                                            <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
+                                                                <i class="fas fa-plus"></i>
+                                                            </a>
                                                             <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
                                                                 <i class="fas fa-trash-alt"></i>
                                                             </a>
@@ -221,6 +230,9 @@
                                                             @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
                                                                 <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
                                                             <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value" onkeydown="addtags($(this))">
+                                                            <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
+                                                                <i class="fas fa-plus"></i>
+                                                            </a>
                                                             <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
                                                                 <i class="fas fa-trash-alt"></i>
                                                             </a>
@@ -299,7 +311,7 @@
 <script type="text/javascript">
     $(function () {
         debugger;
-        $("#dynamic-field-1").find("a").hide();
+        $("#dynamic-field-1").find("a.delete").hide();
         ViewTag();
         //var editor1 = new RichTextEditor(document.getElementById("div_editor1"));
 

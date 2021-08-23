@@ -219,6 +219,17 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_Upload_Partial", DocModel);
 
         }
+
+        public async Task<ActionResult> SearchDocumentPartial()
+        {
+            DocumentViewModel DocModel = new DocumentViewModel();
+
+            DocModel = await GetDocumentListAsync();
+
+
+            return PartialView("VW_Search_Partial", DocModel);
+
+        }
         public ActionResult GetNewUploadPartial()
         {
             return PartialView("VW_Upload_NewDoc_Partial");

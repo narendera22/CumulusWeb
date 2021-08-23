@@ -101,6 +101,7 @@ function Getdocuments(phase, subphase) {
             //$("#newdocdiv").show();
             $("#dashboard").hide();
             $("#uploadDocument").hide();
+            $("#SerachDocument").hide();
             $("#documentpnl").show();
 
         },
@@ -188,6 +189,7 @@ function DocumentSave(url, description) {
                 //$("#newdocdiv").show();
                 $("#dashboard").hide();
                 $("#uploadDocument").hide();
+                $("#SerachDocument").hide();
                 $("#documentpnl").show();
             }
         });
@@ -228,6 +230,7 @@ function UploadDocument(Documentname) {
             //window.location.replace(data.newUrl);
             $("#uploadDocument").html(data);
             //$("#newdocdiv").hide();
+            $("#SerachDocument").hide();
             $("#dashboard").hide();
             $("#uploadDocument").show();
             $("#documentpnl").hide();
@@ -251,8 +254,38 @@ function UploadNewDocument() {
             //window.location.replace(data.newUrl);
             $("#uploadDocument").html(data);
             //$("#newdocdiv").hide();
+            $("#SerachDocument").hide();
             $("#dashboard").hide();
             $("#uploadDocument").show();
+            $("#documentpnl").hide();
+
+        },
+        error: function (data) {
+            console.log(JSON.stringify(data));
+        }
+    });
+}
+
+function SearchDocument() {
+    $(".anchor-link").removeClass("active");
+    $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
+    $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
+    htmltemplate ="";
+    $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
+
+    $.ajax({
+        type: "GET",
+        url: "/Home/SearchDocumentPartial",
+        data: {},
+        contentType: "application/json; charset=utf-8",
+        //dataType: 'json',
+        success: function (data) {
+            //window.location.replace(data.newUrl);
+            $("#SerachDocument").html(data);
+            //$("#newdocdiv").hide();
+            $("#SerachDocument").show();
+            $("#dashboard").hide();
+            $("#uploadDocument").hide();
             $("#documentpnl").hide();
 
         },

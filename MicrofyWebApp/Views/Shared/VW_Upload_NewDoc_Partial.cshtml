@@ -24,21 +24,24 @@
             </div>
 
             <div class="col-md-12">
-                <div class="form-group" style="margin-bottom: 2px; margin-top: 2px">
-                    <label>Tags</label>
-                    <div id="dynamic-field-1" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
-                        <select name="role" style="margin-right:10px;" id="tagsddl-1" class="col-md-3 form-control selectpicker">
-                            <option value="AzureService">Azure Services</option>
-                            <option value="ProcessRelated">Process</option>
-                            @*<option value="ManagementRelated">Management Related</option>*@
-                        </select>
-                        @*<input type="text" class="col-md-4 form-control" id="txtkey-1" placeholder="key" onkeydown="addtags($(this))">
-                            <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
-                        <input type="text" class="col-md-4 form-control" id="txtvalue-1" placeholder="value" onkeydown="addtags($(this))">
-                        <a href="#" class="delete" title="delete Tags" style="padding:5px; display:none;" onclick="deletetags($(this)); return false;">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-                    </div>
+                <div class="form-group" style="margin-bottom: 2px; margin-top: 2px;">
+                        <label>Tags</label>
+                        <div id="dynamic-field-1" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
+                            <select name="role" style="margin-right:10px;" id="tagsddl-1" class="col-md-3 form-control selectpicker">
+                                <option value="AzureService">Azure Services</option>
+                                <option value="ProcessRelated">Process</option>
+                                @*<option value="ManagementRelated">Management Related</option>*@
+                            </select>
+                            @*<input type="text" class="col-md-4 form-control" id="txtkey-1" placeholder="key" onkeydown="addtags($(this))">
+        <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                            <input type="text" class="col-md-4 form-control" id="txtvalue-1" placeholder="value" onkeydown="addtags($(this))">
+                            <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a href="#" class="delete" title="delete Tags" style="padding:5px; display:none;" onclick="deletetags($(this)); return false;">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
                 </div>
             </div>
             <div class="col-md-6">
