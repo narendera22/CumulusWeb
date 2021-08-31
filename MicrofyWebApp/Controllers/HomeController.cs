@@ -34,6 +34,8 @@ namespace MicrofyWebApp.Controllers
         string Activityurl = string.Empty;
         string ActivityCode = string.Empty;
         string userid = string.Empty;
+        string Searchurl = string.Empty;
+        string SearchCode = string.Empty;
         private IConfiguration _configuration;
 
 
@@ -50,6 +52,8 @@ namespace MicrofyWebApp.Controllers
             PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
             Activityurl = _configuration.GetValue<string>("Values:ActivityBaseUrl");
             ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
+            Searchurl = _configuration.GetValue<string>("Values:SearchBaseUrl");
+            SearchCode = _configuration.GetValue<string>("Values:SearchCode");
 
         }
         public async Task<IActionResult> MicrofyAsync()
@@ -220,13 +224,25 @@ namespace MicrofyWebApp.Controllers
 
         }
 
-        public async Task<ActionResult> SearchDocumentPartial()
+        public async Task<ActionResult> SearchDocumentPartial(string Search)
         {
             DocumentViewModel DocModel = new DocumentViewModel();
+            string serachResp = string.Empty;
+            string searchRes = "search=" + Search;
+            string Requestapi = $"api/Search?{SearchCode}&{searchRes}";
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Searchurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    serachResp = Res.Content.ReadAsStringAsync().Result;
+                }
+            }
 
-            DocModel = await GetDocumentListAsync();
-
-
+            DocModel.searchResults = JsonConvert.DeserializeObject<List<SearchResult>>(value: serachResp);
             return PartialView("VW_Search_Partial", DocModel);
 
         }

@@ -13,6 +13,7 @@ $(document).ready(function () {
     });
 
     $(".anchor-link").on("click", function () {
+        $('#search').val("");
         $(".anchor-link").removeClass("active");
         $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
         $(this).addClass("active");
@@ -44,6 +45,7 @@ $(document).ready(function () {
 
 
     $(".subanchor-link").on("click", function () {
+        $('#search').val("");
         $(".anchor-link").removeClass("active");
         $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
         $(this).addClass('active');
@@ -270,13 +272,13 @@ function SearchDocument() {
     $(".anchor-link").removeClass("active");
     $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
     $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
-    htmltemplate ="";
+    htmltemplate = "";
     $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
-
+    var search = $('#search').val();
     $.ajax({
         type: "GET",
         url: "/Home/SearchDocumentPartial",
-        data: {},
+        data: { "Search": search },
         contentType: "application/json; charset=utf-8",
         //dataType: 'json',
         success: function (data) {
@@ -366,3 +368,55 @@ function ViewTag() {
 
     }
 }
+
+function highlight(text) {
+    var highlightRe = /<span class="highlight">(.*?)<\/span>/g,
+        highlightHtml = '<span class="highlight">$1</span>';
+    var inputText = document.getElementsByClassName("doctitle");
+    $(inputText).each(function (key, value) {
+        var txt = value.innerHTML.replace(highlightRe, '$1');
+        if (text !== '') {
+            txt = txt.replace(new RegExp('(' + text + ')', 'gi'), highlightHtml);
+        }
+        $(this).html(txt);
+    });
+    var docdescrip = document.getElementsByClassName("docdescrip");
+    $(docdescrip).each(function (key, value) {
+        var txt = value.innerHTML.replace(highlightRe, '$1');
+        if (text !== '') {
+            txt = txt.replace(new RegExp('(' + text + ')', 'gi'), highlightHtml);
+        }
+        var res = wordWrap(txt.trim(), 100);
+        $(this).html(res);
+    });
+ }
+
+function wordWrap(str, maxWidth) {
+    var newLineStr = "\n"; done = false; res = '';
+    while (str.length > maxWidth) {
+        found = false;
+        // Inserts new line at first whitespace of the line
+        for (i = maxWidth - 1; i >= 0; i--) {
+            if (testWhite(str.charAt(i))) {
+                res = res + [str.slice(0, i), newLineStr].join('');
+                str = str.slice(i + 1);
+                found = true;
+                break;
+            }
+        }
+        // Inserts new line at maxWidth position, the word is too long to wrap
+        if (!found) {
+            res += [str.slice(0, maxWidth), newLineStr].join('');
+            str = str.slice(maxWidth);
+        }
+
+    }
+
+    return res + str;
+}
+
+function testWhite(x) {
+    var white = new RegExp(/^\s$/);
+    return white.test(x.charAt(0));
+};
+

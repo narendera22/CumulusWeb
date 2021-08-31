@@ -108,17 +108,17 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group" style="margin-bottom: 0px;">
-                            <input type="text" class="form-control" id="search" placeholder="Search..">
+                            <input type="text" class="form-control" id="search" onkeyup="funcRedirect()" placeholder="Search..">
                         </div>
                     </div>
                     <div class="col-md-1">
                         @* <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fas fa-align-justify"></i>
-                    </button> *@
+                                <i class="fas fa-align-justify"></i>
+                            </button> *@
                         @*<button class="btn btn-dark" type="button" onclick="return false;">
-                        <i class="fa fa-search"></i>
-                    </button>*@
-                        <a href="#" class="btn btn-dark"><i class="fa fa-search" aria-hidden="true"></i></a>
+                                <i class="fa fa-search"></i>
+                            </button>*@
+                        <a href="#" class="btn btn-dark" onclick="SearchDocument()"><i class="fa fa-search" aria-hidden="true"></i></a>
                     </div>
                     <div class="col-md-2">
                         <div class="dropdown" style="text-align: center;">
@@ -159,13 +159,13 @@
                     </ol>
                 </div>
                 @*<div class="col-sm-2 col-sm-pull-12">
-                <div id="newdocdiv" style="display:none;">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newUploadCenter">
-                        <i class="fa fa-plus" aria-hidden="true"></i> New Document
-                    </button>
-                </div>
+                        <div id="newdocdiv" style="display:none;">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newUploadCenter">
+                                <i class="fa fa-plus" aria-hidden="true"></i> New Document
+                            </button>
+                        </div>
 
-            </div>*@
+                    </div>*@
             </div>
 
             <div class="container-fluid" id="dashboard" style="display: block;">
@@ -178,18 +178,18 @@
                                 if (p.documents != null)
                                 {
                                     @*<div class="card col-md-3 m-2">
-                                    <div class="card-deck">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <p>@p.phase </p>
-                                                <p>@p.documents.Count()</p>
-                                                <button type="submit" class="btn btn-primary" id="btnView" onclick='ViewDocuments("@p.phase",null)'>
-                                                    <i class="fa fa-eye" aria-hidden="true"></i> View
-                                                </button>
+                                            <div class="card-deck">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <p>@p.phase </p>
+                                                        <p>@p.documents.Count()</p>
+                                                        <button type="submit" class="btn btn-primary" id="btnView" onclick='ViewDocuments("@p.phase",null)'>
+                                                            <i class="fa fa-eye" aria-hidden="true"></i> View
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>*@
+                                        </div>*@
                                     <div class="col-lg-4 col-sm-6">
                                         <div class="circle-tile ">
                                             <a onclick='ViewDocuments("@p.phase",null)'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="fa fa-file-alt fa-fw fa-3x"></i></div></a>
@@ -207,18 +207,18 @@
                                     {
 
                                         @*<div class="card col-md-3 m-2">
-                                        <div class="card-deck">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <p>@sub.name - Document repository</p>
-                                                    <p>@sub.documents.Count()</p>
-                                                    <button type="submit" class="btn btn-primary" id="btnView" onclick='ViewDocuments("@p.phase","@sub.name")'>
-                                                        <i class="fa fa-eye" aria-hidden="true"></i> View
-                                                    </button>
+                                                <div class="card-deck">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <p>@sub.name - Document repository</p>
+                                                            <p>@sub.documents.Count()</p>
+                                                            <button type="submit" class="btn btn-primary" id="btnView" onclick='ViewDocuments("@p.phase","@sub.name")'>
+                                                                <i class="fa fa-eye" aria-hidden="true"></i> View
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>*@
+                                            </div>*@
                                         <div class="col-lg-4 col-sm-6">
                                             <div class="circle-tile ">
                                                 <a onclick='ViewDocuments("@p.phase","@sub.name")'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="fa fa-file-alt fa-fw fa-3x"></i></div></a>
@@ -252,3 +252,12 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function funcRedirect() {
+    var search = $('#search').val();
+    if (search == "") {
+        window.location.href = '@Url.Action("Microfy","Home")';
+    }
+}
+</script>

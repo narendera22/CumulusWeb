@@ -879,3 +879,7 @@ input:checked + .slider:before {
     -o-transform: scale(1.2);
     transform: scale(1.2);
 }
+
+.highlight {
+    background-color: yellow;
+}

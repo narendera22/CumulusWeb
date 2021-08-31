@@ -1,80 +1,56 @@
 ﻿@model MicrofyWebApp.Models.DocumentViewModel
 
 
-@if (Model.documentRepository != null)
-{
-    foreach (var p in Model.documentRepository)
-    {
-        if (p.documents != null)
-        {
-            foreach (var doc in p.documents)
+<div class="tab-content mt-2">
+    <div class="tab-pane fade show active">
+        <div class="container">
+            @if (Model.searchResults != null)
             {
-                <div class="card mb-3">
-                    <div class="card-body docrepo">
-                        <div class="row col-md-12">
+                foreach (var p in Model.searchResults)
+                {
 
-                            <div class="form-check" style="display:flex">
-                                <i class="fas @doc.filetype fa-3x"></i>
-                                <p class="doctitle">@doc.name</p>
+                    <div class="card mb-3">
+                        <div class="card-body docrepo">
+                            <div class="row col-md-12">
+
+                                <div class="form-check" style="display:flex">
+                                    <i class="fas @p.filetype fa-3x"></i>
+                                    <p class="doctitle">@p.name</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row col-md-12 ml-2" style="padding-top: 5px;">
-                            @Html.Raw(System.Web.HttpUtility.HtmlDecode(doc.description).Replace("\r\n", "<br />"))
-                        </div>
-                       
-                        <div class="row col-md-12">
-                            <div class="col-md-3">Last Modified on</div>
-                            <div class="col-md-9">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
-                        </div>
+                            <div class="row col-md-12 ml-2 docdescrip" style="padding-top: 5px; overflow-wrap: break-word;">
+                                @p.highlightedContent
+                            </div>
 
-                        <div class="float-right" style="display:flex;">
-                            <div>
+                            <div class="float-right" style="display:flex;">
+                                <div>
+                                    @{
+                                        var splitVals = p.url.Split('/');
+                                        var Phase = splitVals[4];
+                                        var SubPhase = string.Empty;
+                                        @if (Phase == "Adopt")
+                                        {
+                                            SubPhase = splitVals[5];
+                                        }
+                                    }
 
-                                <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.url, phase=p.phase,subphase=string.Empty }) + "'");">
-                                    <i class="fa fa-download" aria-hidden="true"></i>  Download
-                                </button>
+                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = p.url, phase=Phase,subphase=SubPhase }) + "'");">
+                                        <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
-        }
-        else if (p.subphase != null)
-        {
-            foreach (var sub in p.subphase)
-            {
-                if (sub.documents != null)
-                {
-                    foreach (var subdoc in sub.documents)
-                    {
-                        <div class="card mb-3">
-                            <div class="card-body docrepo">
-                                <div class="row col-md-12">
-                                    <div class="form-check" style="display:flex">
-                                        <i class="fas @subdoc.filetype fa-3x"></i>
-
-                                        <p class="doctitle">@subdoc.name</p>
-                                    </div>
-                                </div>
-                                <div class="row col-md-12 ml-2" style="padding-top:5px">
-                                    @Html.Raw(System.Web.HttpUtility.HtmlDecode(subdoc.description).Replace("\r\n", "<br />"))
-                                </div>
-                                <div class="row col-md-12">
-                                    <div class="col-md-3">Last Modified on</div>
-                                    <div class="col-md-9">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
-                                </div>
-                                <div class="float-right" style="display:flex;">
-                                    <div>
-                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.url,phase=p.phase,subphase=sub.name }) + "'");">
-                                            <i class="fa fa-download" aria-hidden="true"></i>  Download
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
                 }
             }
-        }
-    }
-}
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        debugger;
+        var search = $('#search').val();
+        highlight(search);
+    });
+   
+</script>
