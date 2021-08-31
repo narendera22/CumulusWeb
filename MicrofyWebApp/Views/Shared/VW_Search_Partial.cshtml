@@ -19,7 +19,7 @@
                                 </div>
                             </div>
                             <div class="row col-md-12 ml-2 docdescrip" style="padding-top: 5px; overflow-wrap: break-word;">
-                                @p.highlightedContent
+                                @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.highlightedContent).Replace("<br />", "\r\n")) 
                             </div>
 
                             <div class="float-right" style="display:flex;">
