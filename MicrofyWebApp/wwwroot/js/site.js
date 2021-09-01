@@ -420,3 +420,12 @@ function testWhite(x) {
     return white.test(x.charAt(0));
 };
 
+function TextWrap() {
+    var docdescrip = document.getElementsByClassName("docdescrip");
+    $(docdescrip).each(function (key, value) {
+        var txt = value.innerHTML;
+        var res = wordWrap(txt.trim(), 100);
+        $(this).html(res);
+    });
+}
+

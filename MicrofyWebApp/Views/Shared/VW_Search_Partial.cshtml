@@ -13,7 +13,7 @@
 <div class="tab-content mt-2">
     <div class="tab-pane fade show active">
         <div class="container">
-            @if (Model.searchResults != null)
+            @if (Model.searchResults.Count > 0)
             {
                 foreach (var p in Model.searchResults)
                 {
@@ -28,7 +28,7 @@
                                 </div>
                             </div>
                             <div class="row col-md-12 ml-2 docdescrip" style="padding-top: 5px; overflow-wrap: break-word;">
-                                @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.highlightedContent).Replace("<br />", "\r\n")) 
+                                @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.highlightedContent).Replace("<br />", "\r\n"))
                             </div>
 
                             <div class="float-right" style="display:flex;">
@@ -52,6 +52,20 @@
                     </div>
                 }
             }
+            else
+            {
+                <div class="card mb-3">
+                    <div class="card-body docrepo">
+                        <div class="row col-md-12">
+
+                            <div class="form-check" style="display:flex">
+                                <p>No Records found</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            }
         </div>
     </div>
 </div>
@@ -59,7 +73,8 @@
     $(function () {
         debugger;
         var search = $('#search').val();
-        highlight(search);
+        //highlight(search);
+        TextWrap();
     });
-   
+
 </script>
