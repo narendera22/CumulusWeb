@@ -429,3 +429,8 @@ function TextWrap() {
     });
 }
 
+function SearchTag(tag) {
+    $('#search').val(tag);
+    SearchDocument();
+}
+
