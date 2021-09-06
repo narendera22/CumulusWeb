@@ -13,7 +13,7 @@
 <div class="tab-content mt-2">
     <div class="tab-pane fade show active">
         <div class="container">
-            @if (Model.searchResults.Count > 0)
+            @if (Model.searchResults.Count > 0 && Model.searchResults != null)
             {
                 foreach (var p in Model.searchResults)
                 {
@@ -24,10 +24,27 @@
 
                                 <div class="form-check" style="display:flex">
                                     <i class="fas @p.filetype fa-3x"></i>
-                                    <p class="doctitle">@p.name</p>
+                                    <p class="doctitle">@p.documentName</p>
                                 </div>
+
+
                             </div>
-                            <div class="row col-md-12 ml-2 docdescrip" style="padding-top: 5px; overflow-wrap: break-word;">
+                            <div class="row col-md-12 ml-2 ">
+                                <div class="col-md-3">File Name </div>
+                                <div class="col-md-9">@p.name</div>
+                            </div>
+                            <div class="row col-md-12 ml-2 ">
+                                <div class="col-md-3">Phase </div>
+                                <div class="col-md-9">@p.phase</div>
+                            </div>
+                            @if (p.subPhase != null)
+                            {
+                                <div class="row col-md-12 ml-2 ">
+                                    <div class="col-md-3">Sub Phase :</div>
+                                    <div class="col-md-9">@p.subPhase</div>
+                                </div>
+                            }
+                            <div class="row col-md-12 ml-2 docdescrip" style="padding-top: 5px; padding-left:28px; overflow-wrap: break-word;">
                                 @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.highlightedContent).Replace("<br />", "\r\n"))
                             </div>
 
@@ -43,7 +60,7 @@
                                         }
                                     }
 
-                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = p.url, phase=Phase,subphase=SubPhase }) + "'");">
+                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = p.url, phase=p.phase,subphase=p.subPhase }) + "'");">
                                         <i class="fa fa-download" aria-hidden="true"></i>  Download
                                     </button>
                                 </div>
@@ -64,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             }
         </div>
     </div>

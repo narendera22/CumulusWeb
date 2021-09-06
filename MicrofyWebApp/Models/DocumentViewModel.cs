@@ -182,6 +182,9 @@ namespace MicrofyWebApp.Models
         public string name { get; set; }
         public string url { get; set; }
         public string highlightedContent { get; set; }
+        public string documentName { get; set; }
+        public string phase { get; set; }
+        public string subPhase { get; set; }
         public string filetype
         {
             get
