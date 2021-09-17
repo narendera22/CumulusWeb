@@ -146,6 +146,25 @@
                 }
             });
 
+            var displaytags = [];
+            var d = new Date();
+
+            var month = d.getMonth() + 1;
+            var day = d.getDate();
+
+            var uploadedDate = (('' + day).length < 2 ? '0' : '') + day + '/' +
+                (('' + month).length < 2 ? '0' : '') + month + '/' +
+                d.getFullYear();
+
+            var dt = {
+                "Title": $('#txtname').val(),
+                "UploadedOn": uploadedDate,
+                "Phase": phase,
+                "SubPhase": subphase
+            };
+
+            displaytags.push(dt);
+
             $.ajax({
                 url: "/Home/Upload",
                 type: "POST",
@@ -155,6 +174,7 @@
                     data.append("subphase", subphase);
                     data.append("file", jQuery("#fileToUpload").get(0).files[0]);
                     data.append("tags", JSON.stringify(tag));
+                    data.append("displaytags", JSON.stringify(displaytags));
                     return data;
                 }(),
                 contentType: false,
@@ -164,7 +184,7 @@
                     //console.log(response);
                     //var description = htmlEncode(editor1.getHTMLCode());
                     var description = htmlEncode(arrayOfRows.join('<br />'));
-                    DocumentSave(response.url, description);
+                    DocumentSave(response.encodedurl, description);
                 },
                 error: function (jqXHR, textStatus, errorMessage) {
                     console.log(errorMessage);

@@ -21,7 +21,7 @@
                 //tags = doc.tags;
                 filename = doc.filename;
                 filetype = doc.filetype;
-                url = doc.url;
+                url = doc.Decodedurl;
             }
         }
         else if (p.subphase != null)
@@ -38,7 +38,7 @@
                         //tags = subdoc.tags;
                         filename = subdoc.filename;
                         filetype = subdoc.filetype;
-                        url = subdoc.url;
+                        url = subdoc.Decodedurl;
                     }
                 }
             }
@@ -352,6 +352,37 @@
             var active = GetActivePhase();
             var phase = active.phase;
             var subphase = active.subphase;
+
+            var tag = [];
+            $tags.each(function (key, value) {
+                var tagkey = $("#tagsddl-" + (key + 1)).val();
+                var tagval = $("#txtvalue-" + (key + 1)).val();
+                if (tagval != "") {
+                    var obj = {};
+                    obj[tagkey + (key + 1)] = tagval;
+                    tag.push(obj);
+                }
+            });
+
+            var displaytags = [];
+            var d = new Date();
+
+            var month = d.getMonth() + 1;
+            var day = d.getDate();
+
+            var uploadedDate = (('' + day).length < 2 ? '0' : '') + day + '/' +
+                (('' + month).length < 2 ? '0' : '') + month + '/' +
+                d.getFullYear();
+
+            var dt = {
+                "Title": $('#txtname').val(),
+                "UploadedOn": uploadedDate,
+                "Phase": phase,
+                "SubPhase": subphase
+            };
+
+            displaytags.push(dt);
+
             if ($("#fileToUpload").val() == "" && $('#fileurl').data('url') == "") {
                 $.alert({
                     title: 'Error!!',
@@ -361,6 +392,7 @@
                 return false;
             }
             else if ($('#fileurl').data('url') != "" && $("#fileToUpload").val() == "") {
+                UpdateMetadata(JSON.stringify(displaytags), JSON.stringify(tag), $('#fileurl').data('url'));
                 DocumentSave($('#fileurl').data('url'), description);
                 return false;
             }
@@ -376,16 +408,7 @@
                     return false;
                 }
             }
-            var tag = [];
-            $tags.each(function (key, value) {
-                var tagkey = $("#tagsddl-" + (key + 1)).val();
-                var tagval = $("#txtvalue-" + (key + 1)).val();
-                if (tagval != "") {
-                    var obj = {};
-                    obj[tagkey + (key + 1)] = tagval;
-                    tag.push(obj);
-                }
-            });
+            
 
             $.ajax({
                 url: "/Home/Upload",
@@ -396,6 +419,7 @@
                     data.append("subphase", subphase);
                     data.append("file", jQuery("#fileToUpload").get(0).files[0]);
                     data.append("tags", JSON.stringify(tag));
+                    data.append("displaytags", JSON.stringify(displaytags));
                     return data;
                 }(),
                 contentType: false,
@@ -405,7 +429,7 @@
                     //console.log(response);
                     if (response.statuscode) {
 
-                        DocumentSave(response.url, description);
+                        DocumentSave(response.encodedurl, description);
                     }
                     else {
                         $.alert({

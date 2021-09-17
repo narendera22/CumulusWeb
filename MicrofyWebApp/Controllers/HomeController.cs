@@ -17,6 +17,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using Microsoft.Extensions.Configuration;
+using System.Web;
 
 namespace MicrofyWebApp.Controllers
 {
@@ -88,13 +89,13 @@ namespace MicrofyWebApp.Controllers
             return View(PhaseModel);
         }
         [HttpPost]
-        public async Task<FileUploadResponse> UploadAsync(string phase, string subphase, IFormFile file, string tags)
+        public async Task<FileUploadResponse> UploadAsync(string phase, string subphase, IFormFile file, string tags, string displaytags)
         {
             using (var client = new HttpClient())
             {
                 byte[] data;
-                string Phase = "Phase=" + phase;
-                string SubPhase = "SubPhase=" + subphase;
+                string Phase = "Phase=" + Encoder(phase);
+                string SubPhase = "SubPhase=" + Encoder(subphase);
                 string Requestapi = $"api/Upload?{AssetCode}&{Phase}&{SubPhase}";
                 FileUploadResponse FileUploadReponseValue = new FileUploadResponse();
 
@@ -105,7 +106,8 @@ namespace MicrofyWebApp.Controllers
                     MultipartFormDataContent multiContent = new MultipartFormDataContent();
                     multiContent.Add(bytes, "file", file.FileName);
                     client.BaseAddress = new Uri(Asseturl);
-                    client.DefaultRequestHeaders.Add("Tags", tags);
+                    client.DefaultRequestHeaders.Add("DisplayTags", displaytags);
+                    client.DefaultRequestHeaders.Add("UserTags", tags);
                     var response = client.PostAsync(Requestapi, multiContent).Result;
                     if (response.IsSuccessStatusCode)
                     {
@@ -254,8 +256,8 @@ namespace MicrofyWebApp.Controllers
         public FileResult DownloadDocument(string url, string phase, string subphase)
         {
             string filename = Path.GetFileName(url);
-            string Phase = "Phase=" + phase;
-            string SubPhase = "SubPhase=" + subphase;
+            string Phase = "Phase=" + Encoder(phase);
+            string SubPhase = "SubPhase=" + Encoder(subphase);
             string Requestapi = $"api/Download/{filename}?{AssetCode}&{Phase}&{SubPhase}";
             bool Activity;
             using (var client = new HttpClient())
@@ -296,6 +298,78 @@ namespace MicrofyWebApp.Controllers
                 }
             }
             return resp;
+        }
+
+        [HttpPost]
+        public bool UpdateMetadata(UpdateMetadata metadata)
+        {
+            string Phase = "Phase=" + Encoder(metadata.phase);
+            string SubPhase = "SubPhase=" + Encoder(metadata.subphase);
+            string file = Path.GetFileName(metadata.filename);
+            string Requestapi = $"api/UpdateMetaData/{file}?{AssetCode}&{Phase}&{SubPhase}";
+            var resp = false;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Asseturl);
+                client.DefaultRequestHeaders.Add("DisplayTags", metadata.displaytags);
+                client.DefaultRequestHeaders.Add("UserTags", metadata.usertags);
+                var response = client.GetAsync(Requestapi).Result;
+               
+                if (response.IsSuccessStatusCode)
+                {
+                    resp = response.IsSuccessStatusCode;
+                }
+
+            }
+            return resp;
+        }
+        [HttpPost]
+        public async Task<ActionResult> DeleteDocumentAsync(DeleteDoc deletedoc)
+        {
+            string Phase = "Phase=" + Encoder(deletedoc.phase);
+            string SubPhase = "SubPhase=" + Encoder(deletedoc.subphase);
+            string file = Path.GetFileName(deletedoc.filename);
+            string RequestAssertapi = $"api/Delete/{file}?{AssetCode}&{Phase}&{SubPhase}";
+            string RequestDocapi = $"api/Delete/{deletedoc.documentname}?{DocCode}&{Phase}&{SubPhase}";
+            DocumentViewModel DocModel = new DocumentViewModel();
+            var resp = false;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Asseturl);
+                var response = client.DeleteAsync(RequestAssertapi).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    resp = response.IsSuccessStatusCode;
+                }
+
+            }
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Docurl);
+                var response = client.DeleteAsync(RequestDocapi).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    _cache.Remove("_GetDocList");
+                    DocModel = await GetDocumentListAsync();
+                    DocModel.selectedPhase = deletedoc.phase;
+                    DocModel.selectedSubPhases = deletedoc.subphase;
+                    DocModel.UserRole = HttpContext.Session.GetString("_UserRole");
+                }
+            }
+            return PartialView("VW_Document_Repos_Partial", DocModel);
+        }
+
+        public string Encoder(string value)
+        {
+            string encodeRes = HttpUtility.UrlEncode(value);
+            return encodeRes;
+        }
+        public string Decoder(string value)
+        {
+            string decodeRes = HttpUtility.UrlDecode(value);
+            return decodeRes;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

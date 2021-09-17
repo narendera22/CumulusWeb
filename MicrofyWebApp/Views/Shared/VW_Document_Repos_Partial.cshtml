@@ -174,19 +174,32 @@
                                         <div class="col-md-9">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
                                     </div>
 
-                                    <div class="float-right" style="display:flex;">
-                                        <div>
+                                    <div class="row col-md-12">
+                                        <div class="col-md-4">
+                                            <div class="float-left" style="display:@displaymode; padding-left:5px;">
+                                                <button type="submit" class="btn btn-primary" id="btndelete"  onclick='DeleteDocument("@doc.Decodedurl", "@doc.name")'>
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>  Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="float-right" style="display:flex;">
+                                                <div>
 
-                                            <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.url, phase=p.phase,subphase=string.Empty }) + "'");">
-                                                <i class="fa fa-download" aria-hidden="true"></i>  Download
-                                            </button>
+                                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.Decodedurl, phase=p.phase,subphase=string.Empty }) + "'");">
+                                                        <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                                    </button>
+                                                </div>
+                                                <div style="display:@displaymode; padding-left:5px;">
+                                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
+                                                        <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div style="display:@displaymode; padding-left:5px;">
-                                            <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
-                                                <i class="fa fa-upload" aria-hidden="true"></i>  Upload
-                                            </button>
-                                        </div>
+
                                     </div>
+
                                     <table class="table ml-2" style="display: none;">
                                         <tr>
                                             <td>Feedback</td>
@@ -221,42 +234,42 @@
                                                 <div class="form-check" style="display:flex">
                                                     @*<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">*@
                                                     @*<div class="imglogo">
-                                                            <img alt="Logo" src="@subdoc.filetype" />
-                                                        </div>*@
+                    <img alt="Logo" src="@subdoc.filetype" />
+                </div>*@
                                                     <i class="fas @subdoc.filetype fa-3x"></i>
 
                                                     <p class="doctitle">@subdoc.name</p>
                                                 </div>
                                                 @* <div class="col-md-11">
-                                                         <p>Skill Mapping - JD Template</p>
-                                                    </div> *@
+                 <p>Skill Mapping - JD Template</p>
+            </div> *@
                                             </div>
                                             <div class="row col-md-12 ml-2" style="padding-top:5px">
                                                 @Html.Raw(System.Web.HttpUtility.HtmlDecode(subdoc.description).Replace("\r\n", "<br />"))
                                             </div>
                                             @*<table class="table ml-2">
-                                                    <tr class="col-md-12">
-                                                        <td class="col-md-2">Tags</td>
-                                                        <td class="col-md-10">
-                                                            <div class="tagcloud01">
-                                                                <ul>
-                                                                    @foreach (var tags in subdoc.tags)
-                                                                    {
-                                                                        if (tags != null)
-                                                                        {
-                                                                            <li><a href="#"><span>@tags</span></a></li>
+            <tr class="col-md-12">
+                <td class="col-md-2">Tags</td>
+                <td class="col-md-10">
+                    <div class="tagcloud01">
+                        <ul>
+                            @foreach (var tags in subdoc.tags)
+                            {
+                                if (tags != null)
+                                {
+                                    <li><a href="#"><span>@tags</span></a></li>
 
-                                                                        }
-                                                                    }
-                                                                </ul>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="col-md-12">
-                                                        <td class="col-md-2">Last Modified on</td>
-                                                        <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
-                                                    </tr>
-                                                </table>*@
+                                }
+                            }
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            <tr class="col-md-12">
+                <td class="col-md-2">Last Modified on</td>
+                <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
+            </tr>
+        </table>*@
                                             <div class="row col-md-12 ml-2" style="padding:5px;">
                                                 <p class="doctitle">Tags</p>
                                             </div>
@@ -338,17 +351,30 @@
                                                 <div class="col-md-3">Last Modified on</div>
                                                 <div class="col-md-9">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
                                             </div>
-                                            <div class="float-right" style="display:flex;">
-                                                <div>
-                                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.url,phase=p.phase,subphase=sub.name }) + "'");">
-                                                        <i class="fa fa-download" aria-hidden="true"></i>  Download
-                                                    </button>
+                                            <div class="row col-md-12">
+                                                <div class="col-md-4">
+                                                    <div class="float-left" style="display:@displaymode; padding-left:5px;">
+                                                        <button type="submit" class="btn btn-primary" id="btndelete" onclick='DeleteDocument("@subdoc.Decodedurl", "@subdoc.name")'>
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>  Delete
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div style="display:@displaymode; padding-left:5px;">
-                                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
-                                                        <i class="fa fa-upload" aria-hidden="true"></i>  Upload
-                                                    </button>
+                                                <div class="col-md-8">
+                                                    <div class="float-right" style="display:flex;">
+                                                        <div>
+
+                                                            <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.Decodedurl, phase=p.phase,subphase=sub.name}) + "'");">
+                                                                <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                                            </button>
+                                                        </div>
+                                                        <div style="display:@displaymode; padding-left:5px;">
+                                                            <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
+                                                                <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
+
                                             </div>
 
 

@@ -122,6 +122,7 @@ function fn_cancel() {
 }
 
 function DocumentSave(url, description) {
+    debugger;
     var tag = [];
     var azuretag = [];
     var processtag = [];
@@ -389,7 +390,7 @@ function highlight(text) {
         var res = wordWrap(txt.trim(), 100);
         $(this).html(res);
     });
- }
+}
 
 function wordWrap(str, maxWidth) {
     var newLineStr = "\n"; done = false; res = '';
@@ -434,3 +435,68 @@ function SearchTag(tag) {
     SearchDocument();
 }
 
+function UpdateMetadata(displaytags, usertags, filename) {
+    debugger;
+    var active = GetActivePhase();
+    var phase = active.phase;
+    var subphase = active.subphase;
+    var metadata = {
+        "filename": filename,
+        "displaytags": displaytags,
+        "usertags": usertags,
+        "phase": phase,
+        "subphase": subphase
+    };
+
+    var redirecturl = "/Home/UpdateMetadata";
+    $.post(redirecturl, metadata, function (data) {
+       
+    });
+    return false;
+
+}
+
+function DeleteDocument(filename,documentname) {
+    debugger;
+    $.confirm({
+        type: 'orange',
+        title: 'Confirm!',
+        content: 'Do you want to delete document ?',
+        buttons: {
+            confirm: function () {
+                var active = GetActivePhase();
+                var phase = active.phase;
+                var subphase = active.subphase;
+                var deletedoc = {
+                    "filename": filename,
+                    "documentname": documentname,
+                    "phase": phase,
+                    "subphase": subphase
+                };
+
+                var redirecturl = "/Home/DeleteDocument";
+                $.post(redirecturl, deletedoc, function (data) {
+                    $.alert({
+                        title: 'Success!!',
+                        content: "Document deleted successfully",
+                        type: 'green',
+                        onAction: function () {
+                            $("#documentpnl").html(data);
+                            //$("#newdocdiv").show();
+                            $("#dashboard").hide();
+                            $("#uploadDocument").hide();
+                            $("#SerachDocument").hide();
+                            $("#documentpnl").show();
+                        }
+                    });
+                });
+            },
+            cancel: function () {
+               
+            }
+        }
+    });
+    
+    return false;
+
+}

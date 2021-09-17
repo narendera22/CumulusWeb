@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Web;
 
 namespace MicrofyWebApp.Models
 {
@@ -28,6 +29,7 @@ namespace MicrofyWebApp.Models
         public string name { get; set; }
         public string description { get; set; }
         public string url { get; set; }
+        public string Decodedurl { get { return HttpUtility.UrlDecode(url); } }
         //public List<Dictionary<string,string>> Tags { get; set; }
         public List<Tag> tags { get; set; }
         public string filetype
@@ -35,7 +37,7 @@ namespace MicrofyWebApp.Models
             get
             {
                 string extension = string.Empty;
-                extension = Path.GetExtension(url);
+                extension = Path.GetExtension(Decodedurl);
                 string icons = string.Empty;
                 if (extension == null) { return ""; }
                 if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
@@ -78,7 +80,7 @@ namespace MicrofyWebApp.Models
             }
 
         }
-        public string filename { get { return Path.GetFileName(url); } }
+        public string filename { get { return Path.GetFileName(Decodedurl); } }
     }
     public class SubPhase
     {
@@ -90,6 +92,7 @@ namespace MicrofyWebApp.Models
         public string name { get; set; }
         public string description { get; set; }
         public string url { get; set; }
+        public string Decodedurl { get { return HttpUtility.UrlDecode(url); } }
         //public List<Dictionary<string,string>> Tags { get; set; }
         public List<Tag> tags { get; set; }
         public string filetype
@@ -97,7 +100,7 @@ namespace MicrofyWebApp.Models
             get
             {
                 string extension = string.Empty;
-                extension = Path.GetExtension(url);
+                extension = Path.GetExtension(Decodedurl);
                 string icons = string.Empty;
                 if (extension == null) { return ""; }
                 if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
@@ -140,7 +143,7 @@ namespace MicrofyWebApp.Models
             }
 
         }
-        public string filename { get { return Path.GetFileName(url); } }
+        public string filename { get { return Path.GetFileName(Decodedurl); } }
 
     }
     public class CreateDocuments
@@ -160,6 +163,7 @@ namespace MicrofyWebApp.Models
         public bool statuscode { get; set; }
         public string filename { get; set; }
         public string url { get; set; }
+        public string Encodedurl { get { return HttpUtility.UrlEncode(url); }  }
         public bool isDuplicate { get; set; }
         public string errorMessage { get; set; }
     }
@@ -180,17 +184,18 @@ namespace MicrofyWebApp.Models
     public class SearchResult
     {
         public string name { get; set; }
-        public string url { get; set; }
+        public string uploadedOn { get; set; }
         public string highlightedContent { get; set; }
-        public string documentName { get; set; }
+        public string doumentName { get; set; }
         public string phase { get; set; }
         public string subPhase { get; set; }
+        public string documentUrl { get; set; }
         public string filetype
         {
             get
             {
                 string extension = string.Empty;
-                extension = Path.GetExtension(url);
+                extension = Path.GetExtension(documentUrl);
                 string icons = string.Empty;
                 if (extension == null) { return ""; }
                 if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
@@ -233,6 +238,22 @@ namespace MicrofyWebApp.Models
             }
 
         }
-        public string filename { get { return Path.GetFileName(url); } }
+        public string filename { get { return Path.GetFileName(documentUrl); } }
+        public List<Dictionary<string, string>> Tags { get; set; }
+    }
+    public class UpdateMetadata
+    {
+        public string filename { get; set; }
+        public string displaytags { get; set; }
+        public string usertags { get; set; }
+        public string phase { get; set; }
+        public string subphase { get; set; }
+    }
+    public class DeleteDoc
+    {
+        public string filename { get; set; }
+        public string documentname { get; set; }
+        public string phase { get; set; }
+        public string subphase { get; set; }
     }
 }
