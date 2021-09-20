@@ -38,12 +38,12 @@
 
                                     @if (p.subPhase != "")
                                     {
-                                        <li><a href="#" onclick="ViewDocuments('@p.phase',null)">@p.phase</a></li>
-                                        <li><a href="#" onclick="ViewDocuments('@p.phase','@p.subPhase')">@p.subPhase</a></li>
+                                        <li><a href="#" title="Phase" onclick="ViewDocuments('@p.phase',null)">@p.phase</a></li>
+                                        <li><a href="#" title="Sub Phase" onclick="ViewDocuments('@p.phase','@p.subPhase')">@p.subPhase</a></li>
                                     }
                                     else
                                     {
-                                        <li><a href="#" onclick="ViewDocuments('@p.phase',null)">@p.phase</a></li>
+                                        <li><a href="#" title="Phase" onclick="ViewDocuments('@p.phase',null)">@p.phase</a></li>
                                     }
                                 </ul>
                             </div>
