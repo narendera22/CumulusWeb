@@ -186,7 +186,8 @@ namespace MicrofyWebApp.Models
         public string name { get; set; }
         public string uploadedOn { get; set; }
         public string highlightedContent { get; set; }
-        public string doumentName { get; set; }
+        public string description { get; set; }
+        public string documentName { get; set; }
         public string phase { get; set; }
         public string subPhase { get; set; }
         public string documentUrl { get; set; }
@@ -248,6 +249,7 @@ namespace MicrofyWebApp.Models
         public string usertags { get; set; }
         public string phase { get; set; }
         public string subphase { get; set; }
+        public string Description { get; set; }
     }
     public class DeleteDoc
     {
@@ -255,5 +257,6 @@ namespace MicrofyWebApp.Models
         public string documentname { get; set; }
         public string phase { get; set; }
         public string subphase { get; set; }
+        
     }
 }

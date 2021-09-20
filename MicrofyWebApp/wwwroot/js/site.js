@@ -450,13 +450,13 @@ function UpdateMetadata(displaytags, usertags, filename) {
 
     var redirecturl = "/Home/UpdateMetadata";
     $.post(redirecturl, metadata, function (data) {
-       
+
     });
     return false;
 
 }
 
-function DeleteDocument(filename,documentname) {
+function DeleteDocument(filename, documentname) {
     debugger;
     $.confirm({
         type: 'orange',
@@ -492,11 +492,11 @@ function DeleteDocument(filename,documentname) {
                 });
             },
             cancel: function () {
-               
+
             }
         }
     });
-    
+
     return false;
 
 }

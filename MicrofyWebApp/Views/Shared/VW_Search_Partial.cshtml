@@ -33,37 +33,59 @@
                     <div class="card mb-3">
                         <div class="card-body docrepo">
                             <div class="row col-md-12">
+                                @*<div class="col-md-3">Phase </div>*@
+                                <ul class="breadcrumb">
+
+                                    @if (p.subPhase != "")
+                                    {
+                                        <li><a href="#" onclick="ViewDocuments('@p.phase',null)">@p.phase</a></li>
+                                        <li><a href="#" onclick="ViewDocuments('@p.phase','@p.subPhase')">@p.subPhase</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="#" onclick="ViewDocuments('@p.phase',null)">@p.phase</a></li>
+                                    }
+                                </ul>
+                            </div>
+
+                            <div class="row col-md-12">
 
                                 <div class="form-check" style="display:flex">
                                     <i class="fas @p.filetype fa-3x"></i>
-                                    <p class="doctitle">@p.doumentName</p>
+                                    <p class="doctitle">@p.documentName</p>
                                 </div>
                             </div>
-                            <div class="row col-md-12">
-                                <div class="col-md-3">File Name </div>
-                                <div class="col-md-9">@p.filename</div>
-                            </div>
-                            <div class="row col-md-12">
-                                <div class="col-md-3">Phase </div>
-                                <div class="col-md-9">@p.phase</div>
-                            </div>
-                            @if (p.subPhase != null)
-                            {
-                                <div class="row col-md-12">
-                                    <div class="col-md-3">Sub Phase </div>
-                                    <div class="col-md-9">@p.subPhase</div>
-                                </div>
-                            }
-                            @*@if (p.uploadedOn != null)
-                            {*@
-                                <div class="row col-md-12">
-                                    <div class="col-md-3">Uploaded Date </div>
-                                    <div class="col-md-9">@p.uploadedOn</div>
-                                </div>
-                            
+                            @*<div class="row col-md-12">
+            <div class="col-md-3">File Name </div>
+            <div class="col-md-9">@p.filename</div>
+        </div>*@
+                            @*<div class="row col-md-12">
+            <div class="col-md-3">Phase </div>
+            <div class="col-md-9">@p.phase</div>
+        </div>
+        @if (p.subPhase != null)
+        {
+            <div class="row col-md-12">
+                <div class="col-md-3">Sub Phase </div>
+                <div class="col-md-9">@p.subPhase</div>
+            </div>
+        }*@
+
                             @*<div class="row col-md-12 ml-2 docdescrip" style="padding-top: 5px; padding-left:28px; overflow-wrap: break-word;">
-                                    @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.highlightedContent).Replace("<br />", "\r\n"))
-                                </div>*@
+            @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.highlightedContent).Replace("<br />", "\r\n"))
+        </div>*@
+
+                            <div class="row col-md-12 ml-2 docsearch" style="padding-top: 5px;">
+                                @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.description).Replace("\r\n", "<br />"))
+                            </div>
+                            
+                            <div class="row col-md-12">
+                                <div class="col-md-3">Uploaded Date </div>
+                                <div class="col-md-9">@p.uploadedOn</div>
+                            </div>
+                            <div class="row col-md-12 ml-2" style="padding:5px;">
+                                <p class="doctitle">Tags</p>
+                            </div>
                             <div class="row col-md-12 ">
                                 <div class="tagcloud01 ml-2 ">
                                     <ul>
@@ -71,7 +93,7 @@
                                         {
                                             foreach (var keyval in tags)
                                             {
-                                                <li><a><span>@keyval.Value</span></a></li>
+                                                <li><a onclick="SearchTag('@keyval.Value')"><span>@keyval.Value</span></a></li>
 
                                             }
 
@@ -123,7 +145,7 @@
         debugger;
         var search = $('#search').val();
         //highlight(search);
-        TextWrap();
+        //TextWrap();
     });
 
 </script>

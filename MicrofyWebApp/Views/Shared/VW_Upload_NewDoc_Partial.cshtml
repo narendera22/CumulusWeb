@@ -87,7 +87,7 @@
             e.preventDefault();
 
             var arrayOfRows = document.getElementById("txtdescp").value.split("\n");
-
+            var description = htmlEncode(arrayOfRows.join('<br />'));
             var active = GetActivePhase();
             var phase = active.phase;
             var subphase = active.subphase;
@@ -156,14 +156,15 @@
                 (('' + month).length < 2 ? '0' : '') + month + '/' +
                 d.getFullYear();
 
-            var dt = {
+            var disptag = {
                 "Title": $('#txtname').val(),
                 "UploadedOn": uploadedDate,
                 "Phase": phase,
-                "SubPhase": subphase
+                "SubPhase": subphase,
+                "Description": description
             };
 
-            displaytags.push(dt);
+            displaytags.push(disptag);
 
             $.ajax({
                 url: "/Home/Upload",
@@ -174,7 +175,7 @@
                     data.append("subphase", subphase);
                     data.append("file", jQuery("#fileToUpload").get(0).files[0]);
                     data.append("tags", JSON.stringify(tag));
-                    data.append("displaytags", JSON.stringify(displaytags));
+                    data.append("displaytags", JSON.stringify(disptag));
                     return data;
                 }(),
                 contentType: false,
@@ -183,7 +184,7 @@
                     //debugger;
                     //console.log(response);
                     //var description = htmlEncode(editor1.getHTMLCode());
-                    var description = htmlEncode(arrayOfRows.join('<br />'));
+                   
                     DocumentSave(response.encodedurl, description);
                 },
                 error: function (jqXHR, textStatus, errorMessage) {
