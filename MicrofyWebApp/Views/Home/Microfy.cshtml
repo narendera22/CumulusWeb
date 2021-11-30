@@ -9,6 +9,8 @@
     {
         displaymode = "block";
     }
+    var keyword = new List<string>();
+    var subphaseDoc = 0;
 }
 <style type="text/css">
     .card-deck {
@@ -132,22 +134,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="nav navbar-nav">
-                            <li class="nav-item active">
-                                <a class="nav-link" href="#">Page</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Page</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Page</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Page</a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </nav>
 
@@ -190,47 +176,122 @@
                                                 </div>
                                             </div>
                                         </div>*@
+                                    var i = 1;
+                                    keyword = new List<string>();
                                     <div class="col-lg-4 col-sm-6">
                                         <div class="circle-tile ">
-                                            <a onclick='ViewDocuments("@p.phase",null)'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="fa fa-file-alt fa-fw fa-3x"></i></div></a>
+                                            <a onclick='ViewDocuments("@p.phase",null)'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="@p.icon fa-fw fa-3x"></i></div></a>
                                             <div class="circle-tile-content" style="background-color: #2a8bcc; ">
                                                 <div class="circle-tile-description text-faded"> @p.phase</div>
                                                 <div class="circle-tile-number text-faded ">@p.documents.Count()</div>
-                                                <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase",null)'>More Info<i class="fa fa-chevron-circle-right"></i></a>
+
+                                                @foreach (var doc in p.documents)
+                                                {
+                                                    @foreach (var tags in doc.tags)
+                                                    {
+
+                                                        if (tags.AzureService != null)
+                                                        {
+                                                            foreach (var type in tags.AzureService)
+                                                            {
+                                                                if (i < 5)
+                                                                {
+                                                                    foreach (var keyval in type)
+                                                                    {
+                                                                        keyword.Add(keyval.Value);
+                                                                    }
+                                                                    i = i + 1;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        @if (i < 5)
+                                                        {
+                                                            if (tags.ProcessRelated != null)
+                                                            {
+                                                                foreach (var type in tags.ProcessRelated)
+                                                                {
+                                                                    if (i < 5)
+                                                                    {
+                                                                        foreach (var keyval in type)
+                                                                        {
+                                                                            keyword.Add(keyval.Value);
+                                                                        }
+                                                                        i = i + 1;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                <div class="circle-tile text-faded ">@string.Join(",", keyword)</div>
+                                                <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase",null)'>View Documents<i class="fa fa-chevron-circle-right"></i></a>
                                             </div>
                                         </div>
                                     </div>
                                 }
                                 else if (p.subphase != null)
                                 {
-                                    foreach (var sub in p.subphase)
-                                    {
+                                    var i = 1;
+                                    keyword = new List<string>();
+                                    <div class="col-lg-4 col-sm-6">
+                                        <div class="circle-tile ">
+                                            <a onclick='ViewDocuments("@p.phase", "@p.subphase.FirstOrDefault().name")'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="@p.icon fa-fw fa-3x"></i></div></a>
+                                            <div class="circle-tile-content" style="background-color: #2a8bcc; ">
+                                                <div class="circle-tile-description text-faded"> @p.phase</div>
+                                                @foreach (var sub in p.subphase)
+                                                {
+                                                    @if (sub.documents != null)
+                                                    {
+                                                        @foreach (var doc in sub.documents)
+                                                        {
+                                                            @foreach (var tags in doc.tags)
+                                                            {
+                                                                if (tags.AzureService != null)
+                                                                {
+                                                                    foreach (var type in tags.AzureService)
+                                                                    {
+                                                                        if (i < 5)
+                                                                        {
+                                                                            foreach (var keyval in type)
+                                                                            {
+                                                                                keyword.Add(keyval.Value);
+                                                                            }
+                                                                            i = i + 1;
+                                                                        }
+                                                                    }
+                                                                }
 
-                                        @*<div class="card col-md-3 m-2">
-                                                <div class="card-deck">
-                                                    <div class="card">
-                                                        <div class="card-body">
-                                                            <p>@sub.name - Document repository</p>
-                                                            <p>@sub.documents.Count()</p>
-                                                            <button type="submit" class="btn btn-primary" id="btnView" onclick='ViewDocuments("@p.phase","@sub.name")'>
-                                                                <i class="fa fa-eye" aria-hidden="true"></i> View
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>*@
-                                        <div class="col-lg-4 col-sm-6">
-                                            <div class="circle-tile ">
-                                                <a onclick='ViewDocuments("@p.phase","@sub.name")'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="fa fa-file-alt fa-fw fa-3x"></i></div></a>
-                                                <div class="circle-tile-content" style="background-color: #2a8bcc; ">
-                                                    <div class="circle-tile-description text-faded"> @sub.name</div>
-                                                    <div class="circle-tile-number text-faded ">@sub.documents.Count()</div>
-                                                    <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase","@sub.name")'>More Info<i class="fa fa-chevron-circle-right"></i></a>
-                                                </div>
+                                                                @if (i < 5)
+                                                                {
+                                                                    if (tags.ProcessRelated != null)
+                                                                    {
+                                                                        foreach (var type in tags.ProcessRelated)
+                                                                        {
+                                                                            if (i < 5)
+                                                                            {
+                                                                                foreach (var keyval in type)
+                                                                                {
+                                                                                    keyword.Add(keyval.Value);
+                                                                                }
+                                                                                i = i + 1;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    subphaseDoc = subphaseDoc + sub.documents.Count();
+                                                }
+                                                <div class="circle-tile-number text-faded ">@subphaseDoc</div>
+                                                <div class="circle-tile text-faded ">@string.Join(",", keyword)</div>
+                                                <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase","@p.subphase.FirstOrDefault().name")'>View Documents<i class="fa fa-chevron-circle-right"></i></a>
                                             </div>
                                         </div>
+                                    </div>
 
-                                    }
+
                                 }
                             }
                         }

@@ -23,6 +23,30 @@ namespace MicrofyWebApp.Models
         public string phase { get; set; }
         public List<Documents> documents { get; set; }
         public List<SubPhase> subphase { get; set; }
+        public string icon
+        {
+            get
+            {
+                string icons = string.Empty;
+                if (phase == "Pre - Plan")
+                {
+                    icons = "fa fa-edit";
+                }
+                else if (phase == "Plan")
+                {
+                    icons = "fa fa-list";
+                }
+                else if (phase == "Ready")
+                {
+                    icons = "fa fa-tasks";
+                }
+                else if (phase == "Adopt")
+                {
+                    icons = "fa fa-cogs";
+                }
+                return icons;
+            }
+        }
     }
     public class Documents
     {
@@ -32,6 +56,7 @@ namespace MicrofyWebApp.Models
         public string Decodedurl { get { return HttpUtility.UrlDecode(url); } }
         //public List<Dictionary<string,string>> Tags { get; set; }
         public List<Tag> tags { get; set; }
+
         public string filetype
         {
             get
@@ -163,7 +188,7 @@ namespace MicrofyWebApp.Models
         public bool statuscode { get; set; }
         public string filename { get; set; }
         public string url { get; set; }
-        public string Encodedurl { get { return HttpUtility.UrlEncode(url); }  }
+        public string Encodedurl { get { return HttpUtility.UrlEncode(url); } }
         public bool isDuplicate { get; set; }
         public string errorMessage { get; set; }
     }
@@ -257,6 +282,6 @@ namespace MicrofyWebApp.Models
         public string documentname { get; set; }
         public string phase { get; set; }
         public string subphase { get; set; }
-        
+
     }
 }
