@@ -30,19 +30,23 @@ namespace MicrofyWebApp.Models
                 string icons = string.Empty;
                 if (phase == "Pre - Plan")
                 {
-                    icons = "fa fa-edit";
+                    icons = "fa fa-list";
                 }
                 else if (phase == "Plan")
                 {
-                    icons = "fa fa-list";
+                    icons = "fa fa-tasks";
                 }
                 else if (phase == "Ready")
                 {
-                    icons = "fa fa-tasks";
+                    icons = "fa fa-check";
                 }
                 else if (phase == "Adopt")
                 {
                     icons = "fa fa-cogs";
+                }
+                else
+                {
+                    icons = "fa fa-file-alt";
                 }
                 return icons;
             }

@@ -24,6 +24,40 @@
     .card {
         border: none !important;
     }
+
+    .icon-stack {
+        position: relative;
+        display: inline-block;
+        width: 2em;
+        height: 5em;
+        line-height: 4em;
+        vertical-align: middle;
+    }
+
+    .icon-stack-1x,
+    .icon-stack-2x,
+    .icon-stack-3x {
+        position: absolute;
+        left: 0;
+        width: 100%;
+    }
+
+    .icon-stack-1x {
+        line-height: inherit;
+        position: absolute;
+        left: 12px;
+        color: #4eba24;
+        /*top: -4px;*/
+        font-size: 1.5em;
+    }
+
+    .icon-stack-2x {
+        font-size: 1.5em;
+    }
+
+    .icon-stack-3x {
+        font-size: 3em;
+    }
 </style>
 <div class="container">
     <div class="wrapper">
@@ -178,12 +212,29 @@
                                         </div>*@
                                     var i = 1;
                                     keyword = new List<string>();
-                                    <div class="col-lg-4 col-sm-6">
+                                    <div class="col-lg-4.5 col-sm-6">
                                         <div class="circle-tile ">
-                                            <a onclick='ViewDocuments("@p.phase",null)'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="@p.icon fa-fw fa-3x"></i></div></a>
+                                            <a onclick='ViewDocuments("@p.phase",null)'>
+                                                <div class="circle-tile-heading" style="background-color: #4eba24">
+                                                    @if (p.phase == "Pre - Plan")
+                                                    {
+                                                        <span class="icon-stack">
+                                                            <i class="fa fa-file-alt icon-stack-3x"></i>
+                                                            <i class="fa fa-pencil icon-stack-1x"></i>
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="@p.icon fa-fw fa-3x"></i>
+                                                    }
+
+                                                </div>
+                                            </a>
                                             <div class="circle-tile-content" style="background-color: #2a8bcc; ">
-                                                <div class="circle-tile-description text-faded"> @p.phase</div>
-                                                <div class="circle-tile-number text-faded ">@p.documents.Count()</div>
+                                                <div class="circle-tile-number text-faded">
+                                                    @p.phase &ensp;@p.documents.Count()
+                                                </div>
+                                                @*<div class="circle-tile-number text-faded ">@p.documents.Count()</div>*@
 
                                                 @foreach (var doc in p.documents)
                                                 {
@@ -224,7 +275,7 @@
                                                         }
                                                     }
                                                 }
-                                                <div class="circle-tile text-faded ">@string.Join(",", keyword)</div>
+                                                <div class="circle-tile ">@string.Join(",", keyword)</div>
                                                 <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase",null)'>View Documents<i class="fa fa-chevron-circle-right"></i></a>
                                             </div>
                                         </div>
@@ -234,11 +285,11 @@
                                 {
                                     var i = 1;
                                     keyword = new List<string>();
-                                    <div class="col-lg-4 col-sm-6">
+                                    <div class="col-lg-4.5 col-sm-6">
                                         <div class="circle-tile ">
                                             <a onclick='ViewDocuments("@p.phase", "@p.subphase.FirstOrDefault().name")'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="@p.icon fa-fw fa-3x"></i></div></a>
                                             <div class="circle-tile-content" style="background-color: #2a8bcc; ">
-                                                <div class="circle-tile-description text-faded"> @p.phase</div>
+                                                @*<div class="circle-tile-description text-faded"> @p.phase</div>*@
                                                 @foreach (var sub in p.subphase)
                                                 {
                                                     @if (sub.documents != null)
@@ -284,8 +335,10 @@
                                                     }
                                                     subphaseDoc = subphaseDoc + sub.documents.Count();
                                                 }
-                                                <div class="circle-tile-number text-faded ">@subphaseDoc</div>
-                                                <div class="circle-tile text-faded ">@string.Join(",", keyword)</div>
+                                                <div class="circle-tile-number text-faded">
+                                                    @p.phase &ensp;@subphaseDoc
+                                                </div>
+                                                <div class="circle-tile ">@string.Join(",", keyword)</div>
                                                 <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase","@p.subphase.FirstOrDefault().name")'>View Documents<i class="fa fa-chevron-circle-right"></i></a>
                                             </div>
                                         </div>
