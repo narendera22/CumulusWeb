@@ -92,14 +92,18 @@
                                                 <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
                                             </tr>
                                         </table>*@
+                                    <div class="row col-md-12" style="padding-top:10px">
+                                        <div class="col-md-3">Last Modified on</div>
+                                        <div class="col-md-9">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
+                                    </div>
                                     <div class="row col-md-12 ml-2" style="padding:5px;">
                                         <p class="doctitle">Tags</p>
                                     </div>
                                     <div class="row col-md-12">
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" style="text-align:center">
                                             <p>Azure Services</p>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" style="text-align:center">
                                             <p>Process</p>
                                         </div>
                                         <div class="col-md-4" style="display:none;">
@@ -169,15 +173,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="row col-md-12">
-                                        <div class="col-md-3">Last Modified on</div>
-                                        <div class="col-md-9">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
-                                    </div>
+
 
                                     <div class="row col-md-12" style="padding-top:5px;">
                                         <div class="col-md-4">
                                             <div class="float-left" style="display:@displaymode; padding-left:5px;">
-                                                <button type="submit" class="btn btn-primary" id="btndelete"  onclick='DeleteDocument("@doc.Decodedurl", "@doc.name")'>
+                                                <button type="submit" class="btn btn-primary" id="btndelete" onclick='DeleteDocument("@doc.Decodedurl", "@doc.name")'>
                                                     <i class="fa fa-trash" aria-hidden="true"></i>  Delete
                                                 </button>
                                             </div>
@@ -234,50 +235,56 @@
                                                 <div class="form-check" style="display:flex">
                                                     @*<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">*@
                                                     @*<div class="imglogo">
-                    <img alt="Logo" src="@subdoc.filetype" />
-                </div>*@
+                                                            <img alt="Logo" src="@subdoc.filetype" />
+                                                        </div>*@
                                                     <i class="fas @subdoc.filetype fa-3x"></i>
 
                                                     <p class="doctitle">@subdoc.name</p>
                                                 </div>
                                                 @* <div class="col-md-11">
-                 <p>Skill Mapping - JD Template</p>
-            </div> *@
+                                                         <p>Skill Mapping - JD Template</p>
+                                                    </div> *@
                                             </div>
                                             <div class="row col-md-12 ml-2" style="padding-top:5px">
                                                 @Html.Raw(System.Web.HttpUtility.HtmlDecode(subdoc.description).Replace("\r\n", "<br />"))
                                             </div>
-                                            @*<table class="table ml-2">
-            <tr class="col-md-12">
-                <td class="col-md-2">Tags</td>
-                <td class="col-md-10">
-                    <div class="tagcloud01">
-                        <ul>
-                            @foreach (var tags in subdoc.tags)
-                            {
-                                if (tags != null)
-                                {
-                                    <li><a href="#"><span>@tags</span></a></li>
 
-                                }
-                            }
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-            <tr class="col-md-12">
-                <td class="col-md-2">Last Modified on</td>
-                <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
-            </tr>
-        </table>*@
+                                            <div class="row col-md-12" style="padding-top:10px">
+                                                <div class="col-md-3">Last Modified on</div>
+                                                <div class="col-md-9">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
+                                            </div>
+
+                                            @*<table class="table ml-2">
+                                                    <tr class="col-md-12">
+                                                        <td class="col-md-2">Tags</td>
+                                                        <td class="col-md-10">
+                                                            <div class="tagcloud01">
+                                                                <ul>
+                                                                    @foreach (var tags in subdoc.tags)
+                                                                    {
+                                                                        if (tags != null)
+                                                                        {
+                                                                            <li><a href="#"><span>@tags</span></a></li>
+
+                                                                        }
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="col-md-12">
+                                                        <td class="col-md-2">Last Modified on</td>
+                                                        <td class="col-md-10">@Model.uploadedOn.ToString("dd/MM/yyyy")</td>
+                                                    </tr>
+                                                </table>*@
                                             <div class="row col-md-12 ml-2" style="padding:5px;">
                                                 <p class="doctitle">Tags</p>
                                             </div>
                                             <div class="row col-md-12">
-                                                <div class="col-md-4">
+                                                <div class="col-md-4" style="text-align:center">
                                                     <p>Azure Services</p>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-4" style="text-align:center">
                                                     <p>Process</p>
                                                 </div>
                                                 <div class="col-md-4" style="display:none;">
@@ -347,10 +354,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row col-md-12">
-                                                <div class="col-md-3">Last Modified on</div>
-                                                <div class="col-md-9">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
-                                            </div>
+
                                             <div class="row col-md-12" style="padding-top:5px;">
                                                 <div class="col-md-4">
                                                     <div class="float-left" style="display:@displaymode; padding-left:5px;">
