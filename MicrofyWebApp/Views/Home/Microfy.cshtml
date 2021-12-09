@@ -215,18 +215,20 @@
                                     <div class="col-lg-4.5 col-sm-6">
                                         <div class="circle-tile ">
                                             <a onclick='ViewDocuments("@p.phase",null)'>
-                                                <div class="circle-tile-heading" style="background-color: #4eba24">
-                                                    @if (p.phase == "Pre - Plan")
-                                                    {
-                                                        <span class="icon-stack">
-                                                            <i class="fa fa-file-alt icon-stack-3x"></i>
-                                                            <i class="fa fa-pencil icon-stack-1x"></i>
-                                                        </span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <i class="@p.icon fa-fw fa-3x"></i>
-                                                    }
+                                                <div class="circle-tile-heading" style="background-color: #ffffff">
+                                                    @*@if (p.phase == "Pre - Plan")
+                                                        {
+                                                            <span class="icon-stack">
+                                                                <i class="fa fa-file-alt icon-stack-3x"></i>
+                                                                <i class="fa fa-pencil icon-stack-1x"></i>
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="@p.icon fa-fw fa-3x"></i>
+
+                                                        }*@
+                                                    <img id="logo" alt="Logo" src="~/Image/DashboardIcon/@p.icon" style="width:80px;" />
 
                                                 </div>
                                             </a>
@@ -236,31 +238,14 @@
                                                 </div>
                                                 @*<div class="circle-tile-number text-faded ">@p.documents.Count()</div>*@
 
-                                                @foreach (var doc in p.documents)
-                                                {
-                                                    @foreach (var tags in doc.tags)
+                                                @*@foreach (var doc in p.documents)
                                                     {
-
-                                                        if (tags.AzureService != null)
+                                                        @foreach (var tags in doc.tags)
                                                         {
-                                                            foreach (var type in tags.AzureService)
-                                                            {
-                                                                if (i < 5)
-                                                                {
-                                                                    foreach (var keyval in type)
-                                                                    {
-                                                                        keyword.Add(keyval.Value);
-                                                                    }
-                                                                    i = i + 1;
-                                                                }
-                                                            }
-                                                        }
 
-                                                        @if (i < 5)
-                                                        {
-                                                            if (tags.ProcessRelated != null)
+                                                            if (tags.AzureService != null)
                                                             {
-                                                                foreach (var type in tags.ProcessRelated)
+                                                                foreach (var type in tags.AzureService)
                                                                 {
                                                                     if (i < 5)
                                                                     {
@@ -272,35 +257,12 @@
                                                                     }
                                                                 }
                                                             }
-                                                        }
-                                                    }
-                                                }
-                                                <div class="circle-tile ">@string.Join(",", keyword)</div>
-                                                <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase",null)'>View Documents<i class="fa fa-chevron-circle-right"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                else if (p.subphase != null)
-                                {
-                                    var i = 1;
-                                    keyword = new List<string>();
-                                    <div class="col-lg-4.5 col-sm-6">
-                                        <div class="circle-tile ">
-                                            <a onclick='ViewDocuments("@p.phase", "@p.subphase.FirstOrDefault().name")'><div class="circle-tile-heading" style="background-color: #4eba24"><i class="@p.icon fa-fw fa-3x"></i></div></a>
-                                            <div class="circle-tile-content" style="background-color: #2a8bcc; ">
-                                                @*<div class="circle-tile-description text-faded"> @p.phase</div>*@
-                                                @foreach (var sub in p.subphase)
-                                                {
-                                                    @if (sub.documents != null)
-                                                    {
-                                                        @foreach (var doc in sub.documents)
-                                                        {
-                                                            @foreach (var tags in doc.tags)
+
+                                                            @if (i < 5)
                                                             {
-                                                                if (tags.AzureService != null)
+                                                                if (tags.ProcessRelated != null)
                                                                 {
-                                                                    foreach (var type in tags.AzureService)
+                                                                    foreach (var type in tags.ProcessRelated)
                                                                     {
                                                                         if (i < 5)
                                                                         {
@@ -312,12 +274,39 @@
                                                                         }
                                                                     }
                                                                 }
-
-                                                                @if (i < 5)
+                                                            }
+                                                        }
+                                                    }*@
+                                                <div class="circle-tile ">@p.dashboardTag</div>
+                                                <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase",null)'>View Documents<i class="fa fa-chevron-circle-right"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else if (p.subphase != null)
+                                {
+                                    var i = 1;
+                                    keyword = new List<string>();
+                                    <div class="col-lg-4.5 col-sm-6">
+                                        <div class="circle-tile ">
+                                            <a onclick='ViewDocuments("@p.phase", "@p.subphase.FirstOrDefault().name")'>
+                                                <div class="circle-tile-heading" style="background-color: #ffffff">
+                                                    <img id="logo" alt="Logo" src="~/Image/DashboardIcon/@p.icon" style="width:80px;" />
+                                                </div>
+                                            </a>
+                                            <div class="circle-tile-content" style="background-color: #2a8bcc; ">
+                                                @*<div class="circle-tile-description text-faded"> @p.phase</div>*@
+                                                @*@foreach (var sub in p.subphase)
+                                                    {
+                                                        @if (sub.documents != null)
+                                                        {
+                                                            @foreach (var doc in sub.documents)
+                                                            {
+                                                                @foreach (var tags in doc.tags)
                                                                 {
-                                                                    if (tags.ProcessRelated != null)
+                                                                    if (tags.AzureService != null)
                                                                     {
-                                                                        foreach (var type in tags.ProcessRelated)
+                                                                        foreach (var type in tags.AzureService)
                                                                         {
                                                                             if (i < 5)
                                                                             {
@@ -329,16 +318,33 @@
                                                                             }
                                                                         }
                                                                     }
+
+                                                                    @if (i < 5)
+                                                                    {
+                                                                        if (tags.ProcessRelated != null)
+                                                                        {
+                                                                            foreach (var type in tags.ProcessRelated)
+                                                                            {
+                                                                                if (i < 5)
+                                                                                {
+                                                                                    foreach (var keyval in type)
+                                                                                    {
+                                                                                        keyword.Add(keyval.Value);
+                                                                                    }
+                                                                                    i = i + 1;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                    subphaseDoc = subphaseDoc + sub.documents.Count();
-                                                }
+                                                        subphaseDoc = subphaseDoc + sub.documents.Count();
+                                                    }*@
                                                 <div class="circle-tile-number text-faded">
                                                     @p.phase &ensp;@subphaseDoc
                                                 </div>
-                                                <div class="circle-tile ">@string.Join(",", keyword)</div>
+                                                <div class="circle-tile ">@p.dashboardTag</div>
                                                 <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase","@p.subphase.FirstOrDefault().name")'>View Documents<i class="fa fa-chevron-circle-right"></i></a>
                                             </div>
                                         </div>

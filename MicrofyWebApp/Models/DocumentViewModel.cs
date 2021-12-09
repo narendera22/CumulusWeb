@@ -30,25 +30,57 @@ namespace MicrofyWebApp.Models
                 string icons = string.Empty;
                 if (phase == "Pre - Plan")
                 {
-                    icons = "fa fa-list";
+                    //icons = "fa fa-list";
+                    icons = "strategy.png";
                 }
                 else if (phase == "Plan")
                 {
-                    icons = "fa fa-tasks";
+                    //icons = "fa fa-tasks";
+                    icons = "plan.png";
                 }
                 else if (phase == "Ready")
                 {
-                    icons = "fa fa-check";
+                    //icons = "fa fa-check";
+                    icons = "ready.png";
                 }
                 else if (phase == "Adopt")
                 {
-                    icons = "fa fa-cogs";
+                    //icons = "fa fa-cogs";
+                    icons = "govern.png";
+                }
+                //else
+                //{
+                //    icons = "fa fa-file-alt";
+                //}
+                return icons;
+            }
+        }
+        public string dashboardTag
+        {
+            get
+            {
+                string tag = string.Empty;
+                if (phase == "Pre - Plan")
+                {
+                    tag = "SoW Template,  Roles & Responsibilities, Risk Register, High Level Plan, RACI Matrix etc.";
+                }
+                else if (phase == "Plan")
+                {
+                    tag = "Task List, Detail Plan, Discovery questionnaire, Reference Architecture, Guidelines etc.";
+                }
+                else if (phase == "Ready")
+                {
+                    tag = "Design Documents – Infrastructure, Containerization, Logging & Monitoring, DevOps etc.";
+                }
+                else if (phase == "Adopt")
+                {
+                    tag = "Refactoring for Containerization, Basic Building Blocks for Containerization and Orchestration etc.";
                 }
                 else
                 {
-                    icons = "fa fa-file-alt";
+                    tag = "";
                 }
-                return icons;
+                return tag;
             }
         }
     }
