@@ -57,7 +57,7 @@ namespace MicrofyWebApp.Controllers
             SearchCode = _configuration.GetValue<string>("Values:SearchCode");
 
         }
-        public async Task<IActionResult> MicrofyAsync()
+        public async Task<IActionResult> DashboardAsync()
         {
             //string username = (string)_cache.Get("_UserId");
             userid = HttpContext.Session.GetString("_userId");

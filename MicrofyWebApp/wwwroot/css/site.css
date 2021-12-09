@@ -733,7 +733,7 @@ input:checked + .slider:before {
 }
 
 .circle-tile-heading {
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    /*border: 3px solid rgba(255, 255, 255, 0.3);*/
     border-radius: 100%;
     color: #FFFFFF;
     height: 80px;

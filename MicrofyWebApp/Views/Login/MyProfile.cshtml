@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Welcome to Microfy</title>
+    <title>@ViewData["Title"] - Welcome to Cumulus</title>
     <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
@@ -37,7 +37,7 @@
         <form class="well form-horizontal" action=" " method="post" id="MyProfile_Form">
             <fieldset>
                 <div class="imglogo" style="display:flex;">
-                    <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Microfy", "Home") + "'");" />
+                    <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />
                     <div class=" col-lg-8" style="padding-top:40px">
                         <center><h2><b>My Profile</b></h2></center>
                     </div>
@@ -143,7 +143,7 @@
                 <!-- Button -->
                 <div class="form-group">
                     <div class="col-md-4 control-label">
-                        <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Microfy", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
+                        <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
                     </div>
                     <div class="col-md-4 control-label" id="updatepwd" style="display:none;">
                         <button type="submit" class="btn btn-warning">Update <span class="glyphicon glyphicon-send"></span></button>

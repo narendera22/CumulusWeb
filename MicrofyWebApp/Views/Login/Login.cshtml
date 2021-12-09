@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Welcome to Microfy</title>
+    <title>@ViewData["Title"] - Welcome to Cumulus</title>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -17,24 +17,54 @@
 
 </head>
 <body>
-    <div class="body">
+    @*<div class="body">
 
-    </div>
-    <div class="grad"></div>
-    <div class="header">
-        <div class="imglogo">
-            <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" />
         </div>
-    </div>
-    <div class="login">
+        <div class="grad"></div>*@
+    @*<div class="header">
+            <div class="imglogo">
+                <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" />
+            </div>
+        </div>*@
 
-        @*@using (Html.BeginForm("Microfy", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) *@
-            <input type="text" id="txtuname" placeholder="Enter Username" name="uname" required><br>
-            <input type="password" id="txtpwd" placeholder="Enter Password" name="psw" required><br>
-            <input type="submit" id="btnsubmit" value="Login" /><br>
-        <p>Don't have an account? &nbsp;<a href="~/Login/Registration">Sign up</a></p>
+    @*@using (Html.BeginForm("Dashboard", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) *@
+    @*<input type="text" id="txtuname" placeholder="Enter Username" name="uname" required><br>
+        <input type="password" id="txtpwd" placeholder="Enter Password" name="psw" required><br>*@
 
-        <p id="ResponseMessage" style="color:red;"></p>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-2"></div>
+            <div class="col-lg-6 col-md-8 login-box">
+                <div class="col-lg-12 login-key">
+                    <div class="imglogo">
+                        <img id="img_logo" alt="Logo" src="/Image/Cumulus.png">
+                    </div>
+                </div>
+                <div class="col-lg-12 login-form">
+                    <div class="col-lg-12 login-form">
+                        <div class="form-group">
+                            @*<label class="form-control-label">USERNAME</label>*@
+                            <input type="text" id="txtuname" placeholder="Enter Username" name="uname" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            @*<label class="form-control-label">PASSWORD</label>*@
+                            <input type="password" id="txtpwd" placeholder="Enter Password" name="psw" required class="form-control">
+                        </div>
+
+                        <div class="col-lg-12 loginbttm">
+                            <div class="col-lg-8 login-btm login-text">
+                                <p>Don't have an account? &nbsp;<a href="/Login/Registration">Sign up</a></p>
+                            </div>
+                            <div class="col-lg-4 login-btm login-button">
+                                <input type="submit" id="btnsubmit" onclick="fnlogin()" class="btn btn-outline-primary" value="Login">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p id="ResponseMessage" style="color:red;"></p>
+            </div>
+        </div>
+
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
 
@@ -42,10 +72,17 @@
 </body>
 </html>
 <script type="text/javascript">
-    $('#btnsubmit').click(function () {
-        debugger;
-                var Username = $('#txtuname').val();
-                var Password = $('#txtpwd').val();
+    function fnlogin() {
+         var Username = $('#txtuname').val();
+        var Password = $('#txtpwd').val();
+        if (Username == "") {
+            $('#ResponseMessage').html("Enter UserName");
+            return false;
+        }
+        if (Password == "") {
+            $('#ResponseMessage').html("Enter Password");
+            return false;
+        }
                 var redirecturl = "/Login/UserLogin";
                 var loginDetails = {
                     UserId: Username,
@@ -54,14 +91,18 @@
                 $.post(redirecturl, loginDetails, function (data) {
                     if (data.statusCode == true) {
                         $('#ResponseMessage').html("");
-                        window.location.href = '@Url.Action("Microfy","Home")';
+                        window.location.href = '@Url.Action("Dashboard", "Home")';
                     }
                     else {
                         $('#ResponseMessage').html(data.responseMessage);
                     }
 
                 });
+    }
+    //$('#btnsubmit').click(function () {
+    //    debugger;
 
-            });
+
+    //        });
 </script>
 

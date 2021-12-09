@@ -64,7 +64,7 @@
         <nav id="sidebar">
             <div class="sidebar-header">
                 <div class="imglogo">
-                    <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Microfy", "Home") + "'");" />
+                    <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />
                 </div>
             </div>
             <ul class="list-unstyled">
@@ -174,7 +174,7 @@
             <div class="col-md-12" style="padding-left: 15px;">
                 <div id="divbreadcrumb">
                     <ol class="breadcrumb breadcrumb-arrow">
-                        <li class="homelink"><a href="~/Home/Microfy">Home</a></li>
+                        <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
                         <li class="active"><span>Dashboard</span></li>
                     </ol>
                 </div>
@@ -377,7 +377,7 @@
     function funcRedirect() {
     var search = $('#search').val();
     if (search == "") {
-        window.location.href = '@Url.Action("Microfy","Home")';
+        window.location.href = '@Url.Action("Dashboard", "Home")';
     }
 }
 </script>
