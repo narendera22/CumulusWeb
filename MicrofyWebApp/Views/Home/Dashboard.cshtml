@@ -294,6 +294,7 @@
                                                     <img id="logo" alt="Logo" src="~/Image/DashboardIcon/@p.icon" style="width:80px;" />
                                                 </div>
                                             </a>
+                                            
                                             <div class="circle-tile-content" style="background-color: #2a8bcc; ">
                                                 @*<div class="circle-tile-description text-faded"> @p.phase</div>*@
                                                 @*@foreach (var sub in p.subphase)
@@ -342,7 +343,7 @@
                                                         subphaseDoc = subphaseDoc + sub.documents.Count();
                                                     }*@
                                                 <div class="circle-tile-number text-faded">
-                                                    @p.phase &ensp;@subphaseDoc
+                                                    @p.phase &ensp;@p.subphase.Sum(q => q.documents.Count)
                                                 </div>
                                                 <div class="circle-tile ">@p.dashboardTag</div>
                                                 <a class="circle-tile-footer" onclick='ViewDocuments("@p.phase","@p.subphase.FirstOrDefault().name")'>View Documents<i class="fa fa-chevron-circle-right"></i></a>
