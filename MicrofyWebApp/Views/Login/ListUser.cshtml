@@ -42,8 +42,9 @@
             padding-top: 30px;
             padding-bottom: 30px;
         }
+
         .justify-content-lg-center {
-            justify-content: right !important;
+            justify-content: left !important;
         }
     </style>
 </head>
@@ -74,41 +75,41 @@
             <tbody>
                 @foreach (var usr in Model.usersDetails)
                 {
-                <tr>
+                    <tr>
 
-                    <td>@usr.username</td>
-                    <td>@usr.fullName</td>
-                    <td>@usr.userRole</td>
-                    @foreach (var p in usr.projects)
-                    {
-                        <td>@p.projectName.</td>
-                        <td>@p.customerName</td>
-                    }
-                    @if (usr.isActive) { status = "checked"; } else { status = ""; }
-                    <td>
-                        <label class="switch">
-                            <input type="checkbox" @status class="togglecheckbox" data-username="@usr.username">
-                            <span class="slider round"></span>
-                        </label>
-                    </td>
-                    <td style="display:none;">
-                        <input name="pwd" type="password" class="pwd" value="@usr.password" />
-                    </td>
-                    <td>
-                        <a href="" class="edit" title="Edit User">
-                            <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="" class="resetpwd" title="Reset Password">
-                            <span class="glyphicon glyphicon-lock" style="font-size:25px;"></span>
-                        </a>
-                    </td>
-                </tr>
+                        <td>@usr.username</td>
+                        <td>@usr.fullName</td>
+                        <td>@usr.userRole</td>
+                        @foreach (var p in usr.projects)
+                        {
+                            <td>@p.projectName.</td>
+                            <td>@p.customerName</td>
+                        }
+                        @if (usr.isActive) { status = "checked"; } else { status = ""; }
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" @status class="togglecheckbox" data-username="@usr.username">
+                                <span class="slider round"></span>
+                            </label>
+                        </td>
+                        <td style="display:none;">
+                            <input name="pwd" type="password" class="pwd" value="@usr.password" />
+                        </td>
+                        <td>
+                            <a href="" class="edit" title="Edit User">
+                                <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="resetpwd" title="Reset Password">
+                                <span class="glyphicon glyphicon-lock" style="font-size:25px;"></span>
+                            </a>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
-        <div class="form-group" >
+        <div class="form-group">
             <div class="col-md-4 control-label" style="padding-bottom:15px;">
                 <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
             </div>
@@ -118,7 +119,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Edit User Details</h5>
+                    <h3 class="modal-title" id="exampleModalLongTitle">Edit User Details</h3>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -197,7 +198,7 @@
                                 <div class="col-md-6 inputGroupContainer">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                        <input name="password" id="password" placeholder="" class="form-control" type="password" >
+                                        <input name="password" id="password" placeholder="" class="form-control" type="password">
                                     </div>
                                 </div>
                             </div>
@@ -215,7 +216,7 @@
         </div>
     </div>
 
-    
+
 </body>
 
 </html>
@@ -226,94 +227,7 @@
 
         });
 
-        $(function () {
-            $("a[class='edit']").click(function () {
-                debugger;
-                var userid = $(this).closest("tr").find('td:eq(0)').text();
-                var first_name = $(this).closest("tr").find('td:eq(1)').text();
-                var role = $(this).closest("tr").find('td:eq(2)').text();
-                var cust_name = $(this).closest("tr").find('td:eq(3)').text();
-                var project_name = $(this).closest("tr").find('td:eq(4)').text();
-                var Status = $(this).closest("tr").find('td:eq(5)').find(".switch .togglecheckbox").is(":checked");
-                var pwd = $(this).closest("tr").find('td:eq(6)').find(".pwd").val();
-                $('#userid').val(userid);
-                $('#first_name').val(first_name);
-                $('#role').val(role);
-                $('#cust_name').val(cust_name);
-                $('#project_name').val(project_name);
-                $('#userid').val(userid);
-                if (Status) {
-                    $(".switch").find("#statusCheck").prop("checked", true);
-                }
-                else { $(".switch").find("#statusCheck").prop("checked", false); }
-                $('#password').val(pwd);
-                $("#UserEditPopup").modal("show");
-                return false;
-            });
-            $("a[class='resetpwd']").click(function () {
-                debugger;
-                var userid = $(this).closest("tr").find('td:eq(0)').text();
-                var first_name = $(this).closest("tr").find('td:eq(1)').text();
-                var role = $(this).closest("tr").find('td:eq(2)').text();
-                var cust_name = $(this).closest("tr").find('td:eq(3)').text();
-                var project_name = $(this).closest("tr").find('td:eq(4)').text();
-                var Status = $(this).closest("tr").find('td:eq(5)').find(".switch .togglecheckbox").is(":checked");
-                var pwd = $(this).closest("tr").find('td:eq(6)').find(".pwd").val();
-                var Projects = [{
-                    "ProjectName": project_name,
-                    "CustomerName": cust_name
-                }];
 
-                var UserDetails = {
-                    "username": userid,
-                    "password": "",
-                    "fullName": first_name,
-                    "userRole": role,
-                    "isActive": Status,
-                    "projects": Projects
-                }
-                var ActivityTracker = {
-                    "UserName": userid,
-                    "ActivityType": "ResetPassword",
-                    "ActivityDetails": " has successfully reset password for " + userid
-                }
-
-        var redirecturl = "/Login/UpdateUser";
-        $.post(redirecturl, { "users": UserDetails, "activityTracker": ActivityTracker }, function (data) {
-            var title = "";
-            var type = "";
-            var content = "";
-            if (data.statusCode == true) {
-                title = "Success!!";
-                type = "green";
-                content = "Password Reset Successfully";
-            }
-            else {
-                title = "Error!!";
-                type = "red";
-                content = data.responseMessage;
-
-            }
-            $.alert({
-                    title: title,
-                    content: content,
-                    type: type,
-                    onAction: function () {
-                        window.location.href = '@Url.Action("ListUser","Login")';
-                    }
-                });
-        })
-        .fail(function (response) {
-           $.alert({
-                title: 'Error!!',
-                content: response,
-                alignMiddle: true,
-                type: 'red'
-            });
-        });
-                return false;
-            });
-        });
         $('.togglecheckbox').change(function () {
             $(this).prop('checked');
             var username = $(this).data('username');

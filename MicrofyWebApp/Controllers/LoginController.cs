@@ -215,6 +215,7 @@ namespace MicrofyWebApp.Controllers
                     userViewModel.responseMessage = await result.Content.ReadAsStringAsync();
 
                 }
+                userViewModel.DefaultPassword = DefaultPassword;
             }
             return userViewModel;
         }

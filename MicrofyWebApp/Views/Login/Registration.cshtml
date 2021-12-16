@@ -24,7 +24,7 @@
         /*padding-right: 250px !important;
         }*/
         .justify-content-lg-center {
-            justify-content: right !important;
+            justify-content: left !important;
         }
     </style>
 </head>
@@ -186,7 +186,7 @@ $('#Registration_form').submit(function () {
         "password": password,
         "fullName": username,
         "userRole": role,
-        "isActive": true,
+        "isActive": false,
         "projects": Projects
     }
 
@@ -205,7 +205,7 @@ $('#Registration_form').submit(function () {
             }
             $.alert({
                     title: title,
-                    content: data.responseMessage,
+                    content: data.responseMessage +" \n Please contact Admin to Unlock your account!!!",
                     type: type,
                     onAction: function () {
                         window.location.href = '@Url.Action("Login","Login")';

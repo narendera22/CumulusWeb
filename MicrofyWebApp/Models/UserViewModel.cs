@@ -16,6 +16,7 @@ namespace MicrofyWebApp.Models
         public bool StatusCode { get; set; }
         public string responseMessage { get; set; }
         public List<ListUserDetails> usersDetails { get; set; }
+        public string DefaultPassword { get;  set; }
     }
     public class projects
     {

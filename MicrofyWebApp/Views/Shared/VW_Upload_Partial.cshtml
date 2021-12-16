@@ -95,10 +95,10 @@
                                                     <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-3 form-control selectpicker">
                                                         <option value="AzureService" selected>Azure Services</option>
                                                         <option value="ProcessRelated">Process</option>
-                                                        @*<option value="ManagementRelated">Management Related</option>*@
+                                                        <option value="TechnologyRelated">Technology</option>
                                                     </select>
                                                     @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
-                            <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                                                        <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
                                                     <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value" onkeydown="addtags($(this))">
                                                     <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
                                                         <i class="fas fa-plus"></i>
@@ -124,10 +124,10 @@
                                                     <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-3 form-control selectpicker">
                                                         <option value="AzureService">Azure Services</option>
                                                         <option value="ProcessRelated" selected>Process</option>
-                                                        @*<option value="ManagementRelated">Management Related</option>*@
+                                                        <option value="TechnologyRelated">Technology</option>
                                                     </select>
                                                     @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
-                            <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                                                        <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
                                                     <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value" onkeydown="addtags($(this))">
                                                     <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
                                                         <i class="fas fa-plus"></i>
@@ -141,32 +141,35 @@
                                         }
                                     }
                                 }
-                                @*@foreach (var tags in doc.tags)
-        {
-            if (tags.ManagementRelated != null)
-            {
-                foreach (var type in tags.ManagementRelated)
-                {
-                    foreach (var keyval in type)
-                    {
-                        <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
-                            <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-3 form-control selectpicker">
-                                <option value="AzureService">Azure Services</option>
-                                <option value="ProcessRelated">Process</option>
-                                <option value="ManagementRelated" selected>Management Related</option>
-                            </select>
-                            <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
-                                <label style="padding-top:5px;">&emsp;:&emsp;</label>
-                            <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
-                            <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </div>
-                    }
-                    i = i + 1;
-                }
-            }
-        }*@
+                                @foreach (var tags in doc.tags)
+                                {
+                                    if (tags.TechnologyRelated != null)
+                                    {
+                                        foreach (var type in tags.TechnologyRelated)
+                                        {
+                                            foreach (var keyval in type)
+                                            {
+                                                <div id="dynamic-field-@i" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="hold">
+                                                    <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-3 form-control selectpicker">
+                                                        <option value="AzureService">Azure Services</option>
+                                                        <option value="ProcessRelated">Process</option>
+                                                        <option value="TechnologyRelated" selected>Technology</option>
+                                                    </select>
+                                                    @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
+                                                        <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                                                    <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value" onkeydown="addtags($(this))">
+                                                    <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
+                                                        <i class="fas fa-plus"></i>
+                                                    </a>
+                                                    <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                </div>
+                                            }
+                                            i = i + 1;
+                                        }
+                                    }
+                                }
                             </div>
                         </div>
 
@@ -196,7 +199,7 @@
                                                             <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-3 form-control selectpicker">
                                                                 <option value="AzureService" selected>Azure Services</option>
                                                                 <option value="ProcessRelated">Process</option>
-                                                                @*<option value="ManagementRelated">Management Related</option>*@
+                                                                <option value="TechnologyRelated">Technology</option>
                                                             </select>
                                                             @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
                                                                 <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
@@ -225,7 +228,7 @@
                                                             <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-3 form-control selectpicker">
                                                                 <option value="AzureService">Azure Services</option>
                                                                 <option value="ProcessRelated" selected>Process</option>
-                                                                @*<option value="ManagementRelated">Management Related</option>*@
+                                                                <option value="TechnologyRelated">Technology</option>
                                                             </select>
                                                             @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
                                                                 <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
@@ -242,11 +245,11 @@
                                                 }
                                             }
                                         }
-                                        @*@foreach (var tags in subdoc.tags)
+                                        @foreach (var tags in subdoc.tags)
                                         {
-                                            if (tags.ManagementRelated != null)
+                                            if (tags.TechnologyRelated != null)
                                             {
-                                                foreach (var type in tags.ManagementRelated)
+                                                foreach (var type in tags.TechnologyRelated)
                                                 {
                                                     foreach (var keyval in type)
                                                     {
@@ -254,11 +257,14 @@
                                                             <select name="role" style="margin-right:10px;" id="tagsddl-@i" class="col-md-3 form-control selectpicker">
                                                                 <option value="AzureService">Azure Services</option>
                                                                 <option value="ProcessRelated">Process</option>
-                                                                <option value="ManagementRelated" selected>Management Related</option>
+                                                                <option value="TechnologyRelated" selected>Technology</option>
                                                             </select>
-                                                            <input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
-                                                                <label style="padding-top:5px;">&emsp;:&emsp;</label>
-                                                            <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value">
+                                                            @*<input type="text" class="col-md-4 form-control" value="@keyval.Key" id="txtkey-@i" placeholder="key" onkeydown="addtags($(this))">
+                                                                <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                                                            <input type="text" class="col-md-4 form-control" value="@keyval.Value" id="txtvalue-@i" placeholder="value" onkeydown="addtags($(this))">
+                                                            <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
+                                                                <i class="fas fa-plus"></i>
+                                                            </a>
                                                             <a href="#" class="delete" title="delete Tags" style="padding:5px; display:block;" onclick="deletetags($(this)); return false;">
                                                                 <i class="fas fa-trash-alt"></i>
                                                             </a>
@@ -267,7 +273,7 @@
                                                     i = i + 1;
                                                 }
                                             }
-                                        }*@
+                                        }
                                     </div>
                                 </div>
                             }
@@ -409,7 +415,7 @@
                     return false;
                 }
             }
-            
+
 
             $.ajax({
                 url: "/Home/Upload",

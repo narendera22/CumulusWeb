@@ -239,7 +239,7 @@ namespace MicrofyWebApp.Models
     {
         public List<Dictionary<string, string>> AzureService { get; set; }
         public List<Dictionary<string, string>> ProcessRelated { get; set; }
-        public List<Dictionary<string, string>> ManagementRelated { get; set; }
+        public List<Dictionary<string, string>> TechnologyRelated { get; set; }
     }
 
     public class SearchResult

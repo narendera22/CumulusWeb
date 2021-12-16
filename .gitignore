@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /MicrofyWebApp/Properties/ServiceDependencies/microfy-web-dev - Web Deploy/profile.arm.json
+/MicrofyWebApp/Properties/ServiceDependencies/microfy-web - Web Deploy

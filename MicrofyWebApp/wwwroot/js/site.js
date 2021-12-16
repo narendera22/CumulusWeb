@@ -126,7 +126,7 @@ function DocumentSave(url, description) {
     var tag = [];
     var azuretag = [];
     var processtag = [];
-    var managementtag = [];
+    var technologytag = [];
     var tags = {};
 
     var name = $('#txtname').val();
@@ -147,7 +147,7 @@ function DocumentSave(url, description) {
         if (tagval != "") {
             var AzureServices = {};
             var ProcessRelated = {};
-            var ManagementRelated = {};
+            var TechnologyRelated = {};
             if (tagstype === "AzureService") {
                 AzureServices[tagstype + (key + 1)] = tagval;
                 azuretag.push(AzureServices);
@@ -156,16 +156,16 @@ function DocumentSave(url, description) {
                 ProcessRelated[tagstype + (key + 1)] = tagval;
                 processtag.push(ProcessRelated);
             }
-            else if (tagstype === "ManagementRelated") {
-                ManagementRelated[tagstype + (key + 1)] = tagval;
-                managementtag.push(ManagementRelated);
+            else if (tagstype === "TechnologyRelated") {
+                TechnologyRelated[tagstype + (key + 1)] = tagval;
+                technologytag.push(TechnologyRelated);
             }
         }
     });
     tags = {
         "AzureService": azuretag,
         "ProcessRelated": processtag,
-        "ManagementRelated": managementtag
+        "TechnologyRelated": technologytag
     };
     tag.push(tags);
     var active = GetActivePhase();
@@ -500,3 +500,92 @@ function DeleteDocument(filename, documentname) {
     return false;
 
 }
+
+$(function () {
+    $("a[class='edit']").click(function () {
+        debugger;
+        var userid = $(this).closest("tr").find('td:eq(0)').text();
+        var first_name = $(this).closest("tr").find('td:eq(1)').text();
+        var role = $(this).closest("tr").find('td:eq(2)').text();
+        var cust_name = $(this).closest("tr").find('td:eq(3)').text();
+        var project_name = $(this).closest("tr").find('td:eq(4)').text();
+        var Status = $(this).closest("tr").find('td:eq(5)').find(".switch .togglecheckbox").is(":checked");
+        var pwd = $(this).closest("tr").find('td:eq(6)').find(".pwd").val();
+        $('#userid').val(userid);
+        $('#first_name').val(first_name);
+        $('#role').val(role);
+        $('#cust_name').val(cust_name);
+        $('#project_name').val(project_name);
+        $('#userid').val(userid);
+        if (Status) {
+            $(".switch").find("#statusCheck").prop("checked", true);
+        }
+        else { $(".switch").find("#statusCheck").prop("checked", false); }
+        $('#password').val(pwd);
+        $("#UserEditPopup").modal("show");
+        return false;
+    });
+    $("a[class='resetpwd']").click(function () {
+        debugger;
+        var userid = $(this).closest("tr").find('td:eq(0)').text();
+        var first_name = $(this).closest("tr").find('td:eq(1)').text();
+        var role = $(this).closest("tr").find('td:eq(2)').text();
+        var cust_name = $(this).closest("tr").find('td:eq(3)').text();
+        var project_name = $(this).closest("tr").find('td:eq(4)').text();
+        var Status = $(this).closest("tr").find('td:eq(5)').find(".switch .togglecheckbox").is(":checked");
+        var pwd = $(this).closest("tr").find('td:eq(6)').find(".pwd").val();
+        var Projects = [{
+            "ProjectName": project_name,
+            "CustomerName": cust_name
+        }];
+
+        var UserDetails = {
+            "username": userid,
+            "password": "",
+            "fullName": first_name,
+            "userRole": role,
+            "isActive": Status,
+            "projects": Projects
+        }
+        var ActivityTracker = {
+            "UserName": userid,
+            "ActivityType": "ResetPassword",
+            "ActivityDetails": " has successfully reset password for " + userid
+        }
+
+        var redirecturl = "/Login/UpdateUser";
+        $.post(redirecturl, { "users": UserDetails, "activityTracker": ActivityTracker }, function (data) {
+            var title = "";
+            var type = "";
+            var content = "";
+            if (data.statusCode == true) {
+                title = "Success!!";
+                type = "green";
+                content = "Password Reset Successfully : " + data.defaultPassword;
+            }
+            else {
+                title = "Error!!";
+                type = "red";
+                content = data.responseMessage;
+
+            }
+            $.alert({
+                title: title,
+                content: content,
+                type: type,
+                onAction: function () {
+                    window.location.href = 'ListUser';
+                }
+            });
+        })
+            .fail(function (response) {
+                $.alert({
+                    title: 'Error!!',
+                    content: response,
+                    alignMiddle: true,
+                    type: 'red'
+                });
+            });
+        return false;
+    });
+});
