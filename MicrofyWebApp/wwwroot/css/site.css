@@ -503,10 +503,10 @@ ul.breadcrumb {
         padding: 0;
     }
 
-        .tagcloud01 ul li a {
-            display: inline-block;
+        /*.tagcloud01 ul li a {
+            display: inline-block;*/
             /* max-width: 100px; */
-            height: 28px;
+            /*height: 28px;
             line-height: 28px;
             padding: 0 1em;
             background-color: #fff;
@@ -526,7 +526,7 @@ ul.breadcrumb {
                 background-color: #3498db;
                 border: 1px solid #3498db;
                 color: #fff;
-            }
+            }*/
 
 .tagcloud05 ul {
     margin: 0;
