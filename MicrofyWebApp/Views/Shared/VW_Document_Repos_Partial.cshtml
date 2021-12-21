@@ -99,106 +99,104 @@
                                         </div>
                                         <div class="col-md-9" style="padding-top: 15px;">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
                                     </div>
-                                    <div class="row col-md-12 ml-2" style="padding: 5px;">
+                                    <div class="row col-md-12 ml-2" style="padding-left: 7px;">
                                         <p class="doctitle">Tags</p>
                                     </div>
-                                    <table class="table ml-3">
-                                        <tr class="row col-md-12">
-                                            <td class="col-md-4">
-                                                <table class="table" style="border: 2px dotted black; border-radius: 15px; display: inline-block;">
-                                                    <tr>
-                                                        <td>
-                                                            <p style="text-align:center;"><b>Azure Services</b></p>
-                                                            <div class="tagcloud01">
-                                                                <ul>
-                                                                    @foreach (var tags in doc.tags)
+                                    <div class="row col-md-12">
+                                        <div class="col-md-4">
+                                            <table class="table" style="border: 1.5px dotted black; border-radius: 15px; height: 100%; display: inline-block;">
+                                                <tr>
+                                                    <td class="col-md-4">
+                                                        <p style="text-align:center;"><b>Azure Services</b></p>
+                                                        <div class="tagcloud01">
+                                                            <ul>
+                                                                @foreach (var tags in doc.tags)
+                                                                {
+                                                                    if (tags.AzureService != null)
                                                                     {
-                                                                        if (tags.AzureService != null)
+                                                                        foreach (var type in tags.AzureService)
                                                                         {
-                                                                            foreach (var type in tags.AzureService)
+                                                                            foreach (var keyval in type)
                                                                             {
-                                                                                foreach (var keyval in type)
-                                                                                {
-                                                                                    <li>
-                                                                                        <a onclick="SearchTag('@keyval.Value')" href="#">
-                                                                                            <span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span>
-                                                                                        </a>
+                                                                                <li>
+                                                                                    <a onclick="SearchTag('@keyval.Value')" href="#">
+                                                                                        <span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span>
+                                                                                    </a>
 
-                                                                                    </li>
-                                                                                }
+                                                                                </li>
                                                                             }
-
                                                                         }
+
                                                                     }
-                                                                </ul>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                            <td class="col-md-4">
-                                                <table class="table" style="border: 2px dotted black; border-radius: 15px; display: inline-block;">
-                                                    <tr>
-                                                        <td class="col-md-4">
-                                                            <p style="text-align:center;"><b>Process</b></p>
-                                                            <div class="tagcloud01">
-                                                                <ul>
-                                                                    @foreach (var tags in doc.tags)
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <table class="table" style="border: 1.5px dotted black; border-radius: 15px; height: 100%; display: inline-block; ">
+                                                <tr>
+                                                    <td class="col-md-4">
+                                                        <p style="text-align:center;"><b>Process</b></p>
+                                                        <div class="tagcloud01">
+                                                            <ul>
+                                                                @foreach (var tags in doc.tags)
+                                                                {
+                                                                    if (tags.ProcessRelated != null)
                                                                     {
-                                                                        if (tags.ProcessRelated != null)
+                                                                        foreach (var type in tags.ProcessRelated)
                                                                         {
-                                                                            foreach (var type in tags.ProcessRelated)
+                                                                            foreach (var keyval in type)
                                                                             {
-                                                                                foreach (var keyval in type)
-                                                                                {
-                                                                                    <li>
-                                                                                        <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
+                                                                                <li>
+                                                                                    <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
 
-                                                                                    </li>
-                                                                                }
+                                                                                </li>
                                                                             }
-
                                                                         }
+
                                                                     }
-                                                                </ul>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                            <td class="col-md-4">
-                                                <table class="table" style="border: 2px dotted black; border-radius: 15px; display: inline-block;">
-                                                    <tr>
-                                                        <td>
-                                                            <p style="text-align:center;"><b>Technology</b></p>
-                                                            <div class="tagcloud01">
-                                                                <ul>
-                                                                    @foreach (var tags in doc.tags)
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <table class="table" style="border: 1.5px dotted black; border-radius: 15px; height: 100%; display: inline-block;">
+                                                <tr>
+                                                    <td class="col-md-4">
+                                                        <p style="text-align:center;"><b>Technology</b></p>
+                                                        <div class="tagcloud01">
+                                                            <ul>
+                                                                @foreach (var tags in doc.tags)
+                                                                {
+                                                                    if (tags.TechnologyRelated != null)
                                                                     {
-                                                                        if (tags.TechnologyRelated != null)
+                                                                        foreach (var type in tags.TechnologyRelated)
                                                                         {
-                                                                            foreach (var type in tags.TechnologyRelated)
+                                                                            foreach (var keyval in type)
                                                                             {
-                                                                                foreach (var keyval in type)
-                                                                                {
-                                                                                    <li>
-                                                                                        <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
+                                                                                <li>
+                                                                                    <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
 
-                                                                                    </li>
+                                                                                </li>
 
-                                                                                }
                                                                             }
-
                                                                         }
+
                                                                     }
-                                                                </ul>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
                                     <div class="row col-md-12" style="padding-top:5px;">
                                         <div class="col-md-4">
                                             <div class="float-left" style="display:@displaymode; padding-left:5px;">
@@ -281,106 +279,104 @@
                                                 </div>
                                                 <div class="col-md-9" style="padding-top: 15px;">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
                                             </div>
-                                            <div class="row col-md-12 ml-2" style="padding:10px;">
+                                            <div class="row col-md-12 ml-2" style="padding-left:7px;">
                                                 <p class="doctitle">Tags</p>
                                             </div>
-                                            <table class="table ml-3">
-                                                <tr class="row col-md-12">
-                                                    <td class="col-md-4">
-                                                        <table class="table" style="border: 2px dotted black; border-radius: 15px; display: inline-block;">
-                                                            <tr>
-                                                                <td>
-                                                                    <p style="text-align:center;"><b>Azure Services</b></p>
-                                                                    <div class="tagcloud01">
-                                                                        <ul>
-                                                                            @foreach (var tags in subdoc.tags)
+                                            <div class="row col-md-12">
+                                                <div class="col-md-4">
+                                                    <table class="table" style="border: 1.5px dotted black; height: 100%; border-radius: 15px; display: inline-block; ">
+                                                        <tr>
+                                                            <td class="col-md-4">
+                                                                <p style="text-align:center;"><b>Azure Services</b></p>
+                                                                <div class="tagcloud01">
+                                                                    <ul>
+                                                                        @foreach (var tags in subdoc.tags)
+                                                                        {
+                                                                            if (tags.AzureService != null)
                                                                             {
-                                                                                if (tags.AzureService != null)
+                                                                                foreach (var type in tags.AzureService)
                                                                                 {
-                                                                                    foreach (var type in tags.AzureService)
+                                                                                    foreach (var keyval in type)
                                                                                     {
-                                                                                        foreach (var keyval in type)
-                                                                                        {
-                                                                                            <li>
-                                                                                                <a onclick="SearchTag('@keyval.Value')" href="#">
-                                                                                                    <span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span>
-                                                                                                </a>
+                                                                                        <li>
+                                                                                            <a onclick="SearchTag('@keyval.Value')" href="#">
+                                                                                                <span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span>
+                                                                                            </a>
 
-                                                                                            </li>
-                                                                                        }
+                                                                                        </li>
                                                                                     }
-
                                                                                 }
+
                                                                             }
-                                                                        </ul>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="col-md-4">
-                                                        <table class="table" style="border: 2px dotted black; border-radius: 15px; display: inline-block;">
-                                                            <tr>
-                                                                <td class="col-md-4">
-                                                                    <p style="text-align:center;"><b>Process</b></p>
-                                                                    <div class="tagcloud01">
-                                                                        <ul>
-                                                                            @foreach (var tags in subdoc.tags)
+                                                                        }
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <table class="table" style="border: 1.5px dotted black; height: 100%; border-radius: 15px; display: inline-block;">
+                                                        <tr>
+                                                            <td class="col-md-4">
+                                                                <p style="text-align:center;"><b>Process</b></p>
+                                                                <div class="tagcloud01">
+                                                                    <ul>
+                                                                        @foreach (var tags in subdoc.tags)
+                                                                        {
+                                                                            if (tags.ProcessRelated != null)
                                                                             {
-                                                                                if (tags.ProcessRelated != null)
+                                                                                foreach (var type in tags.ProcessRelated)
                                                                                 {
-                                                                                    foreach (var type in tags.ProcessRelated)
+                                                                                    foreach (var keyval in type)
                                                                                     {
-                                                                                        foreach (var keyval in type)
-                                                                                        {
-                                                                                            <li>
-                                                                                                <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
+                                                                                        <li>
+                                                                                            <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
 
-                                                                                            </li>
-                                                                                        }
+                                                                                        </li>
                                                                                     }
-
                                                                                 }
+
                                                                             }
-                                                                        </ul>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="col-md-4">
-                                                        <table class="table" style="border: 2px dotted black; border-radius: 15px; display: inline-block;">
-                                                            <tr>
-                                                                <td>
-                                                                    <p style="text-align:center;"><b>Technology</b></p>
-                                                                    <div class="tagcloud01">
-                                                                        <ul>
-                                                                            @foreach (var tags in subdoc.tags)
+                                                                        }
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <table class="table" style="border: 1.5px dotted black; height: 100%; border-radius: 15px; display: inline-block; ">
+                                                        <tr>
+                                                            <td class="col-md-4">
+                                                                <p style="text-align:center;"><b>Technology</b></p>
+                                                                <div class="tagcloud01">
+                                                                    <ul>
+                                                                        @foreach (var tags in subdoc.tags)
+                                                                        {
+                                                                            if (tags.TechnologyRelated != null)
                                                                             {
-                                                                                if (tags.TechnologyRelated != null)
+                                                                                foreach (var type in tags.TechnologyRelated)
                                                                                 {
-                                                                                    foreach (var type in tags.TechnologyRelated)
+                                                                                    foreach (var keyval in type)
                                                                                     {
-                                                                                        foreach (var keyval in type)
-                                                                                        {
-                                                                                            <li>
-                                                                                                <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
+                                                                                        <li>
+                                                                                            <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
 
-                                                                                            </li>
+                                                                                        </li>
 
-                                                                                        }
                                                                                     }
-
                                                                                 }
+
                                                                             }
-                                                                        </ul>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </table>
+                                                                        }
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
 
                                             <div class="row col-md-12" style="padding-top:5px;">
                                                 <div class="col-md-4">
