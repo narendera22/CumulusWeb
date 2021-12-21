@@ -142,71 +142,15 @@ namespace MicrofyWebApp.Models
 
         }
         public string filename { get { return Path.GetFileName(Decodedurl); } }
+        public string UploadedOn { get; set; }
+        public string UploadedBy { get; set; }
     }
     public class SubPhase
     {
         public string name { get; set; }
-        public List<SubDocument> documents { get; set; }
+        public List<Documents> documents { get; set; }
     }
-    public class SubDocument
-    {
-        public string name { get; set; }
-        public string description { get; set; }
-        public string url { get; set; }
-        public string Decodedurl { get { return HttpUtility.UrlDecode(url); } }
-        //public List<Dictionary<string,string>> Tags { get; set; }
-        public List<Tag> tags { get; set; }
-        public string filetype
-        {
-            get
-            {
-                string extension = string.Empty;
-                extension = Path.GetExtension(Decodedurl);
-                string icons = string.Empty;
-                if (extension == null) { return ""; }
-                if (extension.Equals(".doc") || extension.Equals(".docm") || extension.Equals(".docx"))
-                {
-                    icons = "fa-file-word";
-                }
-                else if (extension.Equals(".xlsx") || extension.Equals(".xlsm") || extension.Equals(".xls"))
-                {
-                    icons = "fa-file-excel";
-                }
-                else if (extension.Equals(".pptm") || extension.Equals(".pptx") || extension.Equals(".ppsx") || extension.Equals(".ppt"))
-                {
-                    icons = "fa-file-powerpoint";
-                }
-                else if (extension.Equals(".pdf"))
-                {
-                    icons = "fa-file-pdf";
-                }
-                else if (extension.Equals(".csv"))
-                {
-                    icons = "fa-file-csv";
-                }
-                else if (extension.Equals(".gif"))
-                {
-                    icons = "fa-file-image";
-                }
-                else if (extension.Equals(".png"))
-                {
-                    icons = "fa-file-image";
-                }
-                else if (extension.Equals(".jpg") || extension.Equals(".jpeg"))
-                {
-                    icons = "fa-file-image";
-                }
-                else
-                {
-                    icons = "fa-file-alt";
-                }
-                return icons;
-            }
 
-        }
-        public string filename { get { return Path.GetFileName(Decodedurl); } }
-
-    }
     public class CreateDocuments
     {
         public string Phase { get; set; }
@@ -216,7 +160,8 @@ namespace MicrofyWebApp.Models
         public string URL { get; set; }
         public List<Tag> Tags { get; set; }
         //public List<string> Tags { get; set; }
-
+        public string UploadedOn { get; set; }
+        public string UploadedBy { get; set; }
 
     }
     public class FileUploadResponse

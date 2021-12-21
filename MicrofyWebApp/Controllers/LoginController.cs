@@ -56,6 +56,7 @@ namespace MicrofyWebApp.Controllers
             HttpContext.Session.Remove("_UserRole");
             HttpContext.Session.Remove("_AuthKey");
             HttpContext.Session.Remove("_userId");
+            HttpContext.Session.Remove("_username");
             return RedirectToAction("Login");
         }
 
@@ -133,12 +134,14 @@ namespace MicrofyWebApp.Controllers
                             //_cache.Set("_AuthKey", UserResponse, cacheEntryOptions);
                             //_cache.Set("_UserId", loginDetails.UserId, cacheEntryOptions);
                             HttpContext.Session.SetString("_userId", loginDetails.UserId);
+                            
                             HttpContext.Session.SetString("_AuthKey", UserResponse);
                             LoginUserResponse = await GetLoginUserDetails(UserResponse, loginDetails.UserId);
                             _cache.Set("_GetUseDetailsList", LoginUserResponse, cacheEntryOptions);
 
                         }
                         userViewModel = JsonConvert.DeserializeObject<UserViewModel>(LoginUserResponse);
+                        HttpContext.Session.SetString("_username", userViewModel.fullName);
                         HttpContext.Session.SetString("_UserRole", userViewModel.userRole);
 
                         //_cache.Set("_UserRole", userViewModel.userRole, cacheEntryOptions);

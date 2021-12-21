@@ -91,18 +91,35 @@
                                     <div class="row col-md-12 ml-2" style="padding-top: 5px;">
                                         @Html.Raw(System.Web.HttpUtility.HtmlDecode(doc.description).Replace("\r\n", "<br />"))
                                     </div>
-                                    <div class="row col-md-12" style="padding-top: 10px;">
+                                    <div class="row col-md-12" style="padding-top: 5px;">
                                         <div class="col-md-3">
-                                            <p class="doctitle">
+                                            <p class="uploadedon">
                                                 Last Modified on
                                             </p>
                                         </div>
-                                        <div class="col-md-9" style="padding-top: 15px;">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
+                                        <div class="col-md-9" style="padding-top: 5px;">
+                                            @(doc.UploadedOn != null ? doc.UploadedOn : Model.uploadedOn.ToString("dd/MM/yyyy"))
+                                            @*@Model.uploadedOn.ToString("dd/MM/yyyy")*@
+                                        </div>
                                     </div>
+                                    @if (doc.UploadedBy != null)
+                                    {
+                                        <div class="row col-md-12">
+                                            <div class="col-md-3">
+                                                <p class="uploadedon">
+                                                    Uploaded By
+                                                </p>
+                                            </div>
+                                            <div class="col-md-9" style="padding-top: 5px;">
+                                                @doc.UploadedBy
+                                            </div>
+                                        </div>
+                                    }
+
                                     <div class="row col-md-12 ml-2" style="padding-left: 7px;">
-                                        <p class="doctitle">Tags</p>
+                                        <p class="uploadedon">Tags</p>
                                     </div>
-                                    <div class="row col-md-12">
+                                    <div class="row col-md-12" style="padding-left: 20px;">
                                         <div class="col-md-4">
                                             <table class="table" style="border: 1.5px dotted black; border-radius: 15px; height: 100%; display: inline-block;">
                                                 <tr>
@@ -271,18 +288,35 @@
                                                 @Html.Raw(System.Web.HttpUtility.HtmlDecode(subdoc.description).Replace("\r\n", "<br />"))
                                             </div>
 
-                                            <div class="row col-md-12" style="padding-top: 10px;">
+                                            <div class="row col-md-12" style="padding-top: 5px;">
                                                 <div class="col-md-3">
-                                                    <p class="doctitle">
+                                                    <p class="uploadedon">
                                                         Last Modified on
                                                     </p>
                                                 </div>
-                                                <div class="col-md-9" style="padding-top: 15px;">@Model.uploadedOn.ToString("dd/MM/yyyy")</div>
+                                                <div class="col-md-9" style="padding-top: 5px;">
+                                                    @(subdoc.UploadedOn != null ? subdoc.UploadedOn : Model.uploadedOn.ToString("dd/MM/yyyy"))
+                                                    @*@Model.uploadedOn.ToString("dd/MM/yyyy")*@
+                                                </div>
                                             </div>
-                                            <div class="row col-md-12 ml-2" style="padding-left:7px;">
-                                                <p class="doctitle">Tags</p>
+                                            @if (subdoc.UploadedBy != null)
+                                            {
+                                                <div class="row col-md-12">
+                                                    <div class="col-md-3">
+                                                        <p class="uploadedon">
+                                                            Uploaded By
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-9" style="padding-top: 5px;">
+                                                        @subdoc.UploadedBy
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <div class="row col-md-12 ml-2" style="padding-left: 7px;">
+                                                <p class="uploadedon">Tags</p>
                                             </div>
-                                            <div class="row col-md-12">
+                                            <div class="row col-md-12" style="padding-left: 20px;">
                                                 <div class="col-md-4">
                                                     <table class="table" style="border: 1.5px dotted black; height: 100%; border-radius: 15px; display: inline-block; ">
                                                         <tr>

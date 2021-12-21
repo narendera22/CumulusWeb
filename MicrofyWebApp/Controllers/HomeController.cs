@@ -134,6 +134,9 @@ namespace MicrofyWebApp.Controllers
         {
             DocumentViewModel DocModel = new DocumentViewModel();
 
+            create.UploadedOn = DateTime.Now.ToString("dd/MM/yyyy");
+            create.UploadedBy = HttpContext.Session.GetString("_username");
+
             var createDoc = JsonConvert.SerializeObject(create);
             string Requestapi = $"api/Document?{DocCode}";
 
