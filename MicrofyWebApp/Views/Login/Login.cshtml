@@ -56,7 +56,7 @@
                                 <p>Don't have an account? &nbsp;<a href="/Login/Registration">Sign up</a></p>
                             </div>
                             <div class="col-lg-4 login-btm login-button">
-                                <input type="submit" id="btnsubmit" onclick="fnlogin()" class="btn btn-outline-primary login" value="Login">
+                                <input type="submit" id="btnsubmit" class="btn btn-outline-primary login" value="Login">
                             </div>
                         </div>
                     </div>
@@ -72,7 +72,10 @@
 </body>
 </html>
 <script type="text/javascript">
-    function fnlogin() {
+
+    $(document).ready(function () {
+        $('#btnsubmit').click(function (e) {
+            e.preventDefault();
         $('#ResponseMessage').html("");
          var Username = $('#txtuname').val();
         var Password = $('#txtpwd').val();
@@ -99,17 +102,15 @@
                     }
 
                 });
-    }
-    //$('#btnsubmit').click(function () {
-    //    debugger;
 
-
-    //        });
-
-    $('.login').keypress(function (e) {
-        if (e.which == 13) {//Enter key pressed
-            fnlogin();
-        }
+        });
+        $('.login').keypress(function (e) {
+            if (e.which == 13) {//Enter key pressed
+                $('#btnsubmit').click();
+            }
+        });
     });
+
+
 </script>
 
