@@ -12,11 +12,12 @@ namespace MicrofyWebApp.Models
         public string fullName { get; set; }
         public string userRole { get; set; }
         public bool isActive { get; set; }
+        public bool isDeleted { get; set; }
         public List<projects> projects { get; set; }
         public bool StatusCode { get; set; }
         public string responseMessage { get; set; }
         public List<ListUserDetails> usersDetails { get; set; }
-        public string DefaultPassword { get;  set; }
+        public string DefaultPassword { get; set; }
     }
     public class projects
     {
@@ -35,6 +36,7 @@ namespace MicrofyWebApp.Models
         public string fullName { get; set; }
         public string userRole { get; set; }
         public bool isActive { get; set; }
+        public bool isDeleted { get; set; }
         public List<projects> projects { get; set; }
     }
 }

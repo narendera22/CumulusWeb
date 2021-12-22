@@ -69,11 +69,12 @@
                     <th>IsActive</th>
                     <th data-orderable="false"></th>
                     <th data-orderable="false"></th>
+                    <th data-orderable="false"></th>
                     <th data-orderable="false" style="border-bottom:0px;"></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var usr in Model.usersDetails)
+                @foreach (var usr in Model.usersDetails.Where(u => u.isDeleted == false))
                 {
                     <tr>
 
@@ -98,6 +99,11 @@
                         <td>
                             <a href="" class="edit" title="Edit User">
                                 <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="deleteusr" title="Delete User">
+                                <span class="glyphicon glyphicon-trash" style="font-size:25px;"></span>
                             </a>
                         </td>
                         <td>

@@ -281,6 +281,33 @@ namespace MicrofyWebApp.Controllers
             return true;
         }
 
+        public async Task<bool> DeleteUser(string username)
+        {
+            string authKey = HttpContext.Session.GetString("_AuthKey");
+
+            bool userResponse = false;
+            string Requestapi = $"api/DeleteUser/{username}?{Usercode}";
+            //string JWTResponse = (string)_cache.Get("_UserLoginResponse");
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Userurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", authKey);
+
+                HttpResponseMessage Res = await client.DeleteAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    userResponse = Res.IsSuccessStatusCode;
+                    //bool Activity = ActivityTracker("DeactivateUser", $"User {userid} has successfully deactivated {username}");
+
+                }
+
+            }
+            return userResponse;
+        }
+
         public bool ActivityTracker(string ActivityType, string ActivityDetails)
         {
             userid = HttpContext.Session.GetString("_userId");

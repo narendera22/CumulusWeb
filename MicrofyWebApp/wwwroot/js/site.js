@@ -545,6 +545,7 @@ $(function () {
             "fullName": first_name,
             "userRole": role,
             "isActive": Status,
+            "isDeleted": false,
             "projects": Projects
         }
         var ActivityTracker = {
@@ -586,6 +587,45 @@ $(function () {
                     type: 'red'
                 });
             });
+        return false;
+    });
+
+    $("a[class='deleteusr']").click(function () {
+        var username = $(this).closest("tr").find('td:eq(0)').text();
+        $.ajax({
+            type: "GET",
+            url: "/Login/DeleteUser",
+            data: { "username": username },
+            contentType: "application/json; charset=utf-8",
+            //dataType: 'json',
+            success: function (data) {
+                var title = "";
+                var type = "";
+                var content = "";
+                if (data == true) {
+                    title = "Success!!";
+                    type = "green";
+                    content = "User Deleted Successfully";
+                }
+                else {
+                    title = "Error!!";
+                    type = "red";
+                    content = "User deletion failed";
+
+                }
+                $.alert({
+                    title: title,
+                    content: content,
+                    type: type,
+                    onAction: function () {
+                        window.location.href = 'ListUser';
+                    }
+                });
+            },
+            error: function (data) {
+                console.log(JSON.stringify(data));
+            }
+        });
         return false;
     });
 });
