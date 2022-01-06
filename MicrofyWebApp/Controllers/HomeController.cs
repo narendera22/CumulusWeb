@@ -38,6 +38,8 @@ namespace MicrofyWebApp.Controllers
         string Searchurl = string.Empty;
         string SearchCode = string.Empty;
         private IConfiguration _configuration;
+        string Userurl = string.Empty;
+        string Usercode = string.Empty;
 
 
         public HomeController(ILogger<HomeController> logger, IMemoryCache memoryCache, IConfiguration configuration)
@@ -55,6 +57,8 @@ namespace MicrofyWebApp.Controllers
             ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
             Searchurl = _configuration.GetValue<string>("Values:SearchBaseUrl");
             SearchCode = _configuration.GetValue<string>("Values:SearchCode");
+            Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
+            Usercode = _configuration.GetValue<string>("Values:UsersCode");
 
         }
         public async Task<IActionResult> DashboardAsync()
@@ -270,7 +274,7 @@ namespace MicrofyWebApp.Controllers
                 Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
                 HttpResponseMessage file = new HttpResponseMessage();
                 file = response.Result;
-                Activity = ActivityTracker("DownloadDocument", $"Downloaded document from url {url}");
+                Activity = ActivityTracker("DownloadDocument", $"{Path.GetFileName(Path.GetDirectoryName(url))}/{Path.GetFileName(url)}");
                 return File(file.Content.ReadAsByteArrayAsync().Result, "application/octet-stream", filename);
             }
 
@@ -279,6 +283,78 @@ namespace MicrofyWebApp.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public async Task<IActionResult> ActivityDetailsAsync(string userid = null)
+        {
+            userid = (userid != null ? userid : HttpContext.Session.GetString("_userId"));
+            ActivityViewModel docmod = new ActivityViewModel();
+            var activitylist = string.Empty;
+            string Requestapi = $"api/GetActivity?{ActivityCode}";
+            var resp = false;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Activityurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    activitylist = Res.Content.ReadAsStringAsync().Result;
+                }
+                docmod.activity = JsonConvert.DeserializeObject<List<ActivityTracker>>(value: activitylist);
+            }
+            docmod.currentUser = HttpContext.Session.GetString("_userId");
+
+            docmod.users = await ListAllUsersAsync();
+            docmod.topModel = await ListTopModel();
+            return View(docmod);
+        }
+
+        public async Task<TopModel> ListTopModel()
+        {
+            TopModel topModel = new TopModel();
+            string Requestapi = $"api/GetTopActivity?{ActivityCode}";
+            string resp = string.Empty;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Activityurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    resp = Res.Content.ReadAsStringAsync().Result;
+                }
+                topModel = JsonConvert.DeserializeObject<TopModel>(value: resp);
+            }
+            return topModel;
+        }
+
+        public async Task<UserViewModel> ListAllUsersAsync()
+        {
+            userid = HttpContext.Session.GetString("_userId");
+            string authKey = HttpContext.Session.GetString("_AuthKey");
+
+            UserViewModel userViewModel = new UserViewModel();
+            string userResponse = string.Empty;
+            string Requestapi = $"api/GetUserList?{Usercode}";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Userurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", authKey);
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    userResponse = Res.Content.ReadAsStringAsync().Result;
+                    userViewModel.usersDetails = JsonConvert.DeserializeObject<List<ListUserDetails>>(value: userResponse);
+                }
+
+            }
+            return userViewModel;
         }
 
         public bool ActivityTracker(string ActivityType, string ActivityDetails)
@@ -300,8 +376,11 @@ namespace MicrofyWebApp.Controllers
                     resp = result.IsSuccessStatusCode;
                 }
             }
+
             return resp;
         }
+
+
 
         [HttpPost]
         public bool UpdateMetadata(UpdateMetadata metadata)
@@ -317,7 +396,7 @@ namespace MicrofyWebApp.Controllers
                 client.DefaultRequestHeaders.Add("DisplayTags", metadata.displaytags);
                 client.DefaultRequestHeaders.Add("UserTags", metadata.usertags);
                 var response = client.GetAsync(Requestapi).Result;
-               
+
                 if (response.IsSuccessStatusCode)
                 {
                     resp = response.IsSuccessStatusCode;

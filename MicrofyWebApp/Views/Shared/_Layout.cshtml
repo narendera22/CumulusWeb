@@ -20,7 +20,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container" style="padding-left: 5px;">
-            &copy; 2021 - Cumulus - Microservice Process Orientation - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; @DateTime.Now.Year - Cumulus - Microservice Process Orientation - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
 
@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="/richtexteditor/rte_theme_default.css" />
     <script type="text/javascript" src="/richtexteditor/rte.js"></script>
     <script type="text/javascript" src='/richtexteditor/plugins/all_plugins.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

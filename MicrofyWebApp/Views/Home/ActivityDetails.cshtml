@@ -1,0 +1,258 @@
+﻿@model MicrofyWebApp.Models.ActivityViewModel
+@{
+    var status = "";
+    ViewData["Title"] = "Activity";
+    Layout = "";
+
+
+
+    var Top5Users = from x in Model.topModel.TopUserName
+                    join y in Model.users.usersDetails
+                    on new { a = x.id } equals new { a = y.username }
+                    select new { y.fullName, x.Count };
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Welcome to Cumulus</title>
+    <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+
+
+    <!-- jQuery library file -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js'></script>
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>
+    <link rel="stylesheet" media="screen" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css' />
+
+    <!-- Datatable plugin CSS file -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+    <!-- Datatable plugin JS library file -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery-confirm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js"></script>
+
+    <style type="text/css">
+        .modal-dialog {
+            right: auto;
+            left: 0% !important;
+            width: 600px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .justify-content-lg-center {
+            justify-content: left !important;
+        }
+
+        .recent-activities .item {
+            padding: 0 15px;
+            border-bottom: 1px solid #eee
+        }
+
+            .recent-activities .item div[class*='col-'] {
+                padding: 15px
+            }
+
+
+        .recent-activities h5 {
+            font-weight: 400;
+            color: #333
+        }
+
+        .recent-activities p {
+            font-size: 1em;
+            color: black
+        }
+
+        .recent-activities .icon {
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            background: #f5f5f5;
+            text-align: center;
+            display: inline-block
+        }
+
+        .recent-activities .date {
+            font-size: 0.75em;
+            color: #999;
+            padding: 10px
+        }
+
+        .recent-activities .date-holder {
+            padding: 0 !important;
+            border-right: 1px solid #eee
+        }
+
+
+        .card-close {
+            position: absolute;
+            top: 15px;
+            right: 15px
+        }
+
+            .card-close .dropdown-toggle {
+                color: #999;
+                background: none;
+                border: none
+            }
+
+                .card-close .dropdown-toggle:after {
+                    display: none
+                }
+
+            .card-close .dropdown-menu {
+                border: none;
+                min-width: auto;
+                font-size: 0.9em;
+                border-radius: 0;
+                -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1), -2px -2px 3px rgba(0, 0, 0, 0.1);
+                box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1), -2px -2px 3px rgba(0, 0, 0, 0.1)
+            }
+
+                .card-close .dropdown-menu a {
+                    color: #999 !important
+                }
+
+                    .card-close .dropdown-menu a:hover {
+                        background: #796AEE;
+                        color: #fff !important
+                    }
+
+                    .card-close .dropdown-menu a i {
+                        margin-right: 10px;
+                        -webkit-transition: none;
+                        transition: none
+                    }
+
+        .breadcrumb {
+            padding: 0px 0px !important;
+            margin-bottom: 0px !important;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="imglogo" style="display:flex;">
+            <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />
+            <div class=" col-lg-8" style="padding-top:40px">
+                <center><h2><b>Activity Tracker</b></h2></center>
+            </div>
+        </div>
+        <div class="container">
+            <div id="divbreadcrumb" style="padding-bottom:5px;">
+                <ol class="breadcrumb breadcrumb-arrow">
+                    <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                    <li class="active"><span>Activity</span></li>
+                </ol>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="recent-activities card">
+                        <div class="card-header">
+                            <h3 class="h4">Top 5 Users</h3>
+                        </div>
+                        <div class="card-body no-padding">
+                            <div class="item">
+                                <div class="row">
+                                    <ol>
+                                        @foreach (var top in Top5Users.OrderByDescending(p => p.Count).Take(5))
+                                        {
+                                        <li>@top.fullName</li>
+                                        }
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="recent-activities card">
+                        <div class="card-header">
+                            <h3 class="h4">Top 5 Documents</h3>
+                        </div>
+                        <div class="card-body no-padding">
+                            <div class="item">
+                                <div class="row">
+                                    <ol>
+                                        @foreach (var top in Model.topModel.TopDocument.OrderByDescending(p => p.Count).Take(5))
+                                        {
+                                        <li>@top.filename</li>
+                                        }
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8" style="padding-left:0px;">
+                    <div class="recent-activities card">
+                        <div class="card-body no-padding"  id="recentactivity" style="overflow:auto;">
+                            @foreach (var usr in Model.users.usersDetails)
+                            {
+                            @foreach (var act in Model.activity.Where(p => p.ActivityType == "DownloadDocument").OrderBy(p => (DateTime.Now - p.LoggedTimestamp).Days))
+                                {
+                                    if (usr.username == act.UserName)
+                                    {
+                                        TimeSpan ts = DateTime.Now - act.LoggedTimestamp;
+                            <div class="item">
+                                <div class="row">
+                                    <div class="col-4 date-holder text-right">
+                                        <div class="icon"><i class="glyphicon glyphicon-time"></i></div>
+                                        <div class="date"> <span>@act.LoggedTimestamp.ToString("hh:mm tt")</span><br><span class="text-info">@ts.Days days ago</span></div>
+                                    </div>
+                                    <div class="col-8 content">
+                                        <h5>@usr.fullName</h5>
+                                        <p><b>Activity type :</b> Document Download</p>
+                                        <p><b>File Name :</b>@act.ActivityDetails</p>
+                                    </div>
+                                </div>
+                            </div>
+                                    }
+                                }
+                            }
+                        </div>
+                        <div id="pagination-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>
+<script type="text/javascript">
+   
+    var items = $("#recentactivity .item");
+    var numItems = items.length;
+    var perPage = 10;
+
+    items.slice(perPage).hide();
+
+    $('#pagination-container').pagination({
+        items: numItems,
+        itemsOnPage: perPage,
+        prevText: "&laquo;",
+        nextText: "&raquo;",
+        onPageClick: function (pageNumber) {
+            var showFrom = perPage * (pageNumber - 1);
+            var showTo = showFrom + perPage;
+            items.hide().slice(showFrom, showTo).show();
+        }
+    });
+
+</script>

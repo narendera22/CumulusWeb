@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /MicrofyWebApp/Properties/ServiceDependencies/microfy-web-dev - Web Deploy/profile.arm.json
 /MicrofyWebApp/Properties/ServiceDependencies/microfy-web - Web Deploy
+/MicrofyWebApp/Properties/ServiceDependencies/azas-ci-cumulusweb - Web Deploy/profile.arm.json
+/MicrofyWebApp/Properties/ServiceDependencies/azas-dev-ci-cumulusweb - Web Deploy/profile.arm.json

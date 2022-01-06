@@ -25,7 +25,7 @@
 
 <div class="tab-content mt-2">
     <div class="tab-pane fade show active">
-        <div class="container">
+        <div class="container" id="searchdoc">
             @if (Model.searchResults != null)
             {
                 foreach (var p in Model.searchResults)
@@ -56,29 +56,29 @@
                                 </div>
                             </div>
                             @*<div class="row col-md-12">
-            <div class="col-md-3">File Name </div>
-            <div class="col-md-9">@p.filename</div>
-        </div>*@
+                                <div class="col-md-3">File Name </div>
+                                <div class="col-md-9">@p.filename</div>
+                            </div>*@
                             @*<div class="row col-md-12">
-            <div class="col-md-3">Phase </div>
-            <div class="col-md-9">@p.phase</div>
-        </div>
-        @if (p.subPhase != null)
-        {
-            <div class="row col-md-12">
-                <div class="col-md-3">Sub Phase </div>
-                <div class="col-md-9">@p.subPhase</div>
-            </div>
-        }*@
+                                <div class="col-md-3">Phase </div>
+                                <div class="col-md-9">@p.phase</div>
+                            </div>
+                            @if (p.subPhase != null)
+                            {
+                                <div class="row col-md-12">
+                                    <div class="col-md-3">Sub Phase </div>
+                                    <div class="col-md-9">@p.subPhase</div>
+                                </div>
+                            }*@
 
                             @*<div class="row col-md-12 ml-2 docdescrip" style="padding-top: 5px; padding-left:28px; overflow-wrap: break-word;">
-            @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.highlightedContent).Replace("<br />", "\r\n"))
-        </div>*@
+                                @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.highlightedContent).Replace("<br />", "\r\n"))
+                            </div>*@
 
                             <div class="row col-md-12 ml-2 docsearch" style="padding-top: 5px;">
                                 @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.description).Replace("\r\n", "<br />"))
                             </div>
-                            
+
                             <div class="row col-md-12" style="padding-top: 5px;">
                                 <div class="col-md-3">Uploaded Date </div>
                                 <div class="col-md-9">@p.uploadedOn</div>
@@ -138,6 +138,7 @@
 
             }
         </div>
+        <div id="pagination-container"></div>
     </div>
 </div>
 <script type="text/javascript">
@@ -146,6 +147,24 @@
         var search = $('#search').val();
         //highlight(search);
         //TextWrap();
+    });
+
+    var items = $("#searchdoc .card");
+    var numItems = items.length;
+    var perPage = 10;
+
+    items.slice(perPage).hide();
+
+    $('#pagination-container').pagination({
+        items: numItems,
+        itemsOnPage: perPage,
+        prevText: "&laquo;",
+        nextText: "&raquo;",
+        onPageClick: function (pageNumber) {
+            var showFrom = perPage * (pageNumber - 1);
+            var showTo = showFrom + perPage;
+            items.hide().slice(showFrom, showTo).show();
+        }
     });
 
 </script>

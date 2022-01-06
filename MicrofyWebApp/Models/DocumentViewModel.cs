@@ -16,6 +16,8 @@ namespace MicrofyWebApp.Models
         public string selectedDocName { get; set; }
         public string UserRole { get; set; }
         public List<SearchResult> searchResults { get; set; }
+
+
     }
 
     public class DocumentRepos
@@ -179,7 +181,18 @@ namespace MicrofyWebApp.Models
         public string UserName { get; set; }
         public string ActivityType { get; set; }
         public string ActivityDetails { get; set; }
+        public DateTime LoggedTimestamp { get; set; }
+
+        public string filename
+        {
+            get
+            {
+                return Path.GetFileNameWithoutExtension(ActivityDetails);
+            }
+        }
     }
+
+
     public class Tag
     {
         public List<Dictionary<string, string>> AzureService { get; set; }
@@ -265,4 +278,26 @@ namespace MicrofyWebApp.Models
         public string subphase { get; set; }
 
     }
+
+    public class ActivityViewModel
+    {
+        public List<ActivityTracker> activity { get; set; }
+        public string currentUser { get; set; }
+        public TopModel topModel { get; set; }
+        public UserViewModel users { get; set; }
+    }
+
+    public class TopModel
+    {
+        public List<TopResponseModel> TopUserName { get; set; }
+        public List<TopResponseModel> TopDocument { get; set; }
+    }
+
+    public class TopResponseModel
+    {
+        public string id { get; set; }
+        public int Count { get; set; }
+        public string filename { get { return Path.GetFileName(id); } }
+    }
+
 }

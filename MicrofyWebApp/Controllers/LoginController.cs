@@ -226,14 +226,20 @@ namespace MicrofyWebApp.Controllers
         public async Task<IActionResult> ListUserAsync()
         {
             //string username = (string)_cache.Get("_UserId");
-
             userid = HttpContext.Session.GetString("_userId");
-            string authKey = HttpContext.Session.GetString("_AuthKey");
-
             if (userid == null)
             {
                 return RedirectToAction("Login");
             }
+            UserViewModel userViewModel = new UserViewModel();
+            userViewModel= await ListAllUsersAsync();
+            return View(userViewModel);
+        }
+        public async Task<UserViewModel> ListAllUsersAsync()
+        {
+            userid = HttpContext.Session.GetString("_userId");
+            string authKey = HttpContext.Session.GetString("_AuthKey");
+
             UserViewModel userViewModel = new UserViewModel();
             string userResponse = string.Empty;
             string Requestapi = $"api/GetUserList?{Usercode}";
@@ -252,7 +258,7 @@ namespace MicrofyWebApp.Controllers
                 }
 
             }
-            return View(userViewModel);
+            return userViewModel;
         }
         public async Task<bool> ActivateDeactivate(string username)
         {
