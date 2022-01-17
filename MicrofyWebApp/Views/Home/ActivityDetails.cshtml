@@ -146,6 +146,7 @@
             padding: 0px 0px !important;
             margin-bottom: 0px !important;
         }
+
         ul {
             list-style-type: none;
         }
@@ -206,8 +207,12 @@
                 </div>
                 <div class="col-lg-8" style="padding-left:0px;">
                     <div class="recent-activities card">
-                        <div class="card-body no-padding" id="recentactivity" style="overflow:auto;">
-                            <div class="Pull-right"><b>No of Records : @Activity.Count()</b></div>
+                        <div class="card-body no-padding" id="recentactivity" style="overflow: auto; padding: 2.25rem;">
+                            <div class="row">
+                                <input type='text' id='search' class="form-control col-md-12" placeholder='Search Text'>
+                            </div>
+                            <div class="Pull-right"><b>No of Records : <span id="totCount"></span> of  @Activity.Count()</b></div>
+
                             @foreach (var act in Activity.OrderBy(p => (DateTime.Now - p.x.LoggedTimestamp).Days))
                             {
 
@@ -257,7 +262,50 @@
             var showFrom = perPage * (pageNumber - 1);
             var showTo = showFrom + perPage;
             items.hide().slice(showFrom, showTo).show();
+            var tot = $("#recentactivity .item:visible").length;
+            $("#totCount").text(tot);
         }
+    });
+    var tot = $("#recentactivity .item:visible").length;
+    $("#totCount").text(tot);
+
+    $('#search').keyup(function () {
+
+        // Search text
+        var text = $(this).val().toLowerCase();
+
+        // Hide all content class element
+        $('#recentactivity .item').hide();
+
+        // Search
+        $('#recentactivity .item').each(function () {
+
+            if ($(this).text().toLowerCase().indexOf("" + text + "") != -1) {
+                $(this).closest('#recentactivity .item').show();
+            }
+        });
+
+        var items = $("#recentactivity .item:visible");
+        var numItems = items.length;
+        var perPage = 10;
+
+        items.slice(perPage).hide();
+
+        $('#pagination-container').pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: "&laquo;",
+            nextText: "&raquo;",
+            onPageClick: function (pageNumber) {
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+                items.hide().slice(showFrom, showTo).show();
+                var tot = $("#recentactivity .item:visible").length;
+                $("#totCount").text(tot);
+            }
+        });
+        var tot = $("#recentactivity .item:visible").length;
+        $("#totCount").text(tot);
     });
 
 </script>
