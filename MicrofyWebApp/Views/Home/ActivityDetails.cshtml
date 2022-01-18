@@ -9,6 +9,7 @@
     var Top5Users = from x in Model.topModel.TopUserName
                     join y in Model.users.usersDetails
                     on new { a = x.id } equals new { a = y.username }
+                    where y.isDeleted == false && y.isActive == true
                     select new { y.fullName, x.Count };
 
     var Activity = from x in Model.activity
@@ -178,9 +179,12 @@
                             <div class="item">
                                 <div class="row">
                                     <ul>
-                                        @foreach (var top in Top5Users.OrderByDescending(p => p.Count).Take(5))
+                                        @if (Top5Users != null)
                                         {
-                                            <li>@top.fullName (@top.Count)</li>
+                                            @foreach (var top in Top5Users.OrderByDescending(p => p.Count).Take(5))
+                                            {
+                                                <li>@top.fullName (@top.Count)</li>
+                                            }
                                         }
                                     </ul>
                                 </div>
@@ -195,9 +199,12 @@
                             <div class="item">
                                 <div class="row">
                                     <ul>
-                                        @foreach (var top in Model.topModel.TopDocument.OrderByDescending(p => p.Count).Take(5))
+                                        @if (Model.topModel.TopDocument != null)
                                         {
-                                            <li>@top.filename (@top.Count)</li>
+                                            @foreach (var top in Model.topModel.TopDocument.OrderByDescending(p => p.Count).Take(5))
+                                            {
+                                                <li>@top.filename (@top.Count)</li>
+                                            }
                                         }
                                     </ul>
                                 </div>
@@ -212,25 +219,27 @@
                                 <input type='text' id='search' class="form-control col-md-12" placeholder='Search Text'>
                             </div>
                             <div class="Pull-right"><b>No of Records : <span id="totCount"></span> of  @Activity.Count()</b></div>
-
-                            @foreach (var act in Activity.OrderBy(p => (DateTime.Now - p.x.LoggedTimestamp).Days))
+                            @if (Activity != null)
                             {
+                                @foreach (var act in Activity.OrderBy(p => (DateTime.Now - p.x.LoggedTimestamp).Days))
+                                {
 
-                                TimeSpan ts = DateTime.Now - act.x.LoggedTimestamp;
-                                <div class="item">
-                                    <div class="row">
-                                        <div class="col-4 date-holder text-right">
-                                            <div class="icon"><i class="glyphicon glyphicon-time"></i></div>
-                                            <div class="date"> <span>@act.x.LoggedTimestamp.ToString("hh:mm tt")</span><br><span class="text-info">@ts.Days days ago</span></div>
-                                        </div>
-                                        <div class="col-8 content">
-                                            <h5>@act.y.fullName</h5>
-                                            <p><b>Activity type :</b> Document Download</p>
-                                            <p><b>File Name :</b>@act.x.ActivityDetails</p>
+                                    TimeSpan ts = DateTime.Now - act.x.LoggedTimestamp;
+                                    <div class="item">
+                                        <div class="row">
+                                            <div class="col-2 date-holder text-right">
+                                                <div class="icon"><i class="glyphicon glyphicon-time"></i></div>
+                                                <div class="date"> <span>@act.x.LoggedTimestamp.ToString("hh:mm tt")</span><br><span class="text-info">@ts.Days days ago</span></div>
+                                            </div>
+                                            <div class="col-10 content">
+                                                <h5>@act.y.fullName</h5>
+                                                <p><b>Activity type :</b> Document Download</p>
+                                                <p><b>File Name :</b>@act.x.ActivityDetails</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
+                                }
                             }
                         </div>
                         <div id="pagination-container"></div>
