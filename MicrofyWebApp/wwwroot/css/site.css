@@ -256,11 +256,11 @@ a[data-toggle="collapse"] {
     position: relative;
 }
 
-.dropdown-toggle::after {
+.dropdown-toggle.menu::after {
     display: block;
     position: absolute;
     top: 50%;
-    right: 20px;
+    right: 20px !important;
     transform: translateY(-50%);
 }
 

@@ -313,7 +313,28 @@
 
 
 </form>
-
+<script type="text/javascript">
+    $('textarea#txtdescp').summernote({
+        placeholder: 'Enter Description',
+        tabsize: 2,
+        height: 100,
+        toolbar: [
+            /*['style', ['style']],*/
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            //// ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+            ////['fontname', ['fontname']],
+            //// ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            //['height', ['height']],
+            //['table', ['table']],
+            //['insert', ['link', 'picture', 'hr']],
+            ////['view', ['fullscreen', 'codeview']],
+            ['help', ['help']]
+        ],
+    });
+    $('.dropdown-toggle').dropdown();
+</script>
 <script type="text/javascript">
     $(function () {
         debugger;

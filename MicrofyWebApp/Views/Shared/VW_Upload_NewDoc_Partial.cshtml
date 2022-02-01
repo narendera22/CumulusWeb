@@ -1,4 +1,13 @@
-﻿
+﻿<style type="text/css">
+    .dropdown-toggle::after {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: 0px !important;
+        transform: translateY(-50%);
+    }
+</style>
+
 <form id="upload" enctype="multipart/form-data" method="POST">
     <div class="card">
         <nav>
@@ -25,23 +34,23 @@
 
             <div class="col-md-12">
                 <div class="form-group" style="margin-bottom: 2px; margin-top: 2px;">
-                        <label>Tags</label>
-                        <div id="dynamic-field-1" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
-                            <select name="role" style="margin-right:10px;" id="tagsddl-1" class="col-md-3 form-control selectpicker">
-                                <option value="AzureService">Azure Services</option>
-                                <option value="ProcessRelated">Process</option>
-                                <option value="TechnologyRelated">Technology</option>
-                            </select>
-                            @*<input type="text" class="col-md-4 form-control" id="txtkey-1" placeholder="key" onkeydown="addtags($(this))">
-        <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
-                            <input type="text" class="col-md-4 form-control" id="txtvalue-1" placeholder="value" onkeydown="addtags($(this))">
-                            <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                            <a href="#" class="delete" title="delete Tags" style="padding:5px; display:none;" onclick="deletetags($(this)); return false;">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </div>
+                    <label>Tags</label>
+                    <div id="dynamic-field-1" class="col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
+                        <select name="role" style="margin-right:10px;" id="tagsddl-1" class="col-md-3 form-control selectpicker">
+                            <option value="AzureService">Azure Services</option>
+                            <option value="ProcessRelated">Process</option>
+                            <option value="TechnologyRelated">Technology</option>
+                        </select>
+                        @*<input type="text" class="col-md-4 form-control" id="txtkey-1" placeholder="key" onkeydown="addtags($(this))">
+                            <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                        <input type="text" class="col-md-4 form-control" id="txtvalue-1" placeholder="value" onkeydown="addtags($(this))">
+                        <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                        <a href="#" class="delete" title="delete Tags" style="padding:5px; display:none;" onclick="deletetags($(this)); return false;">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
@@ -71,7 +80,28 @@
 
 
 </form>
-
+<script type="text/javascript">
+    $('textarea#txtdescp').summernote({
+        placeholder: 'Enter Description',
+        tabsize: 2,
+        height: 100,
+        toolbar: [
+            /*['style', ['style']],*/
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            //// ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+            ////['fontname', ['fontname']],
+            //// ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            //['height', ['height']],
+            //['table', ['table']],
+            //['insert', ['link', 'picture', 'hr']],
+            ////['view', ['fullscreen', 'codeview']],
+            ['help', ['help']]
+        ],
+    });
+    $('.dropdown-toggle').dropdown();
+</script>
 <script type="text/javascript">
     $(function () {
         //var editor1 = new RichTextEditor(document.getElementById("div_editor1"));
@@ -184,7 +214,7 @@
                     //debugger;
                     //console.log(response);
                     //var description = htmlEncode(editor1.getHTMLCode());
-                   
+
                     DocumentSave(response.encodedurl, description);
                 },
                 error: function (jqXHR, textStatus, errorMessage) {
