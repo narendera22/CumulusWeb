@@ -1,0 +1,198 @@
+﻿@model MicrofyWebApp.Models.BestPracticesViewModel
+@{
+    string FirstPanel = string.Empty;
+    string LastPanel = string.Empty;
+    string display = "block";
+    string isactivenav = "active";
+
+}
+<title>@ViewData["Title"] - Welcome to Cumulus</title>
+<!--<link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
+
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />-->
+
+
+<!-- jQuery library file -->
+<!--<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js'></script>
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>-->
+
+<div class="container">
+    <div class="col-md-12" style="padding-left: 15px;">
+        <div id="divbreadcrumb">
+            <ol class="breadcrumb breadcrumb-arrow">
+                <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                <li class=""><a href="~/Home/Dashboard">Checklist</a></li>
+                <li class="active"><span>Best Practices</span></li>
+
+            </ol>
+        </div>
+
+    </div>
+    <div class="row col-md-12">
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-8">
+            <div class="float-right" id="Proj">
+                <select name="project" id="projectname" style="margin-right:10px;" onchange="redirect();" class="form-control selectpicker">
+                    @*<option value="AzureService">Project Name</option>*@
+                    @foreach (var mod in Model.projects)
+                    {
+                        if (mod.projectName == Model.selectedProjectname)
+                        {
+                            <option selected value="@mod.projectName">@mod.projectName</option>
+                        }
+                        else
+                        {
+                            <option value="@mod.projectName">@mod.projectName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row col-md-12 pt-2">
+        <div class="col-md-12">
+            <div class="float-right">
+                <div id="btnadd">
+                    <a href="#" class="btn btn-primary"> Cancel</a>
+                    <a href="#" class="btn btn-primary" id="btnSaveChanges" onclick="GetAllValues();"> Save Changes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rounded shadow m-3">
+        <ul class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 rounded-nav" style="font-size:smaller" id="nav-tab" role="tablist">
+            @foreach (var mod in Model.projectServices.AzureTechnologies.Select((value, i) => new { i, value }))
+            {
+                FirstPanel = Model.projectServices.AzureTechnologies.First().ServiceName;
+                isactivenav = string.Empty;
+                if (FirstPanel == mod.value.ServiceName)
+                {
+                    isactivenav = "active";
+                }
+                <li class="nav-item flex-sm-fill">
+                    <a class="nav-link border-0 text-uppercase font-weight-bold  @isactivenav" role="tab" aria-controls="home" aria-selected="true" data-toggle="tab" href="#@mod.value.ServiceName.Substring(0, 3).Replace(" ", "")_@mod.i">@mod.value.ServiceName</a>
+                </li>
+            }
+
+        </ul>
+
+    </div>
+    <div class="tab-content" id="bestPracDiv">
+        @foreach (var mod in Model.projectServices.AzureTechnologies.Select((value, i) => new { i, value }))
+        {
+            FirstPanel = Model.projectServices.AzureTechnologies.First().ServiceName;
+            isactivenav = string.Empty;
+            if (FirstPanel == mod.value.ServiceName)
+            {
+                isactivenav = "active show";
+            }
+
+            <div id="@mod.value.ServiceName.Substring(0, 3).Replace(" ", "")_@mod.i" role="tabpanel" aria-labelledby="@mod.value.ServiceName.Substring(0, 3).Replace(" ", "")_@mod.i-tab" class="tab-pane py-3 fade @isactivenav">
+
+                @foreach (var inp in Model.BestPractices)
+                {
+                    if (inp.Service == mod.value.ServiceName)
+                    {
+                        foreach (var ipsection in inp.Section.Select((value, i) => new { i, value }))
+                        {
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i" aria-expanded="false" aria-controls="@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i">
+                                                @ipsection.value.ImpactArea
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            @foreach (var ipsec in inp.Section)
+                                            {
+                                                if (ipsec.ImpactArea == ipsection.value.ImpactArea)
+                                                {
+                                                    foreach (var checklist in ipsec.Checklist)
+                                                    {
+                                                        <div class="form-group" style="display:flex">
+                                                            <label class="control-label col-md-5">
+                                                                @checklist.Title
+
+                                                                @if (checklist.Description != "")
+                                                                {
+                                                                    <i class="fa fa-info-circle" aria-hidden="true" title="@checklist.Description"></i>
+                                                                }
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                @{
+                                                                    var comp = new Models.Computation();
+                                                                    comp.Service = mod.value.ServiceName;
+                                                                    comp.ImpactArea = ipsection.value.ImpactArea;
+                                                                    comp.Title = checklist.Title;
+                                                                    comp.Description = checklist.Description;
+                                                                    comp.Field = checklist.DisplayAttributes.Field;
+                                                                    comp.Mandatory = checklist.DisplayAttributes.Mandatory;
+                                                                    comp.ListOfValues = checklist.DisplayAttributes.ListOfValues;
+                                                                    comp.Value = checklist.Value;
+                                                                }
+                                                                @await Html.PartialAsync("VW_DISPLAY_ATTRIBUTES", comp)
+                                                            </div>
+                                                        </div>
+
+                                                    }
+                                                }
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    }
+                }
+            </div>
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    $('#projectname').change(function (e) {
+    //        console.log($(e.target).val());
+    //        var projectname = $(e.target).val();
+    //        window.location.href = "/Checklist/ChecklistBestPractices?projectname=" + projectname;
+
+    //    });
+
+    //    $(document).ready(function () {
+
+    //        $(".toggle-accordion").on("click", function () {
+    //            var accordionId = $(this).attr("accordion-id"),
+    //                numPanelOpen = $(accordionId + ' .collapse.in').length;
+
+    //            $(this).toggleClass("active");
+
+    //            if (numPanelOpen == 0) {
+    //                openAllPanels(accordionId);
+    //            } else {
+    //                closeAllPanels(accordionId);
+    //            }
+    //        })
+
+    //        openAllPanels = function (aId) {
+    //            $(aId + ' .panel-collapse:not(".in")').collapse('show');
+    //        }
+    //        closeAllPanels = function (aId) {
+    //            $(aId + ' .panel-collapse.in').collapse('hide');
+    //        }
+
+    //    });
+
+    //});
+
+</script>

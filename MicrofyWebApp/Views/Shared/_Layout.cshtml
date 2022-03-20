@@ -1,4 +1,23 @@
-﻿@model MicrofyWebApp.Models.PhaseViewModel
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{ 
+
+    var displaymode = HttpContextAccessor.HttpContext.Session.GetString("_UserRole");
+}
+<style type="text/css">
+    .card-deck {
+        -ms-flex-flow: row wrap;
+        flex-flow: row wrap;
+        margin-right: -16px;
+        margin-left: -31px !important;
+        border: none !important;
+    }
+
+    .card {
+        border: none !important;
+    }
+   
+</style>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,20 +25,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Welcome to Cumulus</title>
     <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
-
-
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    @*<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" integrity="sha512-YdYyWQf8AS4WSB0WWdc3FbQ3Ypdm0QCWD2k4hgfqbQbRCJBEgX0iAegkl2S1Evma5ImaVXLBeUkIlP6hQ1eYKQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
-
 </head>
 <body>
+
     <main role="main">
-        @RenderBody()
+        <div class="container">
+            <div class="wrapper">
+                @Html.Partial("_MenuPartial")
+                <div id="content">
+
+                    <nav class="navbar navbar-default">
+                        <div class="container-fluid col-md-12">
+                            <div class="col-md-3">
+                                <button type="button" id="sidebarCollapse" class="btn btn-dark">
+                                    <i class="fas fa-align-left"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 0px;">
+                                    <input type="text" class="form-control" id="search" onkeyup="funcRedirect()" placeholder="Search..">
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                @* <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                        <i class="fas fa-align-justify"></i>
+                                    </button> *@
+                                @*<button class="btn btn-dark" type="button" onclick="return false;">
+                                        <i class="fa fa-search"></i>
+                                    </button>*@
+                                <a href="#" class="btn btn-dark" onclick="SearchDocument()"><i class="fa fa-search" aria-hidden="true"></i></a>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="dropdown" style="text-align: center;">
+                                    <button class="btn btn-dark" type="button" id="myaccout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="fas fa-user"></span>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
+                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");" style="display:@displaymode;"><i class="fas fa-tasks"></i> Projects</a>
+                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");" style="display:@displaymode;"><i class="fas fa-user"></i> Users</a>
+                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");" style="display:@displaymode;"><i class="fas fa-briefcase"></i> Activity</a>
+                                        <a class="dropdown-item" href="~/Login/Logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer class="border-top footer text-muted">
@@ -32,20 +98,25 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery/dist/jquery-confirm.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/paginationjs.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js" integrity="sha512-RCgrAvvoLpP7KVgTkTctrUdv7C6t7Un3p1iaoPr1++3pybCyCsCZZN7QEHMZTcJTmcJ7jzexTO+eFpHk4OCFAg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>*@
     @*<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>*@
 
     @*<link rel="stylesheet" href="/richtexteditor/rte_theme_default.css" />*@
     @*<script type="text/javascript" src="/richtexteditor/rte.js"></script>
-    <script type="text/javascript" src='/richtexteditor/plugins/all_plugins.js'></script>*@
+        <script type="text/javascript" src='/richtexteditor/plugins/all_plugins.js'></script>*@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
-
 
     @RenderSection("Scripts", required: false)
 </body>

@@ -90,8 +90,29 @@ namespace MicrofyWebApp.Controllers
 
                 }
             }
+            HttpContext.Session.SetString("_selPhase", "Dashboard");
+            HttpContext.Session.SetString("_selSubPhase", string.Empty);
             return View(PhaseModel);
         }
+
+        public async Task<IActionResult> RepositoryAsync(string Phase, string SubPhase)
+        {
+            DocumentViewModel DocModel = new DocumentViewModel();
+
+            DocModel = await GetDocumentListAsync();
+            if (SubPhase == "" || SubPhase == string.Empty || SubPhase == null)
+            {
+                SubPhase = string.Empty;
+            }
+            DocModel.selectedPhase = Phase;
+            DocModel.selectedSubPhases = SubPhase;
+            DocModel.UserRole = HttpContext.Session.GetString("_UserRole");
+            HttpContext.Session.SetString("_selPhase", Phase);
+            HttpContext.Session.SetString("_selSubPhase", SubPhase);
+
+            return View(DocModel);
+        }
+
         [HttpPost]
         public async Task<FileUploadResponse> UploadAsync(string phase, string subphase, IFormFile file, string tags, string displaytags)
         {

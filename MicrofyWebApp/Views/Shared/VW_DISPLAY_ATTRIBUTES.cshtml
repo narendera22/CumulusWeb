@@ -1,0 +1,35 @@
+﻿@model MicrofyWebApp.Models.Computation
+@{
+    string[] dropval = Model.ListOfValues.Split(",");
+}
+
+@if (Model.Field == "Dropdown")
+{
+    if (Model.Value == "" || Model.Value == null)
+    {
+        <select class="form-control selectpicker" data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
+            <option value="">Select</option>
+            @foreach (var val in dropval)
+            {
+                <option value="@val">@val</option>
+            }
+        </select>
+    }
+    else
+    {
+        <select class="form-control selectpicker" data-service="@Model.Service" data-impactarea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
+            <option value="">Select</option>
+            @foreach (var val in dropval)
+            {
+                if (val == Model.Value)
+                {
+                    <option value="@val" selected>@val</option>
+                }
+                else
+                {
+                    <option value="@val">@val</option>
+                }
+            }
+        </select>
+    }
+}

@@ -1,0 +1,343 @@
+﻿@model List<MicrofyWebApp.Models.ProjectViewModel>
+@{
+    var status = "";
+    ViewData["Title"] = "Projects";
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Welcome to Cumulus</title>
+    <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+
+
+    <!-- jQuery library file -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js'></script>
+    @*<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>
+        <link rel="stylesheet" media="screen" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css' />*@
+
+    <!-- Datatable plugin CSS file -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+    <!-- Datatable plugin JS library file -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery-confirm.js"></script>
+
+
+    <style type="text/css">
+        .modal-dialog {
+            right: auto;
+            left: 0% !important;
+            width: 600px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .justify-content-lg-center {
+            justify-content: left !important;
+        }
+
+        .input-group-addon {
+            padding: 6px 20px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!--<div class="imglogo" style="display:flex;">-->
+        @*<img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />*@
+        <!--<div class=" col-lg-8" style="padding-top:40px">
+                <center><h2><b>User Management</b></h2></center>
+            </div>
+        </div>-->
+        <div id="divbreadcrumb" style="padding-bottom:5px;">
+            <ol class="breadcrumb breadcrumb-arrow">
+                <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                <li class="active"><span>Projects</span></li>
+            </ol>
+        </div>
+        <!--HTML table with student data-->
+        <table id="tableID" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Project Name</th>
+                    <th>Customer Name</th>
+                    <th>Application Name</th>
+                    <th data-orderable="false"></th>
+                    <th data-orderable="false" style="border-bottom:0px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.ProjectName</td>
+                        <td>@p.CustomerName</td>
+                        <td>@p.Application</td>
+                        @if (p.AzureTechnologies != null)
+                        {
+                            <td style="display:none;"> @Html.Raw(Json.Serialize(p.AzureTechnologies))</td>
+                        }
+                        else
+                        {
+                            <td style="display:none;"></td>
+                        }
+                        <td>
+                            <a href="" class="prjedit" title="Edit Project">
+                                <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
+                            </a>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="form-group">
+            <div class="col-md-4 control-label" style="padding-bottom:15px;">
+                <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="projectEditPopup" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="width:750px;margin:auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Edit Project Details</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="well form-horizontal" action=" " method="post" id="UpdateProjectList_form">
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Project Name</label>
+                                <div class="col-md-6 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                        <input name="projectname" id="projectname" placeholder="Project Name" class="form-control" required readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Customer Name</label>
+                                <div class="col-md-6 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                        <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Application Name</label>
+                                <div class="col-md-6 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-cog"></i></span>
+                                        <input name="applicationname" id="applicationname" placeholder="Application Name" class="form-control" type="text" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span>  Services</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <div id="dynamic-Serv-field-1" class=" col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
+                                            <span class="input-group-addon col-sm-1"><i class="glyphicon glyphicon-briefcase"></i></span>
+                                            <input name="servicename" id="servicename-1" placeholder="Services" class="col-md-4 form-control" type="text" onkeydown="addser($(this))" required>
+
+                                            <a href="#" class="add" title="Add Service" style="padding:5px; display:block;" onclick="Viewser(); return false;">
+                                                <i class="fas fa-plus"></i>
+                                            </a>
+                                            <a href="#" class="delete" title="delete Service" style="padding:5px; display:none;" onclick="deleteser($(this)); return false;">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Button -->
+                            <div class="form-group">
+                                <div class="col-md-4 control-label">
+                                    <button type="submit" class="btn btn-warning">Update <span class="glyphicon glyphicon-send"></span></button>
+                                </div>
+                            </div>
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+<script type="text/javascript">
+        /* Initialization of datatable */
+        $(document).ready(function () {
+            $('#tableID').DataTable({});
+
+        });
+
+
+
+   $('#UpdateProjectList_form').submit(function () {
+       var projectname = $('#projectname').val();
+       var customername = $('#customername').val();
+       var applicationname = $('#applicationname').val();
+
+       var $services = $('.dynamic-field');
+       var AzureTechnologies = [];
+       $services.each(function (key, value) {
+           var servname = $("#servicename-" + (key + 1)).val();
+           if (servname != "") {
+               var obj = {};
+               obj = {
+                   "ServiceName": servname
+               };
+               AzureTechnologies.push(obj);
+           }
+       });
+
+    var ProjectDetails = {
+        "ProjectName": projectname,
+        "CustomerName": customername,
+        "Application": applicationname,
+        "UserId": "",
+        "AzureTechnologies": AzureTechnologies
+       }
+
+        var redirecturl = "/Login/UpdateProject";
+       $.post(redirecturl, { "project": ProjectDetails }, function (data) {
+            var title = "";
+            var type = "";
+            if (data.statusCode == true) {
+                title = "Success!!";
+                type = "green";
+            }
+            else {
+                title = "Error!!";
+                type = "red";
+            }
+            $.alert({
+                    title: title,
+                    content: data.responseMessage,
+                    type: type,
+                    onAction: function () {
+                        window.location.href = '@Url.Action("ProjectService","Login")';
+                    }
+                });
+        })
+        .fail(function (response) {
+           $.alert({
+                title: 'Error!!',
+                content: response,
+                alignMiddle: true,
+                type: 'red'
+            });
+        });
+    return false;
+
+
+});
+</script>
+<script type="text/javascript">
+    $(function () {
+        $("a[class='prjedit']").click(function () {
+            debugger;
+            var projectname = $(this).closest("tr").find('td:eq(0)').text();
+            var customername = $(this).closest("tr").find('td:eq(1)').text();
+            var applicationame = $(this).closest("tr").find('td:eq(2)').text();
+            var servicename = $(this).closest("tr").find('td:eq(3)').text();
+            var json = "";
+            if (servicename != "")
+                var json = $.parseJSON(servicename);
+
+            $('#projectname').val(projectname);
+            $('#customername').val(customername);
+            $('#applicationname').val(applicationame);
+
+            $('.dynamic-field').slice(1).remove();
+            for (var key = 0; key < json.length; key++) {
+                if (key == 0) {
+                    $('#servicename-1').val(json[key].serviceName);
+                }
+                else {
+                    Viewser();
+                    $('#servicename-' + (key + 1)).val(json[key].serviceName);
+                }
+            }
+
+            $("#projectEditPopup").modal("show");
+            return false;
+        });
+
+    });
+
+    var servclassName = ".dynamic-field";
+    var servcount = 0;
+    var servfield = "";
+    var servmaxFields = 10;
+
+    function addser(e) {
+        if (sertotalFields() != servmaxFields) {
+            if (e.parent().data('tags') === 'hold') { return false; }
+            else { e.parent().data('tags', 'hold'); }
+            servcount = sertotalFields() + 1;
+            servfield = $("#dynamic-Serv-field-1").clone();
+            servfield.attr("id", "dynamic-Serv-field-" + servcount);
+            servfield.find("#servicename-1").attr("id", "servicename-" + servcount);
+            servfield.find('#servicename-' + servcount).removeAttr('required')
+            servfield.attr('data-tags', 'add');
+            servfield.find("input").val("");
+            servfield.find("a.delete").show();
+            $(servclassName + ":last").after($(servfield));
+
+        }
+    }
+
+    function sertotalFields() {
+        return $(servclassName).length;
+    }
+
+    function deleteser(e) {
+        e.parent().remove();
+        servcount = sertotalFields();
+        if (servcount <= 1) { $(".dynamic-field").data('tags', 'add'); }
+        else {
+            $(servclassName + ":last").data('tags', 'add')
+        }
+        return false;
+    }
+
+    function Viewser() {
+        if (sertotalFields() != servmaxFields) {
+            servcount = sertotalFields() + 1;
+            servfield = $("#dynamic-Serv-field-1").clone();
+            servfield.attr("id", "dynamic-Serv-field-" + servcount);
+            servfield.find("#servicename-1").attr("id", "servicename-" + servcount);
+            servfield.attr('data-tags', 'add');
+            servfield.find("input").val("");
+            servfield.find("a.delete").show();
+            $(servclassName + ":last").after($(servfield));
+
+        }
+    }
+</script>

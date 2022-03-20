@@ -7,57 +7,63 @@ var count = 0;
 var field = "";
 var maxFields = 10;
 
+var prjclassName = ".dynamic-field";
+var prjcount = 0;
+var prjfield = "";
+var prjmaxFields = 5;
+
 $(document).ready(function () {
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
     });
 
-    $(".anchor-link").on("click", function () {
-        $('#search').val("");
-        $(".anchor-link").removeClass("active");
-        $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
-        $(this).addClass("active");
-        // $(this).toggleClass("active");
 
-        var htmltemplate;
-        if ($(this).siblings().length === 0) {
-            //$(".anchor-link").siblings().removeClass('show');
-            $(this).addClass('active');
-            var thismenu = $(this).find('a').text();
-            // var subtabmenu=$('#documentpnl').find('nav').find('#nav-tab').find('a.nav-item.nav-link.active').text();
-            $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
-            htmltemplate = $('<li class="active"> <span>' + thismenu + '</span></li>');
-            $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
-            var Phase = thismenu;
-            Getdocuments(Phase);
+    //$(".anchor-link").on("click", function () {
+    //    $('#search').val("");
+    //    $(".anchor-link").removeClass("active");
+    //    $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
+    //    $(this).addClass("active");
+    //    // $(this).toggleClass("active");
 
-        }
-        else {
-            $(this).siblings().addClass('show');
-            $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
-            htmltemplate = $('<li class="active"> <span>Dashboard </span></li></ol>');
-            $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
-            $(this).siblings().find('.subanchor-link').find('a').first().trigger('click');
-            $(this).removeClass('active');
-        }
-    });
+    //    var htmltemplate;
+    //    if ($(this).siblings().length === 0) {
+    //        //$(".anchor-link").siblings().removeClass('show');
+    //        $(this).addClass('active');
+    //        var thismenu = $(this).find('a').text();
+    //        // var subtabmenu=$('#documentpnl').find('nav').find('#nav-tab').find('a.nav-item.nav-link.active').text();
+    //        $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
+    //        htmltemplate = $('<li class="active"> <span>' + thismenu + '</span></li>');
+    //        $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
+    //        var Phase = thismenu;
+    //        Getdocuments(Phase);
 
-
-
-    $(".subanchor-link").on("click", function () {
-        $('#search').val("");
-        $(".anchor-link").removeClass("active");
-        $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
-        $(this).addClass('active');
-        var phase = $(this).parent().parent().find('a.dropdown-toggle').text();
-        var subphase = $(this).find('a').text();
-        $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
-        var htmltemplate = $('<li><a href="#" onclick="subanchorlink()">' + phase + '</a></li><li class="active"> <span>' + subphase + '</span></li>');
-        $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
-        Getdocuments(phase, subphase);
+    //    }
+    //    else {
+    //        $(this).siblings().addClass('show');
+    //        $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
+    //        htmltemplate = $('<li class="active"> <span>Dashboard </span></li></ol>');
+    //        $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
+    //        $(this).siblings().find('.subanchor-link').find('a').first().trigger('click');
+    //        $(this).removeClass('active');
+    //    }
+    //});
 
 
-    });
+
+    //$(".subanchor-link").on("click", function () {
+    //    $('#search').val("");
+    //    $(".anchor-link").removeClass("active");
+    //    $('#sidebar').find('.list-unstyled.collapse.show').find('.subanchor-link.active').removeClass("active");
+    //    $(this).addClass('active');
+    //    var phase = $(this).parent().parent().find('a.dropdown-toggle').text();
+    //    var subphase = $(this).find('a').text();
+    //    $('#divbreadcrumb').find('ol.breadcrumb').find('li.homelink').siblings().remove();
+    //    var htmltemplate = $('<li><a href="#" onclick="subanchorlink()">' + phase + '</a></li><li class="active"> <span>' + subphase + '</span></li>');
+    //    $('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
+    //    Getdocuments(phase, subphase);
+
+
+    //});
     //$(".homelink").on("click", function () {
     //    $("#newdocdiv").hide();
     //    $("#dashboard").show();
@@ -233,8 +239,8 @@ function UploadDocument(Documentname) {
             //window.location.replace(data.newUrl);
             $("#uploadDocument").html(data);
             //$("#newdocdiv").hide();
-            $("#SerachDocument").hide();
-            $("#dashboard").hide();
+            //$("#SerachDocument").hide();
+            //$("#dashboard").hide();
             $("#uploadDocument").show();
             $("#documentpnl").hide();
 
@@ -257,8 +263,8 @@ function UploadNewDocument() {
             //window.location.replace(data.newUrl);
             $("#uploadDocument").html(data);
             //$("#newdocdiv").hide();
-            $("#SerachDocument").hide();
-            $("#dashboard").hide();
+            //$("#SerachDocument").hide();
+            //$("#dashboard").hide();
             $("#uploadDocument").show();
             $("#documentpnl").hide();
 
@@ -507,16 +513,41 @@ $(function () {
         var userid = $(this).closest("tr").find('td:eq(0)').text();
         var first_name = $(this).closest("tr").find('td:eq(1)').text();
         var role = $(this).closest("tr").find('td:eq(2)').text();
-        var cust_name = $(this).closest("tr").find('td:eq(3)').text();
-        var project_name = $(this).closest("tr").find('td:eq(4)').text();
-        var Status = $(this).closest("tr").find('td:eq(5)').find(".switch .togglecheckbox").is(":checked");
-        var pwd = $(this).closest("tr").find('td:eq(6)').find(".pwd").val();
+        //var cust_name = $(this).closest("tr").find('td:eq(3)').text();
+        var proj_cus_name = $(this).closest("tr").find('td:eq(4)').text();
+        var Status = $(this).closest("tr").find('td:eq(3)').find(".switch .togglecheckbox").is(":checked");
+        var pwd = $(this).closest("tr").find('td:eq(5)').find(".pwd").val();
+        var json = $.parseJSON(proj_cus_name)
+
         $('#userid').val(userid);
         $('#first_name').val(first_name);
         $('#role').val(role);
-        $('#cust_name').val(cust_name);
-        $('#project_name').val(project_name);
+        //$('#cust_name').val(cust_name);
+        //$('#project_name').val(project_name);
         $('#userid').val(userid);
+        //json.each(function (key, value) {
+        //    if (key == 0) {
+        //        $('#project_name-1').val(value.ProjectName);
+        //        $('#cust_name-1').val(value.CustomerName);
+        //    }
+        //    else {
+        //        Viewprj();
+        //        $('#project_name-' + (key + 1)).val(value.ProjectName);
+        //        $('#cust_name-' + (key + 1)).val(value.CustomerName);
+        //    }
+        //});
+        $('.dynamic-field').slice(1).remove();
+        for (var key = 0; key < json.length; key++) {
+            if (key == 0) {
+                $('#project_name-1').val(json[key].projectName);
+                $('#cust_name-1').val(json[key].customerName);
+            }
+            else {
+                Viewprj();
+                $('#project_name-' + (key + 1)).val(json[key].projectName);
+                $('#cust_name-' + (key + 1)).val(json[key].customerName);
+            }
+        }
         if (Status) {
             $(".switch").find("#statusCheck").prop("checked", true);
         }
@@ -530,14 +561,15 @@ $(function () {
         var userid = $(this).closest("tr").find('td:eq(0)').text();
         var first_name = $(this).closest("tr").find('td:eq(1)').text();
         var role = $(this).closest("tr").find('td:eq(2)').text();
-        var cust_name = $(this).closest("tr").find('td:eq(3)').text();
-        var project_name = $(this).closest("tr").find('td:eq(4)').text();
-        var Status = $(this).closest("tr").find('td:eq(5)').find(".switch .togglecheckbox").is(":checked");
-        var pwd = $(this).closest("tr").find('td:eq(6)').find(".pwd").val();
-        var Projects = [{
-            "ProjectName": project_name,
-            "CustomerName": cust_name
-        }];
+        //var cust_name = $(this).closest("tr").find('td:eq(3)').text();
+        var proj_cus_name = $(this).closest("tr").find('td:eq(4)').text();
+        var Status = $(this).closest("tr").find('td:eq(3)').find(".switch .togglecheckbox").is(":checked");
+        var pwd = $(this).closest("tr").find('td:eq(5)').find(".pwd").val();
+        var Projects = $.parseJSON(proj_cus_name)
+        //var Projects = [{
+        //    "ProjectName": project_name,
+        //    "CustomerName": cust_name
+        //}];
 
         var UserDetails = {
             "username": userid,
@@ -629,3 +661,136 @@ $(function () {
         return false;
     });
 });
+
+
+
+function addprj(e) {
+    if (prjtotalFields() != prjmaxFields) {
+        if (e.parent().data('tags') === 'hold') { return false; }
+        else { e.parent().data('tags', 'hold'); }
+        prjcount = prjtotalFields() + 1;
+        prjfield = $("#dynamic-PrjCus-field-1").clone();
+        prjfield.attr("id", "dynamic-PrjCus-field-" + prjcount);
+        prjfield.find("#cust_name-1").attr("id", "cust_name-" + prjcount);
+        prjfield.find("#project_name-1").attr("id", "project_name-" + prjcount);
+        prjfield.find('#cust_name-' + prjcount).removeAttr('required')
+        prjfield.find('#project_name-' + prjcount).removeAttr('required')
+        prjfield.attr('data-tags', 'add');
+        prjfield.find("input").val("");
+        prjfield.find("a.delete").show();
+        $(prjclassName + ":last").after($(prjfield));
+
+    }
+}
+
+function prjtotalFields() {
+    return $(prjclassName).length;
+}
+
+function deleteprj(e) {
+    e.parent().remove();
+    prjcount = prjtotalFields();
+    if (prjcount <= 1) { $(".dynamic-field").data('tags', 'add'); }
+    else {
+        $(prjclassName + ":last").data('tags', 'add')
+    }
+    return false;
+}
+
+function Viewprj() {
+    if (prjtotalFields() != prjmaxFields) {
+        prjcount = prjtotalFields() + 1;
+        prjfield = $("#dynamic-PrjCus-field-1").clone();
+        prjfield.attr("id", "dynamic-PrjCus-field-" + prjcount);
+        //field.find("#txtkey-1").attr("id", "txtkey-" + count);
+        prjfield.find("#cust_name-1").attr("id", "cust_name-" + prjcount);
+        prjfield.find("#project_name-1").attr("id", "project_name-" + prjcount);
+        prjfield.attr('data-tags', 'add');
+        prjfield.find("input").val("");
+        prjfield.find("a.delete").show();
+        $(prjclassName + ":last").after($(prjfield));
+
+    }
+}
+function funcRedirect() {
+    var search = $('#search').val();
+    if (search == "") {
+        window.location.href = "Dashboard";
+    }
+}
+
+function GetAllValues() {
+    var projectname = $("#projectname").val();
+    var dataele = {
+        "BestPractices": buildJsonInputData($('#bestPracDiv')),
+        "ProjectName": projectname
+    };
+
+    var redirecturl = "/Checklist/InsertBestPractices";
+    $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
+        var title, Message, type;
+        if (data.isSuccess) {
+            title = 'Success!!';
+            Message = data.data;
+            type = "green";
+            $.alert({
+                title: title,
+                content: Message,
+                type: type,
+                onAction: function () {
+                    window.location.href = '/Checklist/ChecklistBestPractices?projectname=' + projectname;
+                }
+            });
+        }
+        else {
+            title = 'Error!!';
+            Message = data.data;
+            type = "red";
+            $.alert({
+                title: title,
+                content: Message,
+                type: type
+            });
+        }
+
+    });
+}
+
+function buildJsonInputData(form) {
+    var select = form.find('select'),
+        input = form.find('input'),
+        textarea = form.find('textarea');
+
+    var displayattr = {};
+    var InputData = [];
+    for (var i = 0; i < select.length; i++) {
+        var selectval;
+        selectval = $(select[i]).val();
+        displayattr = {
+            "Mandatory": $(select[i]).data('mandatory'),
+            "Field": $(select[i]).data('field'),
+            "ListOfValues": $(select[i]).data('listOfValues')
+        };
+        var ddlvalue = {
+            "Service": $(select[i]).data('service'),
+            "ImpactArea": $(select[i]).data('impactarea'),
+            "Title": $(select[i]).data('title'),
+            "Description": $(select[i]).data('description'),
+            "Value": selectval,
+            "Mandatory": $(select[i]).data('mandatory'),
+            "Field": $(select[i]).data('field'),
+            "ListOfValues": $(select[i]).data('listOfValues')
+        };
+        InputData.push(ddlvalue);
+    }
+
+
+    return InputData;
+}
+
+function redirect() {
+    console.log($('#projectname').val());
+    var projectname = $('#projectname').val();
+    window.location.href = "/Checklist/ChecklistBestPractices?projectname=" + projectname;
+
+}

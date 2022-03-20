@@ -1,0 +1,129 @@
+﻿@model IEnumerable<MicrofyWebApp.Models.PhaseViewModel>
+
+@{
+    //var sideMenu = Model.phases;
+    var phase = Model;
+    ViewData["Title"] = "Dashboard";
+    var displaymode = "none";
+
+    var keyword = new List<string>();
+    var subphaseDoc = 0;
+}
+<nav id="sidebar">
+
+    <section class="app">
+        <aside class="sidebar">
+
+            <nav class="sidebar-nav">
+                <div class="sidebar-header">
+                    <div class="imglogo">
+                        <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />
+                    </div>
+                </div>
+                <ul>
+                    <li>
+                        <a href="#"><i class="far fa-folder-open"></i> <span>Repository</span></a>
+                        <ul class="nav-flyout">
+                            @*@for (int j = 0; j < phase.Count; j++)
+                            {
+                                <li>
+                                    <div class="anchor-link">
+                                        @if (phase[j].subPhase != null)
+                                        {
+                                            <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu">@phase[j].name</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#">@phase[j].name</a>
+                                        }
+                                    </div>
+                                    @if (phase[j].subPhase != null)
+                                    {
+                                        var subphase = phase[j].subPhase;
+                                        <ul class="collapse list-unstyled show" id="@phase[j].name">
+                                            @for (int i = 0; i < subphase.Count; i++)
+                                            {
+                                                <li class="subanchor-link">
+                                                    <a href="#">@subphase[i]</a>
+                                                </li>
+                                            }
+                                        </ul>
+
+                                    }
+
+                                </li>
+                            }*@
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="far fa-clipboard-list"></i> <span class="">Checklist</span></a>
+                        <ul class="nav-flyout">
+                            <li>
+                                <a href="#">Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="@("window.location.href='" + @Url.Action("ChecklistPlan", "Checklist") + "'");">Plan</a>
+                            </li>
+                            <li>
+                                <a href="#">Deliverables</a>
+                            </li>
+                            <li>
+                                <a href="#">Checklist</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="far fa-clipboard-check"></i> <span class="">Compliance</span></a>
+                        <ul class="nav-flyout">
+                            <li>
+                                <a href="#">Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="#">Plan</a>
+                            </li>
+                            <li>
+                                <a href="#">Deliverables</a>
+                            </li>
+                            <li>
+                                <a href="#">Checklist</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </nav>
+        </aside>
+    </section>
+    @*<ul class="list-unstyled">
+            @for (int j = 0; j < phase.Count; j++)
+            {
+                <li>
+                    <div class="anchor-link">
+                        @if (phase[j].subPhase != null)
+                        {
+                            <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu">@phase[j].name</a>
+                        }
+                        else
+                        {
+                            <a href="#">@phase[j].name</a>
+                        }
+                    </div>
+                    @if (phase[j].subPhase != null)
+                    {
+                        var subphase = phase[j].subPhase;
+                        <ul class="collapse list-unstyled show" id="@phase[j].name">
+                            @for (int i = 0; i < subphase.Count; i++)
+                            {
+                                <li class="subanchor-link">
+                                    <a href="#">@subphase[i]</a>
+                                </li>
+                            }
+                        </ul>
+
+                    }
+
+                </li>
+            }
+        </ul>*@
+
+</nav>

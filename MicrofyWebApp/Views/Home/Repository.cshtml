@@ -1,0 +1,511 @@
+﻿@model MicrofyWebApp.Models.DocumentViewModel
+@{
+    var template = Model;
+    //var DocumentsLen = Model.documentRepository.Count;
+    var displaymode = "none";
+    if (Model.UserRole == "Administrator")
+    {
+        displaymode = "block";
+    }
+}
+
+<style type="text/css">
+    [data-letters]:before {
+        content: attr(data-letters);
+        display: inline-block;
+        font-size: 1em;
+        width: 2.5em;
+        height: 2.5em;
+        line-height: 2.5em;
+        text-align: center;
+        border-radius: 50%;
+        background: #3498db;
+        vertical-align: middle;
+        margin-right: 0.5em;
+        color: white;
+    }
+
+    .bg-info {
+        background-color: #ffffff !important;
+    }
+</style>
+
+<div class="col-md-12" style="padding-left: 15px;">
+    <div id="divbreadcrumb">
+        <ol class="breadcrumb breadcrumb-arrow">
+            <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+            <li class="homelink"><a href="~/Home/Dashboard">Repository</a></li>
+            @if (Model.selectedSubPhases == null || Model.selectedSubPhases == string.Empty)
+            {
+                <li class="active"><span>@Model.selectedPhase</span></li>
+            }
+            else
+            {
+                <li class="homelink"><a href="~/Home/Dashboard">@Model.selectedPhase</a></li>
+                <li class="active"><span>@Model.selectedSubPhases</span></li>
+            }
+
+        </ol>
+    </div>
+</div>
+<div class="container-fluid" id="documentpnl" style="display: block;">
+    <div class="row col-md-12 mb-2">
+        <div class="col-md-8">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-docrepo-tab" data-toggle="tab" href="#nav-docrepo" role="tab" aria-controls="nav-docrepo" aria-selected="true">Document repository</a>
+                    <a class="nav-item nav-link" id="nav-planexe-tab" data-toggle="tab" href="#nav-planexe" role="tab" aria-controls="nav-planexe" aria-selected="false" style="display: none;">Plan and execution</a>
+                    <a class="nav-item nav-link" id="nav-compliance-tab" data-toggle="tab" href="#nav-compliance" role="tab" aria-controls="nav-compliance" aria-selected="false" style="display: none;">Compliance</a>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-4">
+            <div class="float-right" id="newdocdiv" style="display:@displaymode;">
+                <a href="#" class="btn btn-primary" onclick="UploadNewDocument()"><i class="fa fa-upload" aria-hidden="true"></i> New document</a>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content mt-2" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-docrepo" role="tabpanel" aria-labelledby="nav-docrepo-tab">
+            <div class="container" id="docrepo">
+                @*<div class="row col-md-12 mb-2">
+                        <div class="col-md-9">
+                            <div class="form-check float-right" style="padding-top: 10px;">
+                                <input class="form-check-input" type="checkbox" value="" id="selectAll">
+                                Select all/Deselect all
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="float-right">
+                                <a href="#" class="btn btn-primary"><i class="fa fa-download" aria-hidden="true"></i> Download all</a>
+                            </div>
+                        </div>
+                    </div>*@
+                @if (Model.documentRepository != null)
+                {
+                    foreach (var p in Model.documentRepository.Where(i => i.phase == Model.selectedPhase))
+                    {
+                        if (p.documents != null)
+                        {
+                            foreach (var doc in p.documents)
+                            {
+                                <div class="card mb-3">
+                                    <div class="card-body docrepo">
+                                        <div class="row col-md-12">
+
+                                            <div class="form-check" style="display:flex">
+                                                @*<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">*@
+                                                @*<div class="imglogo">
+                                                        <img alt="Logo" src="@doc.filetype" />
+                                                    </div>*@
+                                                <i class="fas @doc.filetype fa-3x"></i>
+                                                <p class="doctitle">@doc.name</p>
+                                            </div>
+                                            @* <div class="col-md-11">
+                                                     <p>Skill Mapping - JD Template</p>
+                                                </div> *@
+
+                                        </div>
+                                        <div class="row col-md-12 ml-2" style="padding-top: 5px;">
+                                            @Html.Raw(System.Web.HttpUtility.HtmlDecode(doc.description).Replace("\r\n", "<br />"))
+                                        </div>
+                                        <div class="row col-md-12" style="padding-top: 5px;">
+                                            <div class="col-md-3">
+                                                <p class="uploadedon">
+                                                    Last Modified on
+                                                </p>
+                                            </div>
+                                            <div class="col-md-9" style="padding-top: 5px;">
+                                                @(doc.UploadedOn != null ? doc.UploadedOn : Model.uploadedOn.ToString("dd/MM/yyyy"))
+                                                @*@Model.uploadedOn.ToString("dd/MM/yyyy")*@
+                                            </div>
+                                        </div>
+                                        @if (doc.UploadedBy != null)
+                                        {
+                                            <div class="row col-md-12">
+                                                <div class="col-md-3">
+                                                    <p class="uploadedon">
+                                                        Uploaded By
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-9" style="padding-top: 5px;">
+                                                    @doc.UploadedBy
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div class="row col-md-12 ml-2" style="padding-left: 7px;">
+                                            <p class="uploadedon">Tags</p>
+                                        </div>
+                                        <div class="row col-md-12" style="padding-left: 20px;">
+                                            <div class="col-md-4">
+                                                <table class="table" style="border: 1.5px dotted black; border-radius: 15px; height: 100%; display: inline-block;">
+                                                    <tr>
+                                                        <td class="col-md-4">
+                                                            <p style="text-align:center;"><b>Azure Services</b></p>
+                                                            <div class="tagcloud01">
+                                                                <ul>
+                                                                    @foreach (var tags in doc.tags)
+                                                                    {
+                                                                        if (tags.AzureService != null)
+                                                                        {
+                                                                            foreach (var type in tags.AzureService)
+                                                                            {
+                                                                                foreach (var keyval in type)
+                                                                                {
+                                                                                    <li>
+                                                                                        <a onclick="SearchTag('@keyval.Value')" href="#">
+                                                                                            <span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span>
+                                                                                        </a>
+
+                                                                                    </li>
+                                                                                }
+                                                                            }
+
+                                                                        }
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <table class="table" style="border: 1.5px dotted black; border-radius: 15px; height: 100%; display: inline-block; ">
+                                                    <tr>
+                                                        <td class="col-md-4">
+                                                            <p style="text-align:center;"><b>Process</b></p>
+                                                            <div class="tagcloud01">
+                                                                <ul>
+                                                                    @foreach (var tags in doc.tags)
+                                                                    {
+                                                                        if (tags.ProcessRelated != null)
+                                                                        {
+                                                                            foreach (var type in tags.ProcessRelated)
+                                                                            {
+                                                                                foreach (var keyval in type)
+                                                                                {
+                                                                                    <li>
+                                                                                        <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
+
+                                                                                    </li>
+                                                                                }
+                                                                            }
+
+                                                                        }
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <table class="table" style="border: 1.5px dotted black; border-radius: 15px; height: 100%; display: inline-block;">
+                                                    <tr>
+                                                        <td class="col-md-4">
+                                                            <p style="text-align:center;"><b>Technology</b></p>
+                                                            <div class="tagcloud01">
+                                                                <ul>
+                                                                    @foreach (var tags in doc.tags)
+                                                                    {
+                                                                        if (tags.TechnologyRelated != null)
+                                                                        {
+                                                                            foreach (var type in tags.TechnologyRelated)
+                                                                            {
+                                                                                foreach (var keyval in type)
+                                                                                {
+                                                                                    <li>
+                                                                                        <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
+
+                                                                                    </li>
+
+                                                                                }
+                                                                            }
+
+                                                                        }
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-12" style="padding-top:5px;">
+                                            <div class="col-md-4">
+                                                <div class="float-left" style="display:@displaymode; padding-left:5px;">
+                                                    <button type="submit" class="btn btn-primary" id="btndelete" onclick='DeleteDocument("@doc.Decodedurl", "@doc.name")'>
+                                                        <i class="fa fa-trash" aria-hidden="true"></i>  Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="float-right" style="display:flex;">
+                                                    <div>
+
+                                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.Decodedurl, phase=p.phase,subphase=string.Empty }) + "'");">
+                                                            <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                                        </button>
+                                                    </div>
+                                                    <div style="display:@displaymode; padding-left:5px;">
+                                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
+                                                            <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <table class="table ml-2" style="display: none;">
+                                            <tr>
+                                                <td>Feedback</td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary">
+                                                        <i class="fa fa-save" aria-hidden="true"></i>  Submit
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else if (p.subphase != null)
+                        {
+                            foreach (var sub in p.subphase.Where(i => i.name == Model.selectedSubPhases))
+                            {
+                                if (sub.documents != null)
+                                {
+                                    foreach (var subdoc in sub.documents)
+                                    {
+                                        <div class="card mb-3">
+                                            <div class="card-body docrepo">
+                                                <div class="row col-md-12">
+                                                    <div class="form-check" style="display:flex">
+                                                        @*<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">*@
+                                                        @*<div class="imglogo">
+                                                                <img alt="Logo" src="@subdoc.filetype" />
+                                                            </div>*@
+                                                        <i class="fas @subdoc.filetype fa-3x"></i>
+
+                                                        <p class="doctitle">@subdoc.name</p>
+                                                    </div>
+                                                    @* <div class="col-md-11">
+                                                             <p>Skill Mapping - JD Template</p>
+                                                        </div> *@
+                                                </div>
+                                                <div class="row col-md-12 ml-2" style="padding-top:5px">
+                                                    @Html.Raw(System.Web.HttpUtility.HtmlDecode(subdoc.description).Replace("\r\n", "<br />"))
+                                                </div>
+
+                                                <div class="row col-md-12" style="padding-top: 5px;">
+                                                    <div class="col-md-3">
+                                                        <p class="uploadedon">
+                                                            Last Modified on
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-9" style="padding-top: 5px;">
+                                                        @(subdoc.UploadedOn != null ? subdoc.UploadedOn : Model.uploadedOn.ToString("dd/MM/yyyy"))
+                                                        @*@Model.uploadedOn.ToString("dd/MM/yyyy")*@
+                                                    </div>
+                                                </div>
+                                                @if (subdoc.UploadedBy != null)
+                                                {
+                                                    <div class="row col-md-12">
+                                                        <div class="col-md-3">
+                                                            <p class="uploadedon">
+                                                                Uploaded By
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-9" style="padding-top: 5px;">
+                                                            @subdoc.UploadedBy
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                                <div class="row col-md-12 ml-2" style="padding-left: 7px;">
+                                                    <p class="uploadedon">Tags</p>
+                                                </div>
+                                                <div class="row col-md-12" style="padding-left: 20px;">
+                                                    <div class="col-md-4">
+                                                        <table class="table" style="border: 1.5px dotted black; height: 100%; border-radius: 15px; display: inline-block; ">
+                                                            <tr>
+                                                                <td class="col-md-4">
+                                                                    <p style="text-align:center;"><b>Azure Services</b></p>
+                                                                    <div class="tagcloud01">
+                                                                        <ul>
+                                                                            @foreach (var tags in subdoc.tags)
+                                                                            {
+                                                                                if (tags.AzureService != null)
+                                                                                {
+                                                                                    foreach (var type in tags.AzureService)
+                                                                                    {
+                                                                                        foreach (var keyval in type)
+                                                                                        {
+                                                                                            <li>
+                                                                                                <a onclick="SearchTag('@keyval.Value')" href="#">
+                                                                                                    <span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span>
+                                                                                                </a>
+
+                                                                                            </li>
+                                                                                        }
+                                                                                    }
+
+                                                                                }
+                                                                            }
+                                                                        </ul>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <table class="table" style="border: 1.5px dotted black; height: 100%; border-radius: 15px; display: inline-block;">
+                                                            <tr>
+                                                                <td class="col-md-4">
+                                                                    <p style="text-align:center;"><b>Process</b></p>
+                                                                    <div class="tagcloud01">
+                                                                        <ul>
+                                                                            @foreach (var tags in subdoc.tags)
+                                                                            {
+                                                                                if (tags.ProcessRelated != null)
+                                                                                {
+                                                                                    foreach (var type in tags.ProcessRelated)
+                                                                                    {
+                                                                                        foreach (var keyval in type)
+                                                                                        {
+                                                                                            <li>
+                                                                                                <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
+
+                                                                                            </li>
+                                                                                        }
+                                                                                    }
+
+                                                                                }
+                                                                            }
+                                                                        </ul>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <table class="table" style="border: 1.5px dotted black; height: 100%; border-radius: 15px; display: inline-block; ">
+                                                            <tr>
+                                                                <td class="col-md-4">
+                                                                    <p style="text-align:center;"><b>Technology</b></p>
+                                                                    <div class="tagcloud01">
+                                                                        <ul>
+                                                                            @foreach (var tags in subdoc.tags)
+                                                                            {
+                                                                                if (tags.TechnologyRelated != null)
+                                                                                {
+                                                                                    foreach (var type in tags.TechnologyRelated)
+                                                                                    {
+                                                                                        foreach (var keyval in type)
+                                                                                        {
+                                                                                            <li>
+                                                                                                <a onclick="SearchTag('@keyval.Value')" href="#"><span class="badge rounded-pill bg-info text-dark" data-letters="@keyval.Value.Substring(0,1).ToUpper()">@keyval.Value</span></a>
+
+                                                                                            </li>
+
+                                                                                        }
+                                                                                    }
+
+                                                                                }
+                                                                            }
+                                                                        </ul>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row col-md-12" style="padding-top:5px;">
+                                                    <div class="col-md-4">
+                                                        <div class="float-left" style="display:@displaymode; padding-left:5px;">
+                                                            <button type="submit" class="btn btn-primary" id="btndelete" onclick='DeleteDocument("@subdoc.Decodedurl", "@subdoc.name")'>
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>  Delete
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="float-right" style="display:flex;">
+                                                            <div>
+
+                                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.Decodedurl, phase=p.phase,subphase=sub.name}) + "'");">
+                                                                    <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                                                </button>
+                                                            </div>
+                                                            <div style="display:@displaymode; padding-left:5px;">
+                                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
+                                                                    <i class="fa fa-upload" aria-hidden="true"></i>  Upload
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+                                                <table class="table ml-2" style="display: none;">
+                                                    <tr>
+                                                        <td>Feedback</td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-primary">
+                                                                <i class="fa fa-save" aria-hidden="true"></i>  Submit
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+            </div>
+            <div id="pagination-container"></div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="container-fluid" id="uploadDocument" style="display: none;">
+
+</div>
+<script type="text/javascript">
+    //$('#selectAll').click(function () {
+    //    if (this.checked) {
+    //        $(':checkbox').each(function () {
+    //            this.checked = true;
+    //        });
+    //    } else {
+    //        $(':checkbox').each(function () {
+    //            this.checked = false;
+    //        });
+    //    }
+    //});
+
+
+</script>

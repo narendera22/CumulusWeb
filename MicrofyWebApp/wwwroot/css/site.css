@@ -91,7 +91,7 @@ body {
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', sans-serif !important;
     background: #fafafa;
 }
 
@@ -298,7 +298,7 @@ a.article:hover {
     background-color: #181a5f;
 }
 
-div.anchor-link.active {
+div.anchor-link.active > a {
     color: #fff;
     background: #181a5f;
 }
@@ -497,7 +497,7 @@ ul.breadcrumb {
         border: 0;
         border-radius: 0;
         border-bottom: 2px solid #181a5f;
-        font-size: 1.3rem;
+        font-size: 1.0em;
     }
 
 
@@ -893,6 +893,7 @@ input:checked + .slider:before {
 .highlight {
     background-color: yellow;
 }
+
 .simple-pagination ul {
     margin: 0 0 20px;
     padding: 0;
@@ -925,3 +926,221 @@ input:checked + .slider:before {
 .simple-pagination .next.current {
     background: #ffc000;
 }
+
+a {
+    text-decoration: none;
+    transition: all 0.6s ease;
+}
+
+    a:hover {
+        transition: all 0.6s ease;
+    }
+
+.app {
+    height: 100vh;
+}
+/* ------------- Sidebar ----------------*/
+.sidebar {
+    position: absolute;
+    width: 15em;
+    height: 100%;
+    top: 0;
+    overflow: hidden;
+    background-color: #19222a;
+    -webkit-transform: translateZ(0);
+    visibility: visible;
+    -webkit-backface-visibility: hidden;
+}
+
+    .sidebar header {
+        background-color: #09f;
+        width: 100%;
+        display: block;
+        padding: 0.75em 1em;
+    }
+/* ------------- Sidebar Nav ----------------*/
+.sidebar-nav {
+    position: fixed;
+    background-color: #fff;
+    height: 100%;
+    font-weight: 400;
+    font-size: 1.0em;
+    overflow: auto;
+    padding-bottom: 6em;
+    z-index: 9;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* ------------- Chev elements ----------------*/
+    /* ------------- Nav-Flyout ----------------*/
+    /* ------------- Hover ----------------*/
+}
+
+    .sidebar-nav ul {
+        list-style: none;
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+
+        .sidebar-nav ul li {
+            margin-left: 0;
+            padding-left: 0;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 15px;
+            /* ------------- Sidebar: icons ----------------*/
+        }
+
+            .sidebar-nav ul li a {
+                color: rgb(24 26 95);
+                font-size: 0.75em;
+                padding: 1.05em 1em;
+                position: relative;
+                display: block;
+            }
+
+                .sidebar-nav ul li a:hover {
+                    background-color: rgba(0, 0, 0, 0.9);
+                    transition: all 0.6s ease;
+                }
+
+            .sidebar-nav ul li i {
+                font-size: 1.8em;
+                padding-right: 0.5em;
+                width: 9em;
+                display: inline;
+                vertical-align: middle;
+            }
+
+    .sidebar-nav > ul > li > a:after {
+        content: '\f054';
+        font-family: FontAwesome;
+        font-size: 0.5em;
+        width: 10px;
+        color: #fff;
+        position: absolute;
+        right: 0.75em;
+        top: 45%;
+    }
+
+    .sidebar-nav .nav-flyout {
+        position: absolute;
+        background-color: #fff;
+        z-index: 9;
+        left: 3.9em;
+        top: 0;
+        height: 100vh;
+        transform: translateX(100%);
+        transition: all 0.5s ease;
+        margin-top: 110px;
+    }
+
+        .sidebar-nav .nav-flyout a:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+    .sidebar-nav ul > li:hover .nav-flyout {
+        transform: translateX(0);
+        transition: all 0.5s ease;
+    }
+
+@media (min-width: 576px) {
+    .rounded-nav .nav-link {
+        border-radius: 50rem !important;
+    }
+}
+
+
+.panel-default > .panel-heading {
+    color: #333;
+    background-color: #fff;
+    border-color: #e4e5e7;
+    padding: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    .panel-default > .panel-heading a {
+        display: block;
+        padding: 5px 5px;
+        font-size: 1.2rem !important;
+        background:#eee;
+    }
+
+        .panel-default > .panel-heading a:after {
+            content: "";
+            position: relative;
+            top: 1px;
+            display: inline-block;
+           /* font-family: 'Glyphicons Halflings';
+            font-style: normal;
+            font-weight: 400;*/
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            float: right;
+            transition: transform .25s linear;
+            -webkit-transition: -webkit-transform .25s linear;
+        }
+
+        .panel-default > .panel-heading a[aria-expanded="true"] {
+            background-color: #559ce6;
+        }
+
+            .panel-default > .panel-heading a[aria-expanded="true"]:after {
+                content: "\2212";
+                -webkit-transform: rotate(180deg);
+                transform: rotate(180deg);
+            }
+
+        .panel-default > .panel-heading a[aria-expanded="false"]:after {
+            content: "\002b";
+            -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+        }
+
+/*.nav-pills {
+    width: 450px;
+}
+
+.nav-item {
+    width: 50%;
+}*/
+
+.nav-pills .nav-link {
+    font-weight: bold;
+    padding-top: 13px;
+    text-align: center;
+    background: #acacac;
+    color: #022b58;
+    border-radius: 30px;
+    /*height: 100px;*/
+}
+
+    .nav-pills .nav-link.active {
+        background: #007bff;
+        color: #000;
+    }
+
+.tab-content {
+    /*position: absolute;
+    width: 450px;
+    height: auto;
+    margin-top: -50px;*/
+    background: #fff;
+    color: #000;
+    border-radius: 30px;
+    z-index: 1000;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.4);
+    padding: 30px;
+    margin-bottom: 50px;
+}
+
+    .tab-content button {
+        border-radius: 15px;
+        width: 100px;
+        margin: 0 auto;
+        float: right;
+    }

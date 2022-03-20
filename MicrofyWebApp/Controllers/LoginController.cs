@@ -29,19 +29,26 @@ namespace MicrofyWebApp.Controllers
         string Activityurl = string.Empty;
         string ActivityCode = string.Empty;
         string userid = string.Empty;
+        string Phaseurl = string.Empty;
+        string PhaseCode = string.Empty;
+        string Projecturl = string.Empty;
+        string ProjectCode = string.Empty;
 
         public LoginController(ILogger<LoginController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _logger = logger;
             _cache = memoryCache;
             _configuration = configuration;
-            
+
             Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
             Usercode = _configuration.GetValue<string>("Values:UsersCode");
             DefaultPassword = _configuration.GetValue<string>("Values:DefaultPassword");
             Activityurl = _configuration.GetValue<string>("Values:ActivityBaseUrl");
             ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
-          
+            Phaseurl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
+            PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
+            Projecturl = _configuration.GetValue<string>("Values:ProjectBaseUrl");
+            ProjectCode = _configuration.GetValue<string>("Values:ProjectCode");
         }
 
         public IActionResult Login()
@@ -57,6 +64,12 @@ namespace MicrofyWebApp.Controllers
             HttpContext.Session.Remove("_AuthKey");
             HttpContext.Session.Remove("_userId");
             HttpContext.Session.Remove("_username");
+            HttpContext.Session.Remove("_UserDet");
+            HttpContext.Session.Remove("_config");
+            HttpContext.Session.Remove("_selMainMenu");
+            HttpContext.Session.Remove("_selPhase");
+            HttpContext.Session.Remove("_selSubPhase");
+
             return RedirectToAction("Login");
         }
 
@@ -134,7 +147,7 @@ namespace MicrofyWebApp.Controllers
                             //_cache.Set("_AuthKey", UserResponse, cacheEntryOptions);
                             //_cache.Set("_UserId", loginDetails.UserId, cacheEntryOptions);
                             HttpContext.Session.SetString("_userId", loginDetails.UserId);
-                            
+
                             HttpContext.Session.SetString("_AuthKey", UserResponse);
                             LoginUserResponse = await GetLoginUserDetails(UserResponse, loginDetails.UserId);
                             _cache.Set("_GetUseDetailsList", LoginUserResponse, cacheEntryOptions);
@@ -143,6 +156,11 @@ namespace MicrofyWebApp.Controllers
                         userViewModel = JsonConvert.DeserializeObject<UserViewModel>(LoginUserResponse);
                         HttpContext.Session.SetString("_username", userViewModel.fullName);
                         HttpContext.Session.SetString("_UserRole", userViewModel.userRole);
+                        HttpContext.Session.SetString("_UserDet", LoginUserResponse);
+
+                        HttpContext.Session.SetString("_selMainMenu", string.Empty);
+                        HttpContext.Session.SetString("_selPhase", string.Empty);
+                        HttpContext.Session.SetString("_selSubPhase", string.Empty);
 
                         //_cache.Set("_UserRole", userViewModel.userRole, cacheEntryOptions);
                         userViewModel.StatusCode = Res.IsSuccessStatusCode;
@@ -152,6 +170,25 @@ namespace MicrofyWebApp.Controllers
                     {
                         userViewModel.StatusCode = Res.IsSuccessStatusCode;
                         userViewModel.responseMessage = await Res.Content.ReadAsStringAsync();
+                    }
+                }
+                PhaseViewModel PhaseModel = new PhaseViewModel();
+                DocumentViewModel documentModel = new DocumentViewModel();
+                string Phase;
+                string phaseRequestapi = $"api/GetPhaseListFunction?{PhaseCode}";
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(Phaseurl);
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpResponseMessage Res = await client.GetAsync(phaseRequestapi);
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        Phase = Res.Content.ReadAsStringAsync().Result;
+                        PhaseModel = JsonConvert.DeserializeObject<PhaseViewModel>(Phase);
+                        PhaseModel.documentRepository = documentModel.documentRepository;
+                        PhaseModel.UserRole = HttpContext.Session.GetString("_UserRole");
+                        HttpContext.Session.SetString("_config", Phase);
                     }
                 }
             }
@@ -185,7 +222,7 @@ namespace MicrofyWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<UserViewModel> UpdateUser(UserViewModel users,ActivityTracker activityTracker)
+        public async Task<UserViewModel> UpdateUser(UserViewModel users, ActivityTracker activityTracker)
         {
             string authKey = HttpContext.Session.GetString("_AuthKey");
 
@@ -232,7 +269,7 @@ namespace MicrofyWebApp.Controllers
                 return RedirectToAction("Login");
             }
             UserViewModel userViewModel = new UserViewModel();
-            userViewModel= await ListAllUsersAsync();
+            userViewModel = await ListAllUsersAsync();
             return View(userViewModel);
         }
         public async Task<UserViewModel> ListAllUsersAsync()
@@ -335,6 +372,88 @@ namespace MicrofyWebApp.Controllers
                 }
             }
             return resp;
+        }
+
+        public async Task<IActionResult> ProjectService()
+        {
+            string userdet = HttpContext.Session.GetString("_UserDet");
+
+            UserViewModel userViewModel = new UserViewModel();
+            userViewModel = JsonConvert.DeserializeObject<UserViewModel>(userdet);
+
+            List<ProjectViewModel> project = new List<ProjectViewModel>();
+            List<ProjectViewModel> projRespon = new List<ProjectViewModel>();
+
+            foreach (var prj in userViewModel.projects)
+            {
+                ProjectViewModel prjmodel = new ProjectViewModel();
+                prjmodel.ProjectName = prj.projectName;
+                prjmodel.CustomerName = prj.customerName;
+                project.Add(prjmodel);
+            }
+            string projectResponse = string.Empty;
+            string Requestapi = $"api/GetProjects/{userViewModel.username}?{ProjectCode}";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Projecturl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    projectResponse = Res.Content.ReadAsStringAsync().Result;
+                    projRespon = JsonConvert.DeserializeObject<List<ProjectViewModel>>(value: projectResponse);
+                }
+
+            }
+            if (projRespon.Count > 0)
+            {
+                var projectval = from x in project
+                                 join y in projRespon
+                                     on new { a = x.ProjectName, b = x.CustomerName } equals new { a = y.ProjectName, b = y.CustomerName }
+                                 select new { x, y };
+
+                foreach (var match in projectval)
+                {
+                    match.x.Application = String.Format("{0}", match.y.Application);
+                    match.x.AzureTechnologies = match.y.AzureTechnologies;
+                }
+            }
+
+
+            return View(project);
+        }
+
+        [HttpPost]
+        public async Task<ProjectViewModel> UpdateProject(ProjectViewModel project)
+        {
+
+            string UserResponse = string.Empty;
+            project.UserId= HttpContext.Session.GetString("_userId");
+            var createDoc = JsonConvert.SerializeObject(project);
+            ProjectViewModel projectViewModel = new ProjectViewModel();
+            string Requestapi = $"api/UpdateProject?{ProjectCode}";
+            
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Projecturl);
+                var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json")).Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    projectViewModel.StatusCode = result.IsSuccessStatusCode;
+                    projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+                    
+                }
+                else
+                {
+                    projectViewModel.StatusCode = result.IsSuccessStatusCode;
+                    projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+
+                }
+            }
+            return projectViewModel;
         }
 
     }

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
@@ -23,8 +24,8 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js'></script>
-    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>
-    <link rel="stylesheet" media="screen" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css' />
+    @*<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>
+    <link rel="stylesheet" media="screen" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css' />*@
 
     <!-- Datatable plugin CSS file -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
@@ -51,11 +52,17 @@
 
 <body>
     <div class="container">
-        <div class="imglogo" style="display:flex;">
-            <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />
-            <div class=" col-lg-8" style="padding-top:40px">
-                <center><h2><b>User Management</b></h2></center>
-            </div>
+        <!--<div class="imglogo" style="display:flex;">-->
+        @*<img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />*@
+        <!--<div class=" col-lg-8" style="padding-top:40px">
+            <center><h2><b>User Management</b></h2></center>
+        </div>
+    </div>-->
+        <div id="divbreadcrumb" style="padding-bottom:5px;">
+            <ol class="breadcrumb breadcrumb-arrow">
+                <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                <li class="active"><span>Users</span></li>
+            </ol>
         </div>
         <!--HTML table with student data-->
         <table id="tableID" class="display" style="width:100%">
@@ -64,9 +71,10 @@
                     <th>User Name</th>
                     <th>Full Name</th>
                     <th>Role</th>
-                    <th>Project Name</th>
-                    <th>Customer Name</th>
+                    @*<th>Project Name</th>
+                    <th>Customer Name</th>*@
                     <th>IsActive</th>
+                    <th data-orderable="false"></th>
                     <th data-orderable="false"></th>
                     <th data-orderable="false"></th>
                     <th data-orderable="false"></th>
@@ -81,17 +89,20 @@
                         <td>@usr.username</td>
                         <td>@usr.fullName</td>
                         <td>@usr.userRole</td>
-                        @foreach (var p in usr.projects)
+                        @*@foreach (var p in usr.projects)
                         {
                             <td>@p.projectName.</td>
                             <td>@p.customerName</td>
-                        }
+                        }*@
                         @if (usr.isActive) { status = "checked"; } else { status = ""; }
                         <td>
                             <label class="switch">
                                 <input type="checkbox" @status class="togglecheckbox" data-username="@usr.username">
                                 <span class="slider round"></span>
                             </label>
+                        </td>
+                        <td style="display:none;">
+                            @Html.Raw(Json.Serialize(usr.projects))
                         </td>
                         <td style="display:none;">
                             <input name="pwd" type="password" class="pwd" value="@usr.password" />
@@ -122,7 +133,7 @@
         </div>
     </div>
     <div class="modal fade" id="UserEditPopup" role="dialog" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="width:750px;margin:auto;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLongTitle">Edit User Details</h3>
@@ -162,28 +173,52 @@
                                             <option value="">Select Role</option>
                                             <option value="Administrator">Administrator</option>
                                             <option value="User">User</option>
-                                            @*<option>Auditor</option>*@
+                                            <option value="ProjectOwner">Project Owner</option>
+                                            <option value="Auditor">Auditor</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label"><span style="color:red;">*</span>  Customer Name</label>
-                                <div class="col-md-6 inputGroupContainer">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                        <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" type="text" required>
+                            @*<div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:red;">*</span>  Customer Name</label>
+                                    <div class="col-md-6 inputGroupContainer">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                            <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" type="text" required>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:red;">*</span>  Project Name</label>
+                                    <div class="col-md-6 inputGroupContainer">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                            <input name="project_name" id="project_name" placeholder="Project Name" class="form-control" type="text" required>
+                                        </div>
+                                    </div>
+                                </div>*@
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label"><span style="color:red;">*</span>  Project Name</label>
-                                <div class="col-md-6 inputGroupContainer">
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span>  Project & Customer Name</label>
+                                <div class="col-md-8 inputGroupContainer">
                                     <div class="input-group">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                        <input name="project_name" id="project_name" placeholder="Project Name" class="form-control" type="text" required>
+                                        @*<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                            <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" type="text" required>*@
+                                        <div id="dynamic-PrjCus-field-1" class=" col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
+                                            <span class="input-group-addon col-sm-1"><i class="glyphicon glyphicon-user"></i></span>
+                                            <input name="project_name" id="project_name-1" placeholder="Project Name" class="col-md-4 form-control" type="text" onkeydown="addprj($(this))" required>
+
+                                            <span class="input-group-addon col-sm-1"><i class="glyphicon glyphicon-user"></i></span>
+                                            <input name="cust_name" id="cust_name-1" placeholder="Customer Name" class="col-md-4 form-control" type="text" required>
+                                            <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="Viewprj(); return false;">
+                                                <i class="fas fa-plus"></i>
+                                            </a>
+                                            <a href="#" class="delete" title="delete Tags" style="padding:5px; display:none;" onclick="deleteprj($(this)); return false;">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -254,16 +289,31 @@
 
    $('#UpdateUserList_form').submit(function () {
        var username = $('#first_name').val();
-       var custname = $('#cust_name').val();
-       var projectname = $('#project_name').val();
+       //var custname = $('#cust_name').val();
+       //var projectname = $('#project_name').val();
        var role = $('#role').val();
        var userid = $('#userid').val();
        var status = $(".switch").find("#statusCheck").is(":checked");
        var password = $('#password').val();
-    var Projects = [{
-        "ProjectName": projectname,
-        "CustomerName": custname
-    }];
+    //var Projects = [{
+    //    "ProjectName": projectname,
+    //    "CustomerName": custname
+    //}];
+
+       var $projCus = $('.dynamic-field');
+       var prj = [];
+       $projCus.each(function (key, value) {
+           var Proj = $("#project_name-" + (key + 1)).val();
+           var Cust = $("#cust_name-" + (key + 1)).val();
+           if (Proj != "") {
+               var obj = {};
+               obj = {
+                   "ProjectName": Proj,
+                   "CustomerName": Cust
+               };
+               prj.push(obj);
+           }
+       });
 
     var UserDetails = {
         "username": userid,
@@ -271,7 +321,7 @@
         "fullName": username,
         "userRole": role,
         "isActive": status,
-        "projects": Projects
+        "projects": prj
        }
        var ActivityTracker = {
            "UserName": userid,
@@ -312,4 +362,7 @@
 
 
 });
+</script>
+<script type="text/javascript">
+
 </script>

@@ -1,0 +1,283 @@
+{
+	"BestPractices":[
+		{
+			"Service":"Azure APIM",
+			"Section":[
+				{
+					"ImpactArea":"Platform Performance, Availability & Scalability",
+					"Checklist":[
+						{
+							"Title":"APIM SKU Selection",
+							"Description":"SKU for an APIM must be selected to cover enterprise needs, whereas keeping the overall cost of ownership low. Typically for Production environment, Premium and for Non-Production Environment, Development SKUs are selected. Refer https://docs.microsoft.com/en-us/azure/api-management/api-management-features for details.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Autoscaling Enablement",
+							"Description":"APIM allows autoscaling to be enabled for Standard and Premium SKUs. This allows the number of instances to automatically scale up or down depending upon the load. This allows APIs to be served without any performance impact during heavy load. Refer https://docs.microsoft.com/en-us/azure/api-management/api-management-howto-autoscale for details.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Availability Zone Settings",
+							"Description":"APIM allows setting up of Availability Zones for the APIM instances. This allows the instances to be spread such that any outage within the Azure Data Center is mitigated. Refer https://docs.microsoft.com/en-us/azure/api-management/zone-redundancy for details.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Multi-Region Deployment",
+							"Description":"APIM can be deployed across regions which allows mitigating risks due to region outage. It is recommended to spread APIM instances, hosting critical APIs, across regions. This feature also helps to reduce network latency. Refer https://docs.microsoft.com/en-us/azure/api-management/api-management-howto-deploy-multi-region for details.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Region Selection/Paired Regions",
+							"Description":"The selection of DR region for APIM must be selected based on the published paired region for Azure. This allows efficient replication and performance as Microsoft has deployed resources for pairing of Azure components across regions. Refer https://docs.microsoft.com/en-us/azure/availability-zones/cross-region-replication-azure for details.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						}
+					]
+				},
+				{
+					"ImpactArea":"Networking and Security",
+					"Checklist":[
+						{
+							"Title":"Placement of APIM Platform in VNet",
+							"Description":"APIM instances must be appropriately placed in VNet, especially when it is meant to access on-premise resources. Ideally APIM instances must be internally placed inside virtual network and exposed through a web application firewall. Refer https://docs.microsoft.com/en-us/azure/api-management/api-management-howto-integrate-internal-vnet-appgateway on how to deploy.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Layer 7 Protection",
+							"Description":"All APIM instances must be protected using a layer 7 Web Application Firewall (WAF). This is to protect the APIM instances against different types of malicious attacks.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"WAF Rules and Exclusions",
+							"Description":"The WAFs protecting the APIM instances must be properly hardened. Rules must be excluded based on the recommendations provided by Microsoft. No other rules must be disabled. Refer https://docs.microsoft.com/en-us/azure/api-management/api-management-howto-integrate-internal-vnet-appgateway for rules exclusion list and https://docs.microsoft.com/en-us/azure/web-application-firewall/ag/application-gateway-crs-rulegroups-rules for list of rules in Azure Application Gateway.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"NSG Rules",
+							"Description":"APIM instances placed inside a Vnet must be appropriately protected using proper NSG rules. Care must be taken to enable traffic only for those IPs/Ports for which it is required. The minimum port openings required for APIM is provided here: https://docs.microsoft.com/en-us/azure/api-management/api-management-using-with-vnet.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"On-Premise / Other Cloud Connectivity",
+							"Description":"APIM instances which are exposing APIs hosted on-premise or other cloud, must be either hosted through a self-hosted gateway or must have a robust low latency connectivity with on-premise/other cloud platforms. ExpressRoute is the preferred mode. ",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						}
+					]
+				},
+				{
+					"ImpactArea":"General Security Best Practices",
+					"Checklist":[
+						{
+							"Title":"Key Vault Usage",
+							"Description":"All certificates and secrets must be kept in Key Vault and referred from it. This includes SSL certificates.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"RBAC Implementation",
+							"Description":"Access to Azure Portal and APIM instances must be regulated using proper permissions in place. Typically, manual changes must be avoided for higher environments. Automated deployments through SPN must be set up and the SPN in use must have only those priviledges which are required to perform the action.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Microsoft Defender for Cloud Implementation",
+							"Description":"All APIs must be protected using Microsoft Defender for Cloud to the extent possible. Appropriate controls and monitoring processes must be in place. Refer https://docs.microsoft.com/en-us/azure/defender-for-cloud/defender-for-cloud-introduction for more details.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Enabling Azure DDoS Protection",
+							"Description":"Azure DDoS protection must be in place so as to protect the resources of the APIM platform. Refer https://docs.microsoft.com/en-us/azure/ddos-protection/ddos-protection-overview for more details.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Authentication Provider Integration",
+							"Description":"All APIs must be protected using proper authentication. Proper and robust authentication provider, such as Azure Active Directory, must be used. Custom built provider must be avoided to the extent possible.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Secure Handling of Audit & Diagnostic Logs",
+							"Description":"Audit and Diagnostic Logs for APIs should be collected to the extent required and allowed by law. Generally these logs contain sensitive data. Hence, these logs must be kept at a secure location with proper access controls in place.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Security of Data in Transit",
+							"Description":"All communications with APIM and all calls to APIs must be done over secured channels. Typically, TLS Ver. 1.2 and above must be mandated in APIM and WAF. The minimum SSL certificate size must be 2048 bits.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						}
+					]
+				},
+				{
+					"ImpactArea":"Platform Management & Governance",
+					"Checklist":[
+						{
+							"Title":"Process for Platform Change",
+							"Description":"A definitive process must be in place which provides framework for reviewing any platform specific changes. This should ideally be an automated process which checks the required policies being met and subsequently a manual approval after reviewing the changes.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Process for Escalations",
+							"Description":"A process for line of escalation for different types of incidents must be in place for the platform support team.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Process for Periodical DR Testing",
+							"Description":"Process must be in place to perform periodical disaster recovery and failover testing, so as to ensure the platform behaves as intended during DR situation.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Process for API Onboarding",
+							"Description":"A detailed process must be in place for onboarding new APIs or modifying existing APIs in APIM. This process must include automated DevOps based deployments across environments. The process must also include minimum standard for API definitions so as to allow API developers a general guidance to onboard an API with minimum difficulties. Care must be taken to ensure APIs are properly versioned.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Process for Access Management",
+							"Description":"A proper process must be in place for access management. This can be related to access to platform by support teams to API access by the consumers.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Process for Operations Monitoring",
+							"Description":"A thorough process must be in place for monitoring the platform. This will allow the support teams to effectively monitor the environment and reduce downtime. The process must include monitoring of metrics and logs and provide general guidance for exception scenarios.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Resource Naming and Tagging Standard",
+							"Description":"All Azure resources and APIs in APIM must be properly named and tagged. This allows easy monitoring, understanding, billing seggregation and representation. Checks must be in place to ensure that the enterprise naming and tagging standards are followed.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						},
+						{
+							"Title":"Azure Policy and Blueprint Implementation",
+							"Description":"It is generally recommended to take advantage of Azure Policies and Blueprints to ensure automated checks for resources. Refer https://docs.microsoft.com/en-us/azure/governance/policy/overview for Azure Policy and https://docs.microsoft.com/en-us/azure/governance/blueprints/overview for Azure Blueprints.",
+							"Value": "",
+							"DisplayAttributes": {
+								"Mandatory": "false",
+								"Field": "Dropdown",
+								"ListOfValues": "Yes,No,Not Applicable"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"Service":"Azure App Service",
+			"Section":[]
+		}
+	]
+}
