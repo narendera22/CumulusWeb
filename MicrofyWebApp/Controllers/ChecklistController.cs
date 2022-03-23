@@ -46,13 +46,18 @@ namespace MicrofyWebApp.Controllers
 
         public IActionResult ChecklistPlan(string projectname = null)
         {
+            string UserDet = HttpContext.Session.GetString("_UserDet");
+
+            if (UserDet == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
             UserViewModel userViewModel = new UserViewModel();
             ChecklistPlanViewModel checklistPlanView = new ChecklistPlanViewModel();
             ChecklistPlanViewModel checklist = new ChecklistPlanViewModel();
 
             checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(masterfile));
 
-            string UserDet = HttpContext.Session.GetString("_UserDet");
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
             checklistPlanView.projects = userViewModel.projects;
 
@@ -115,13 +120,18 @@ namespace MicrofyWebApp.Controllers
 
         public IActionResult ChecklistDeliverable(string projectname = null)
         {
+            string UserDet = HttpContext.Session.GetString("_UserDet");
+
+            if (UserDet == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
             UserViewModel userViewModel = new UserViewModel();
             ChecklistPlanViewModel checklistPlanView = new ChecklistPlanViewModel();
             ChecklistPlanViewModel checklist = new ChecklistPlanViewModel();
 
             checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(masterfile));
 
-            string UserDet = HttpContext.Session.GetString("_UserDet");
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
             checklistPlanView.projects = userViewModel.projects;
 
@@ -305,6 +315,12 @@ namespace MicrofyWebApp.Controllers
 
         public IActionResult ChecklistBestPractices(string projectname = null)
         {
+            string UserDet = HttpContext.Session.GetString("_UserDet");
+
+            if (UserDet == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
             UserViewModel userViewModel = new UserViewModel();
             BestPracticesViewModel bestPracticesView = new BestPracticesViewModel();
             ChecklistPlanInsertModel checklist = new ChecklistPlanInsertModel();
@@ -314,7 +330,6 @@ namespace MicrofyWebApp.Controllers
             var bestPractices = GetMasterTemplate(checklistfile);
             bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(bestPractices);
 
-            string UserDet = HttpContext.Session.GetString("_UserDet");
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
             bestPracticesView.projects = userViewModel.projects;
 

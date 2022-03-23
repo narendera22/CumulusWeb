@@ -38,7 +38,7 @@
     }*/
 </style>
 
-<div class="container">
+<div class="container-fluid">
     <div class="col-md-12" style="padding-left: 15px;">
         <div id="divbreadcrumb">
             <ol class="breadcrumb breadcrumb-arrow">
@@ -58,18 +58,8 @@
             </div>*@
     </div>
     <div class="row col-md-12">
-        <div class="col-md-1">
-            <button type="button" id="btnTable" class="btn btn-primary">
-                <i class="fa fa-table"></i>
-            </button>
-        </div>
-        <div class="col-md-1">
-            <button type="button" id="btnchart" class="btn btn-primary">
-                <i class="fa fa-chart-bar"></i>
-            </button>
-        </div>
-        <div class="col-md-10">
-            <div class="float-right" id="Proj">
+        <div class="col-md-4">
+            <div id="Proj">
                 <select name="project" id="projectname" style="margin-right:10px;" class="form-control selectpicker">
                     @*<option value="AzureService">Project Name</option>*@
                     @foreach (var mod in Model.projects)
@@ -86,6 +76,12 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-8">
+            <div class="float-right" id="btnadd" style="margin-right:-15px;">
+                <a href="#" class="btn btn-primary"> Cancel</a>
+                <a href="#" class="btn btn-primary" id="btnSaveChanges"> Save Changes</a>
+            </div>
+        </div>
     </div>
     <div class="row col-md-12 pt-2">
         @*<div class="col-md-1">
@@ -93,19 +89,32 @@
                     <i class="fa fa-table"></i>
                 </button>
             </div>*@
-        <div class="col-md-2">
+        <div class="col-md-3">
             <a href="#" id="btnAdd" class="btn btn-primary">
                 <i class="fa fa-plus"></i> Add
             </a>
         </div>
-        <div class="col-md-10">
-            <div class="float-right" id="btnadd">
-                <a href="#" class="btn btn-primary"> Cancel</a>
-                <a href="#" class="btn btn-primary" id="btnSaveChanges"> Save Changes</a>
+        @*<div class="col-md-4">
+                <div class="input-group">
+                    <label class="switch">
+                        <input type="checkbox" id="statusCheck" class="togglecheckbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>*@
+        @*<div class="col-md-1">
+                <button type="button" id="btnTable" class="btn btn-primary">
+                    <i class="fa fa-table"></i>
+                </button>
             </div>
-        </div>
+            <div class="col-md-1">
+                <button type="button" id="btnchart" class="btn btn-primary">
+                    <i class="fa fa-chart-bar"></i>
+                </button>
+            </div>*@
+
     </div>
-    <div style="padding-top:5px;">
+    <div style="padding-top:5px; padding-left:15px;">
         <table id="tableID" class="display" style="width:100%">
             <thead>
                 <tr>
@@ -175,7 +184,7 @@
                                     @*<input name="first_name" id="first_name" placeholder="User Name" class="form-control" type="text" required>
                                         <span data-alertid="first_name"></span>*@
                                     <div class="input-group">
-                                        <input class="form-control datefield" data-val="true" data-val-required="Date is required" placeholder="Start Date" id="startdate" name="StartDate" type="date" value="1/11/1989">
+                                        <input class="form-control" placeholder="dd/mm/yyyy" id="startdate" name="StartDate" type="date" value="" min="1997-01-01" max="2030-12-31">
                                     </div>
                                 </div>
                             </div>
@@ -186,9 +195,8 @@
                             <div class="col-md-6 inputGroupContainer">
                                 <div class="input-group">
                                     @*<input name="first_name" id="first_name" placeholder="User Name" class="form-control" type="text" required>
-                                        <span data-alertid="first_name"></span>*@
-                                    <input class=" form-control datefield" data-val="true" data-val-required="Date is required" placeholder="End Date"
-                                           id="enddate" name="EndDate" type="date" value="1/11/1989" />
+        <span data-alertid="first_name"></span>*@
+                                    <input class="form-control" placeholder="dd/mm/yyyy" id="enddate" name="EndDate" type="date" value="" min="1997-01-01" max="2030-12-31">
                                 </div>
                             </div>
                         </div>
@@ -215,6 +223,9 @@
         $('#tableID').DataTable({ searching: false, paging: false, info: false, ordering: false });
 
         $('#btnAdd').click(function () {
+            $('#phase_name').val("");
+            $('#startdate').val("");
+            $('#enddate').val("");
             $('#PlanEditPopup').find('button[data-buttontype="update"]').hide();
             $('#PlanEditPopup').find('button[data-buttontype="save"]').show();
             $("#PlanEditPopup").modal("show");
@@ -290,12 +301,12 @@
     function fnedit(e) {
         debugger;
         var phasename = $(e).closest("tr").find('td:eq(0)').text();
-        var startdate = $(e).closest("tr").find('td:eq(1)').text();
-        var enddate = $(e).closest("tr").find('td:eq(2)').text();
+        var startdate = $(e).closest("tr").find('td:eq(1)').text().trim();
+        var enddate = $(e).closest("tr").find('td:eq(2)').text().trim();
 
         $('#phase_name').val(phasename);
-        $('#startdate').val(startdate);
-        $('#enddate').val(enddate);
+        $('#startdate').val(YearformatDate(startdate));
+        $('#enddate').val(YearformatDate(enddate));
         var rowid = $(e).closest("tr").data('row');
         $('#PlanEditPopup').find('button[data-buttontype="update"]').show();
         $('#PlanEditPopup').find('button[data-buttontype="save"]').hide();
@@ -308,11 +319,14 @@
 
     function UpdateValues() {
         debugger;
+        if (!validation()) {
+            return false;
+        }
         var rowid = $('#PlanEditPopup').find('button[data-buttontype="update"]').data('rowid');
         var $gettr = $("#tableID").find('tr[data-row="' + rowid + '"]');
         var phasename = $('#phase_name').val();
-        var start = $('#startdate').val();
-        var end = $('#enddate').val();
+        var start = formatDate($('#startdate').val());
+        var end = formatDate($('#enddate').val());
 
         $gettr.find('td:eq(0)').text(phasename);
         $gettr.find('td:eq(1)').text(start);
@@ -327,10 +341,64 @@
 
     }
 
-    function AddValues() {
+    function validation() {
         var phasename = $('#phase_name').val();
         var start = $('#startdate').val();
         var end = $('#enddate').val();
+        if (phasename == "") {
+            var title = 'Error!!';
+            var Message = 'Enter Phase Name';
+            var type = "red";
+            $.alert({
+                title: title,
+                content: Message,
+                type: type
+            });
+            return false;
+        }
+        if (start == "") {
+            var title = 'Error!!';
+            var Message = 'Enter Start Date';
+            var type = "red";
+            $.alert({
+                title: title,
+                content: Message,
+                type: type
+            });
+            return false;
+        }
+        if (end == "") {
+            var title = 'Error!!';
+            var Message = 'Enter End Date';
+            var type = "red";
+            $.alert({
+                title: title,
+                content: Message,
+                type: type
+            });
+            return false;
+        }
+        if (new Date(start) > new Date(end)) {
+            var title = 'Error!!';
+            var Message = 'Start Date Should be Greater than End Date';
+            var type = "red";
+            $.alert({
+                title: title,
+                content: Message,
+                type: type
+            });
+            return false;
+        }
+        return true;
+    }
+
+    function AddValues() {
+        if (!validation()) {
+            return false;
+        }
+        var phasename = $('#phase_name').val();
+        var start = formatDate($('#startdate').val());
+        var end = formatDate($('#enddate').val());
 
         var rowctr = $('tr', $("#tableID").find('tbody')).length;
 

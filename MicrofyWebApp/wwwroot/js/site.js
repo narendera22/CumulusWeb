@@ -794,3 +794,31 @@ function redirect() {
     window.location.href = "/Checklist/ChecklistBestPractices?projectname=" + projectname;
 
 }
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [day, month, year].join('/');
+}
+function YearformatDate(date) {
+    var from = date.split("/")
+    var d = new Date(from[2], from[1] - 1, from[0]),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}

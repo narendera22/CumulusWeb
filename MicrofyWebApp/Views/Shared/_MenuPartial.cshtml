@@ -8,7 +8,7 @@
     var selectedsubphase = HttpContextAccessor.HttpContext.Session.GetString("_selSubPhase");
     var actstatus = string.Empty;
 }
-
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <style type="text/css">
     #sidebar ul.nav-flyout li a {
         padding: 5px !important;
@@ -32,80 +32,83 @@
                         <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />
                     </div>
                 </div>
-                <ul>
-                    <li>
-                        <a href="#">
-                        @*<i class="far fa-folder-open"></i>*@ 
-                            <img id="logo" alt="Logo" src="~/Image/MenuIcon/Repos.png" style="width:50px;" />  <span>Repository</span></a>
-                        <ul class="nav-flyout">
-                            <li>
-                                <a href="#" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");">Dashboard</a>
-                            </li>
-                            @for (int j = 0; j < config.phases.Count; j++)
+                <!--<ul>
+                <li>
+                    <a href="#">-->
+                @*<i class="far fa-folder-open"></i>*@
+                <!--<img id="logo" alt="Logo" src="~/Image/MenuIcon/Repos.png" style="width:50px;" />  <span>Repository</span>
+                    </a>
+                    <ul class="nav-flyout">
+                        <li>
+                            <a href="#" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");">Dashboard</a>
+                        </li>
+                        @for (int j = 0; j < config.phases.Count; j++)
+                        {
+                            actstatus = string.Empty;
+                            if (selectedphase == config.phases[j].name)
                             {
-                                actstatus = string.Empty;
-                                if (selectedphase == config.phases[j].name)
-                                {
-                                    actstatus = "active";
-                                }
+                                actstatus = "active";
+                            }
 
-                                <li>
-                                    <div class="anchor-link @actstatus">
-                                        @if (config.phases[j].subPhase != null)
-                                        {
-                                            <a href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=config.phases[j].subPhase.FirstOrDefault() }) + "'");" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu" >@config.phases[j].name</a>
-                                        }
-                                        else
-                                        {
-                                            <a href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=string.Empty }) + "'");" >@config.phases[j].name</a>
-                                        }
-                                    </div>
+                            <li>
+                                <div class="anchor-link @actstatus">
                                     @if (config.phases[j].subPhase != null)
                                     {
-                                        var subphase = config.phases[j].subPhase;
-                                        <ul class="collapse list-unstyled show" id="@config.phases[j].name">
-                                            @for (int i = 0; i < subphase.Count; i++)
-                                            {
-                                                actstatus = string.Empty;
-                                                if (selectedphase == config.phases[j].name && selectedsubphase == subphase[i])
-                                                {
-                                                    actstatus = "active";
-                                                }
-                                                <li class="subanchor-link @actstatus">
-                                                    <a href="#" onclick="@(" window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=subphase[i] }) + "' ");">@subphase[i]</a>
-                                                </li>
-                                            }
-                                        </ul>
-
+                                        <a href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=config.phases[j].subPhase.FirstOrDefault() }) + "'");" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu">@config.phases[j].name</a>
                                     }
+                                    else
+                                    {
+                                        <a href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=string.Empty }) + "'");">@config.phases[j].name</a>
+                                    }
+                                </div>
+                                @if (config.phases[j].subPhase != null)
+                                {
+                                    var subphase = config.phases[j].subPhase;
+                                    <ul class="collapse list-unstyled show" id="@config.phases[j].name">
+                                        @for (int i = 0; i < subphase.Count; i++)
+                                        {
+                                            actstatus = string.Empty;
+                                            if (selectedphase == config.phases[j].name && selectedsubphase == subphase[i])
+                                            {
+                                                actstatus = "active";
+                                            }
+                                            <li class="subanchor-link @actstatus">
+                                                <a href="#" onclick="@(" window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=subphase[i] }) + "' ");">@subphase[i]</a>
+                                            </li>
+                                        }
+                                    </ul>
 
-                                </li>
-                            }
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">
-                        @*<i class="far fa-clipboard-list"></i>*@ 
-                        <img id="logo" alt="Logo" src="~/Image/MenuIcon/Checklist.jpg" style="width:50px;" />  <span class="">Checklist</span></a>
-                        <ul class="nav-flyout">
-                            <li>
-                                <a href="#">Dashboard</a>
+                                }
+
                             </li>
-                            <li>
-                                <a href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistPlan", "Checklist") + "' ");">Plan</a>
-                            </li>
-                            <li>
-                                <a href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistDeliverable", "Checklist") + "' ");">Deliverables</a>
-                            </li>
-                            <li>
-                                <a href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistBestPractices", "Checklist") + "' ");">Best Practices</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">
-                        @*<i class="far fa-clipboard-check"></i>*@ 
-                            <img id="logo" alt="Logo" src="~/Image/MenuIcon/Compliance.png" style="width:50px;" />  <span class="">Compliance</span></a>
+                        }
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">-->
+                @*<i class="far fa-clipboard-list"></i>*@
+                <!--<img id="logo" alt="Logo" src="~/Image/MenuIcon/Checklist.jpg" style="width:50px;" />  <span class="">Checklist</span>
+                    </a>
+                    <ul class="nav-flyout">
+                        <li>
+                            <a href="#">Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistPlan", "Checklist") + "' ");">Plan</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistDeliverable", "Checklist") + "' ");">Deliverables</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistBestPractices", "Checklist") + "' ");">Best Practices</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">-->
+                @*<i class="far fa-clipboard-check"></i>*@
+                <!--<img id="logo" alt="Logo" src="~/Image/MenuIcon/Compliance.png" style="width:50px;" />  <span class="">Compliance</span>
+                        </a>
                         <ul class="nav-flyout">
                             <li>
                                 <a href="#">Dashboard</a>
@@ -122,40 +125,149 @@
                         </ul>
                     </li>
 
+                </ul>-->
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">  <img id="logo" alt="Logo" src="~/Image/MenuIcon/Repos.png" style="width:50px;" />  <span>Repository</span><i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i></a>
+                        <ul class="submenu dropdown-menu" style="display:none;">
+                            <li><a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");">Dashboard </a></li>
+                            @for (int j = 0; j < config.phases.Count; j++)
+                            {
+                                actstatus = string.Empty;
+                                if (selectedphase == config.phases[j].name)
+                                {
+                                    actstatus = "active";
+                                }
+
+                                <li>
+                                    <div class="anchor-link @actstatus">
+                                        @if (config.phases[j].subPhase != null)
+                                        {
+                                            <a class="nav-link dropdown-toggle menu" href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=config.phases[j].subPhase.FirstOrDefault() }) + "'");" data-toggle="collapse" aria-expanded="false">@config.phases[j].name</a>
+                                        }
+                                        else
+                                        {
+                                            <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=string.Empty }) + "'");">@config.phases[j].name</a>
+                                        }
+                                    </div>
+                                    @if (config.phases[j].subPhase != null)
+                                    {
+                                        var subphase = config.phases[j].subPhase;
+                                        <ul class="collapse list-unstyled show" id="@config.phases[j].name">
+                                            @for (int i = 0; i < subphase.Count; i++)
+                                            {
+                                                actstatus = string.Empty;
+                                                if (selectedphase == config.phases[j].name && selectedsubphase == subphase[i])
+                                                {
+                                                    actstatus = "active";
+                                                }
+                                                <li class="subanchor-link @actstatus">
+                                                    <a class="nav-link" href="#" onclick="@(" window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=subphase[i] }) + "' ");">@subphase[i]</a>
+                                                </li>
+                                            }
+                                        </ul>
+
+                                    }
+
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Checklist.jpg" style="width:50px;" />  <span class="">Checklist</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
+                        <ul class="submenu dropdown-menu" style="display:none;">
+                            <li>
+                                <a class="nav-link" href="#">Dashboard</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistPlan", "Checklist") + "' ");">Plan</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistDeliverable", "Checklist") + "' ");">Deliverables</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistBestPractices", "Checklist") + "' ");">Best Practices</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Compliance.png" style="width:50px;" />  <span class="">Compliance</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
+                        <ul class="submenu dropdown-menu" style="display:none;">
+                            <li>
+                                <a class="nav-link" href="#">Dashboard</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="#">Plan</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="#">Deliverables</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="#">Best Practices</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </nav>
         </aside>
     </section>
-    @*<ul class="list-unstyled">
-            @for (int j = 0; j < phase.Count; j++)
-            {
-                <li>
-                    <div class="anchor-link">
-                        @if (phase[j].subPhase != null)
-                        {
-                            <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu">@phase[j].name</a>
-                        }
-                        else
-                        {
-                            <a href="#">@phase[j].name</a>
-                        }
-                    </div>
-                    @if (phase[j].subPhase != null)
-                    {
-                        var subphase = phase[j].subPhase;
-                        <ul class="collapse list-unstyled show" id="@phase[j].name">
-                            @for (int i = 0; i < subphase.Count; i++)
-                            {
-                                <li class="subanchor-link">
-                                    <a href="#">@subphase[i]</a>
-                                </li>
-                            }
-                        </ul>
 
-                    }
-
-                </li>
-            }
-        </ul>*@
 
 </nav>
+<script type="text/javascript">
+    //document.addEventListener("DOMContentLoaded", function () {
+    //    // make it as accordion for smaller screens
+    //    //if (window.innerWidth < 992) {
+
+    //    document.querySelectorAll('.sidebar .nav-link').forEach(function (element) {
+    //        element.addEventListener('click', function (e) {
+    //            debugger;
+    //            let nextEl = element.nextElementSibling;
+    //            let parentEl = element.parentElement;
+    //            let allSubmenus_array = parentEl.querySelectorAll('.submenu');
+    //            parentEl.querySelectorAll('.nav-link a').forEach(function (ele) {
+    //                element.className = ".nav-link";
+    //            });
+    //            if (nextEl && nextEl.classList.contains('submenu')) {
+    //                e.preventDefault();
+    //                if (nextEl.style.display == 'block') {
+    //                    element.className = ".nav-link";
+    //                    nextEl.style.display = 'none';
+    //                } else {
+    //                    element.className = "active";
+    //                    nextEl.style.display = 'block';
+    //                }
+    //            }
+    //        });
+    //    })
+    //    //}
+    //    // end if innerWidth
+    //});
+    $(document).ready(function () {
+        $(".nav-link").on("click", function (e) {
+            debugger;
+            e.preventDefault();
+            
+            var child = $(this).siblings();
+            if ($(this).siblings().length > 0) {
+                if (child.css('display') == 'block') {
+                    $('.submenu.dropdown-menu').hide();
+                    $(".nav-link").removeClass('active');
+                    $(".nav-link").find('i').hide();
+                    $(this).find('i').hide();
+                    $(this).removeClass('active');
+                    $(this).siblings().hide();
+                }
+                else {
+                    $('.submenu.dropdown-menu').hide();
+                    $(".nav-link").removeClass('active');
+                    $(".nav-link").find('i').hide();
+                    $(this).find('i').show();
+                    $(this).addClass('active');
+                    $(this).siblings().show();
+                }
+            }
+        });
+    });
+</script>

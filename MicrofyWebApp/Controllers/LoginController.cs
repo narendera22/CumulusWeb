@@ -377,7 +377,10 @@ namespace MicrofyWebApp.Controllers
         public async Task<IActionResult> ProjectService()
         {
             string userdet = HttpContext.Session.GetString("_UserDet");
-
+            if (userdet == null)
+            {
+                return RedirectToAction("Login");
+            }
             UserViewModel userViewModel = new UserViewModel();
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(userdet);
 

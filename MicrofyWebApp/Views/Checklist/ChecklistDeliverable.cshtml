@@ -39,7 +39,7 @@
     }*/
 </style>
 
-<div class="container">
+<div class="container-fluid">
     <div class="col-md-12" style="padding-left: 15px;">
         <div id="divbreadcrumb">
             <ol class="breadcrumb breadcrumb-arrow">
@@ -59,8 +59,8 @@
             </div>*@
     </div>
     <div class="row col-md-12">
-        <div class="col-md-12">
-            <div class="float-right" id="Proj">
+        <div class="col-md-4">
+            <div id="Proj">
                 <select name="project" id="projectname" style="margin-right:10px;" class="form-control selectpicker">
                     @*<option value="AzureService">Project Name</option>*@
                     @foreach (var mod in Model.projects)
@@ -77,21 +77,21 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="row col-md-12 pt-2">
-        <div class="col-md-2">
-            <a href="#" id="btnAdd" class="btn btn-primary">
-                <i class="fa fa-plus"></i> Add
-            </a>
-        </div>
-        <div class="col-md-10">
-            <div class="float-right" id="btnadd">
+        <div class="col-md-8">
+            <div class="float-right" id="btnadd" style="margin-right:-15px;">
                 <a href="#" class="btn btn-primary"> Cancel</a>
                 <a href="#" class="btn btn-primary" id="btnSaveChanges"> Save Changes</a>
             </div>
         </div>
     </div>
-    <div style="padding-top:5px;">
+    <div class="row col-md-12 pt-2">
+        <div class="col-md-3">
+            <a href="#" id="btnAdd" class="btn btn-primary">
+                <i class="fa fa-plus"></i> Add
+            </a>
+        </div>
+    </div>
+    <div style="padding-top: 5px; padding-left: 15px;">
         <table id="tableID" class="display" style="width:100%">
             <thead>
                 <tr>
@@ -159,7 +159,7 @@
                             <div class="col-md-6 inputGroupContainer">
                                 <div class="input-group">
                                     <div class="input-group">
-                                        <input class="form-control datefield" data-val="true" data-val-required="Date is required" placeholder="Planned Delivery Date" id="PlnDelDate" name="StartDate" type="date">
+                                        <input class="form-control" placeholder="dd/mm/yyyy" id="PlnDelDate" name="EndDate" type="date" value="" min="1997-01-01" max="2030-12-31">
                                     </div>
                                 </div>
                             </div>
@@ -258,6 +258,9 @@
         });
     });
     $('#btnAdd').click(function () {
+        $('#del_name').val("");
+        $('#PlnDelDate').val("");
+        $('#Owner_name').val("");
         $('#DeliverablEditPopup').find('button[data-buttontype="update"]').hide();
         $('#DeliverablEditPopup').find('button[data-buttontype="save"]').show();
         $("#DeliverablEditPopup").modal("show");
@@ -271,7 +274,7 @@
         var owner = $(e).closest("tr").find('td:eq(2)').text();
 
         $('#del_name').val(delName);
-        $('#PlnDelDate').val(plnDelDate);
+        $('#PlnDelDate').val(YearformatDate(plnDelDate));
         $('#Owner_name').val(owner);
         var rowid = $(e).closest("tr").data('row');
         $('#DeliverablEditPopup').find('button[data-buttontype="update"]').show();
@@ -284,10 +287,13 @@
 
     function UpdateValues() {
         debugger;
+        if (!validation()) {
+            return false;
+        }
         var rowid = $('#DeliverablEditPopup').find('button[data-buttontype="update"]').data('rowid');
         var $gettr = $("#tableID").find('tr[data-row="' + rowid + '"]');
         var delName = $('#del_name').val();
-        var plnDelDate = $('#PlnDelDate').val();
+        var plnDelDate = formatDate($('#PlnDelDate').val());
         var owner = $('#Owner_name').val();
 
         $gettr.find('td:eq(0)').text(delName);
@@ -304,8 +310,11 @@
     }
 
     function AddValues() {
+        if (!validation()) {
+            return false;
+        }
         var delName = $('#del_name').val();
-        var plnDelDate = $('#PlnDelDate').val();
+        var plnDelDate = formatDate($('#PlnDelDate').val());
         var owner = $('#Owner_name').val();
 
         var rowctr = $('tr', $("#tableID").find('tbody')).length;
@@ -330,6 +339,47 @@
         $('#Owner_name').val("");
 
         $("#DeliverablEditPopup").modal('toggle');
+    }
+
+    function validation() {
+        var delName = $('#del_name').val();
+        var plnDelDate = $('#PlnDelDate').val();
+        var owner = $('#Owner_name').val();
+
+        if (delName == "") {
+            var title = 'Error!!';
+            var Message = 'Enter Deliverables';
+            var type = "red";
+            $.alert({
+                title: title,
+                content: Message,
+                type: type
+            });
+            return false;
+        }
+        if (plnDelDate == "") {
+            var title = 'Error!!';
+            var Message = 'Enter Planned Delivery Date ';
+            var type = "red";
+            $.alert({
+                title: title,
+                content: Message,
+                type: type
+            });
+            return false;
+        }
+        if (owner == "") {
+            var title = 'Error!!';
+            var Message = 'Enter Owner Name';
+            var type = "red";
+            $.alert({
+                title: title,
+                content: Message,
+                type: type
+            });
+            return false;
+        }
+        return true;
     }
 
 </script>

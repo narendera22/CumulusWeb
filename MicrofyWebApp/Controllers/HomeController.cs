@@ -309,6 +309,10 @@ namespace MicrofyWebApp.Controllers
         public async Task<IActionResult> ActivityDetailsAsync(string userid = null)
         {
             userid = (userid != null ? userid : HttpContext.Session.GetString("_userId"));
+            if (userid == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
             ActivityViewModel docmod = new ActivityViewModel();
             var activitylist = string.Empty;
             string Requestapi = $"api/GetActivity?{ActivityCode}";

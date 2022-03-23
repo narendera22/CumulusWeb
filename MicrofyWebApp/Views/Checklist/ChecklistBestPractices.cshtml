@@ -13,15 +13,36 @@
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 <link rel="stylesheet" href="~/css/site.css" />
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />-->
-
-
 <!-- jQuery library file -->
 <!--<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js'></script>
 <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>-->
 
-<div class="container">
+<style type="text/css">
+    .tab-content {
+        /*position: absolute;
+        width: 450px;*/
+        height: auto;
+        /*margin-top: -50px;*/
+        background: #fff;
+        color: #000;
+        /*border-radius: 30px;*/
+        z-index: 1000;
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.4);
+        padding: 30px;
+        margin-bottom: 50px;
+        margin-left: 15px;
+    }
+
+        .tab-content button {
+            border-radius: 15px;
+            width: 100px;
+            margin: 0 auto;
+            float: right;
+        }
+</style>
+<div class="container-fluid">
     <div class="col-md-12" style="padding-left: 15px;">
         <div id="divbreadcrumb">
             <ol class="breadcrumb breadcrumb-arrow">
@@ -35,10 +56,7 @@
     </div>
     <div class="row col-md-12">
         <div class="col-md-4">
-
-        </div>
-        <div class="col-md-8">
-            <div class="float-right" id="Proj">
+            <div id="Proj">
                 <select name="project" id="projectname" style="margin-right:10px;" onchange="redirect();" class="form-control selectpicker">
                     @*<option value="AzureService">Project Name</option>*@
                     @foreach (var mod in Model.projects)
@@ -55,19 +73,18 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="row col-md-12 pt-2">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <div class="float-right">
-                <div id="btnadd">
+                <div id="btnadd" style="margin-right:-15px;">
                     <a href="#" class="btn btn-primary"> Cancel</a>
                     <a href="#" class="btn btn-primary" id="btnSaveChanges" onclick="GetAllValues();"> Save Changes</a>
                 </div>
             </div>
         </div>
     </div>
-    <div class="rounded shadow m-3">
-        <ul class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 rounded-nav" style="font-size:smaller" id="nav-tab" role="tablist">
+
+    <div class="rounded shadow ml-3 pt-2 ">
+        <ul class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 " style="font-size:smaller" id="nav-tab" role="tablist">
             @foreach (var mod in Model.projectServices.AzureTechnologies.Select((value, i) => new { i, value }))
             {
                 FirstPanel = Model.projectServices.AzureTechnologies.First().ServiceName;
@@ -76,7 +93,7 @@
                 {
                     isactivenav = "active";
                 }
-                <li class="nav-item flex-sm-fill">
+                <li class="nav-item flex-sm">
                     <a class="nav-link border-0 text-uppercase font-weight-bold  @isactivenav" role="tab" aria-controls="home" aria-selected="true" data-toggle="tab" href="#@mod.value.ServiceName.Substring(0, 3).Replace(" ", "")_@mod.i">@mod.value.ServiceName</a>
                 </li>
             }
@@ -119,16 +136,18 @@
                                                 {
                                                     foreach (var checklist in ipsec.Checklist)
                                                     {
-                                                        <div class="form-group" style="display:flex">
-                                                            <label class="control-label col-md-5">
-                                                                @checklist.Title
+                                                        <div class="form-group" style="display: flex; margin-bottom: 0.1rem;">
+                                                            <label class="control-label col-md-9">
+                                                                <b>@checklist.Title</b>
+                                                                <p class="practicedesp">@checklist.Description</p>
 
-                                                                @if (checklist.Description != "")
-                                                                {
-                                                                    <i class="fa fa-info-circle" aria-hidden="true" title="@checklist.Description"></i>
-                                                                }
+                                                                @*@if (checklist.Description != "")
+                                                                    {
+                                                                        <i class="fa fa-info-circle" aria-hidden="true" title="@checklist.Description"></i>
+                                                                    }*@
                                                             </label>
-                                                            <div class="col-md-4">
+
+                                                            <div class="col-md-3">
                                                                 @{
                                                                     var comp = new Models.Computation();
                                                                     comp.Service = mod.value.ServiceName;
