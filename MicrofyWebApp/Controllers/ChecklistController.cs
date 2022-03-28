@@ -21,8 +21,9 @@ namespace MicrofyWebApp.Controllers
 
         string Asseturl = string.Empty;
         string AssetCode = string.Empty;
-        string masterfile = string.Empty;
-        string checklistfile = string.Empty;
+        string ChecklistPlanfile = string.Empty;
+        string ChecklistDeliverablesfile = string.Empty;
+        string BestPractices = string.Empty;
         string Projecturl = string.Empty;
         string ProjectCode = string.Empty;
         string Checklisturl = string.Empty;
@@ -35,8 +36,9 @@ namespace MicrofyWebApp.Controllers
             _configuration = configuration;
             Asseturl = _configuration.GetValue<string>("Values:AssetStrgeBaseUrl");
             AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
-            masterfile = _configuration.GetValue<string>("Values:MasterTemplateFile");
-            checklistfile = _configuration.GetValue<string>("Values:ChecklistMasterTemplateFile");
+            ChecklistPlanfile = _configuration.GetValue<string>("Values:ChecklistPlan");
+            ChecklistDeliverablesfile = _configuration.GetValue<string>("Values:ChecklistDeliverables");
+            BestPractices = _configuration.GetValue<string>("Values:BestPractices");
             Projecturl = _configuration.GetValue<string>("Values:ProjectBaseUrl");
             ProjectCode = _configuration.GetValue<string>("Values:ProjectCode");
             Checklisturl = _configuration.GetValue<string>("Values:ChecklistUrl");
@@ -56,7 +58,7 @@ namespace MicrofyWebApp.Controllers
             ChecklistPlanViewModel checklistPlanView = new ChecklistPlanViewModel();
             ChecklistPlanViewModel checklist = new ChecklistPlanViewModel();
 
-            checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(masterfile));
+            checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(ChecklistPlanfile));
 
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
             checklistPlanView.projects = userViewModel.projects;
@@ -130,7 +132,7 @@ namespace MicrofyWebApp.Controllers
             ChecklistPlanViewModel checklistPlanView = new ChecklistPlanViewModel();
             ChecklistPlanViewModel checklist = new ChecklistPlanViewModel();
 
-            checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(masterfile));
+            checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(ChecklistDeliverablesfile));
 
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
             checklistPlanView.projects = userViewModel.projects;
@@ -327,7 +329,7 @@ namespace MicrofyWebApp.Controllers
 
             //var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"BestPractices.json"}");
             //var JSON = System.IO.File.ReadAllText(folderDetails);
-            var bestPractices = GetMasterTemplate(checklistfile);
+            var bestPractices = GetMasterTemplate(BestPractices);
             bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(bestPractices);
 
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
@@ -380,7 +382,7 @@ namespace MicrofyWebApp.Controllers
 
             //var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"BestPractices.json"}");
             //var JSON = System.IO.File.ReadAllText(folderDetails);
-            bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(GetMasterTemplate(checklistfile));
+            bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(GetMasterTemplate(BestPractices));
 
 
             foreach (var BestPrac in bestPracticesView.BestPractices)

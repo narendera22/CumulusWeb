@@ -37,6 +37,10 @@
     /*.justify-content-lg-center {
         justify-content: left !important;
     }*/
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 10px !important;
+        border-bottom: 1px solid #111;
+    }
 </style>
 
 <div class="container-fluid">
@@ -79,18 +83,21 @@
         </div>
         <div class="col-md-8">
             <div class="float-right" id="btnadd" style="margin-right:-15px;">
-                <a href="#" class="btn btn-primary"> Cancel</a>
-                <a href="#" class="btn btn-primary" id="btnSaveChanges"> Save Changes</a>
+                <a href="#" id="btnAdd" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Add
+                </a>
+                <a href="#" class="btn btn-warning"><i class="fa fa-times"></i> Cancel</a>
+                <a href="#" class="btn btn-primary" id="btnSaveChanges"><i class="fa fa-save"></i> Save Changes</a>
             </div>
         </div>
     </div>
-    <div class="row col-md-12 pt-2">
+    @*<div class="row col-md-12 pt-2">
         <div class="col-md-3">
             <a href="#" id="btnAdd" class="btn btn-primary">
                 <i class="fa fa-plus"></i> Add
             </a>
         </div>
-    </div>
+    </div>*@
     <div style="padding-top: 5px; padding-left: 15px;">
         <table id="tableID" class="display" style="width:100%">
             <thead>

@@ -51,11 +51,15 @@
         .input-group-addon {
             padding: 6px 20px !important;
         }
+        table.dataTable thead th, table.dataTable thead td {
+            padding: 10px 10px !important;
+            border-bottom: 1px solid #111;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid" style="margin-left:15px;">
         <!--<div class="imglogo" style="display:flex;">-->
         @*<img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />*@
         <!--<div class=" col-lg-8" style="padding-top:40px">
@@ -105,11 +109,11 @@
                 }
             </tbody>
         </table>
-        <div class="form-group">
+        @*<div class="form-group">
             <div class="col-md-4 control-label" style="padding-bottom:15px;">
                 <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
             </div>
-        </div>
+        </div>*@
     </div>
     <div class="modal fade" id="projectEditPopup" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg" style="width:750px;margin:auto;">
@@ -174,7 +178,7 @@
                             <!-- Button -->
                             <div class="form-group">
                                 <div class="col-md-7 control-label">
-                                    <button type="submit" class="btn btn-primary">Update <span class="glyphicon glyphicon-send"></span></button>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
                                 </div>
                             </div>
 
