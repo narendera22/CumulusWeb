@@ -33,6 +33,9 @@ namespace MicrofyWebApp.Controllers
         string PhaseCode = string.Empty;
         string Projecturl = string.Empty;
         string ProjectCode = string.Empty;
+        string Asseturl = string.Empty;
+        string AssetCode = string.Empty;
+        string BestPractices = string.Empty;
 
         public LoginController(ILogger<LoginController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
@@ -49,6 +52,9 @@ namespace MicrofyWebApp.Controllers
             PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
             Projecturl = _configuration.GetValue<string>("Values:ProjectBaseUrl");
             ProjectCode = _configuration.GetValue<string>("Values:ProjectCode");
+            Asseturl = _configuration.GetValue<string>("Values:AssetStrgeBaseUrl");
+            AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
+            BestPractices = _configuration.GetValue<string>("Values:BestPractices");
         }
 
         public IActionResult Login()
@@ -384,16 +390,23 @@ namespace MicrofyWebApp.Controllers
             UserViewModel userViewModel = new UserViewModel();
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(userdet);
 
-            List<ProjectViewModel> project = new List<ProjectViewModel>();
-            List<ProjectViewModel> projRespon = new List<ProjectViewModel>();
+            List<ProjectViewModel> projectlist = new List<ProjectViewModel>();
+            //List<ProjectViewModel> projRespon = new List<ProjectViewModel>();
+            ProjectView project = new ProjectView();
+            ProjectView projRespon = new ProjectView();
+            BestPracticesViewModel bestPracticesView = new BestPracticesViewModel();
+
+            var bestPractices = GetMasterTemplate(BestPractices);
+            bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(bestPractices);
 
             foreach (var prj in userViewModel.projects)
             {
                 ProjectViewModel prjmodel = new ProjectViewModel();
                 prjmodel.ProjectName = prj.projectName;
                 prjmodel.CustomerName = prj.customerName;
-                project.Add(prjmodel);
+                projectlist.Add(prjmodel);
             }
+            project.ProjectsList = projectlist;
             string projectResponse = string.Empty;
             string Requestapi = $"api/GetProjects/{userViewModel.username}?{ProjectCode}";
 
@@ -406,14 +419,14 @@ namespace MicrofyWebApp.Controllers
                 if (Res.IsSuccessStatusCode)
                 {
                     projectResponse = Res.Content.ReadAsStringAsync().Result;
-                    projRespon = JsonConvert.DeserializeObject<List<ProjectViewModel>>(value: projectResponse);
+                    projRespon.ProjectsList = JsonConvert.DeserializeObject<List<ProjectViewModel>>(value: projectResponse);
                 }
 
             }
-            if (projRespon.Count > 0)
+            if (projRespon.ProjectsList.Count > 0)
             {
-                var projectval = from x in project
-                                 join y in projRespon
+                var projectval = from x in project.ProjectsList
+                                 join y in projRespon.ProjectsList
                                      on new { a = x.ProjectName, b = x.CustomerName } equals new { a = y.ProjectName, b = y.CustomerName }
                                  select new { x, y };
 
@@ -423,7 +436,15 @@ namespace MicrofyWebApp.Controllers
                     match.x.AzureTechnologies = match.y.AzureTechnologies;
                 }
             }
-
+            List<string> servicesname = new List<string>();
+            if (bestPracticesView.BestPractices.Count > 0)
+            {
+                foreach(var ser in bestPracticesView.BestPractices)
+                {
+                    servicesname.Add(ser.Service.ToString());
+                }
+            }
+            project.Services = servicesname;
 
             return View(project);
         }
@@ -433,11 +454,11 @@ namespace MicrofyWebApp.Controllers
         {
 
             string UserResponse = string.Empty;
-            project.UserId= HttpContext.Session.GetString("_userId");
+            project.UserId = HttpContext.Session.GetString("_userId");
             var createDoc = JsonConvert.SerializeObject(project);
             ProjectViewModel projectViewModel = new ProjectViewModel();
             string Requestapi = $"api/UpdateProject?{ProjectCode}";
-            
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Projecturl);
@@ -447,7 +468,7 @@ namespace MicrofyWebApp.Controllers
                 {
                     projectViewModel.StatusCode = result.IsSuccessStatusCode;
                     projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
-                    
+
                 }
                 else
                 {
@@ -457,6 +478,25 @@ namespace MicrofyWebApp.Controllers
                 }
             }
             return projectViewModel;
+        }
+
+        public string GetMasterTemplate(string mastertemplate)
+        {
+            //string folder = $"folder={foldername}";
+            string template = string.Empty;
+            string Requestapi = $"api/GetTemplate/{mastertemplate}?{AssetCode}";
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Asseturl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
+                HttpResponseMessage file = new HttpResponseMessage();
+                file = response.Result;
+                template = file.Content.ReadAsStringAsync().Result;
+            }
+
+            return template;
         }
 
     }

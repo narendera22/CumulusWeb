@@ -11,6 +11,7 @@ namespace MicrofyWebApp.Models
         public ProjectViewModel projectServices { get; set; }
         public List<BestPractices> BestPractices { get; set; }
         public string selectedProjectname { get; set; }
+        public string userRole { get; set; }
     }
 
     public class BestPractices
@@ -55,6 +56,7 @@ namespace MicrofyWebApp.Models
         public string Mandatory { get; set; }
         public string Field { get; set; }
         public string ListOfValues { get; set; }
+        public string disable { get; set; }
     }
 
     public class BestPracticesFormInputData

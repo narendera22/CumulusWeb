@@ -7,6 +7,12 @@
     var selectedphase = HttpContextAccessor.HttpContext.Session.GetString("_selPhase");
     var selectedsubphase = HttpContextAccessor.HttpContext.Session.GetString("_selSubPhase");
     var actstatus = string.Empty;
+    var role = HttpContextAccessor.HttpContext.Session.GetString("_UserRole");
+    //string display = "block";
+    //if (role == "Administrator")
+    //{
+    //    display = "none";
+    //}
 }
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <style type="text/css">
@@ -174,7 +180,8 @@
                             }
                         </ul>
                     </li>
-                    <li class="nav-item">
+                    
+                    <li class="nav-item" >
                         <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Checklist.jpg" style="width:50px;" />  <span class="">Checklist</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
                         <ul class="submenu dropdown-menu" style="display:none;">
                             <li>
@@ -191,7 +198,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" >
                         <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Compliance.png" style="width:50px;" />  <span class="">Compliance</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
                         <ul class="submenu dropdown-menu" style="display:none;">
                             <li>
@@ -248,7 +255,7 @@
         $(".nav-link").on("click", function (e) {
             debugger;
             e.preventDefault();
-            
+
             var child = $(this).siblings();
             if ($(this).siblings().length > 0) {
                 if (child.css('display') == 'block') {

@@ -18,13 +18,18 @@ namespace MicrofyWebApp.Models
         public string UserId { get; set; }
 
         public List<AzureTech> AzureTechnologies { get; set; }
-        public bool StatusCode { get;  set; }
+        public bool StatusCode { get; set; }
     }
 
     public class AzureTech
     {
         public string ServiceName { get; set; }
 
+    }
+    public class ProjectView
+    {
+        public List<ProjectViewModel> ProjectsList { get; set; }
+        public List<string> Services { get; set; }
     }
 }
 

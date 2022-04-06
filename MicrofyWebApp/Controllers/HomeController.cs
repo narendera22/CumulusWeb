@@ -276,6 +276,29 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_Search_Partial", DocModel);
 
         }
+
+        public async Task<ActionResult> DocumentSearch(string Search)
+        {
+            DocumentViewModel DocModel = new DocumentViewModel();
+            string serachResp = string.Empty;
+            string searchRes = "search=" + Search;
+            string Requestapi = $"api/Search?{SearchCode}&{searchRes}";
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Searchurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    serachResp = Res.Content.ReadAsStringAsync().Result;
+                }
+            }
+
+            DocModel.searchResults = JsonConvert.DeserializeObject<List<SearchResult>>(value: serachResp);
+            return View(DocModel);
+
+        }
         public ActionResult GetNewUploadPartial()
         {
             return PartialView("VW_Upload_NewDoc_Partial");

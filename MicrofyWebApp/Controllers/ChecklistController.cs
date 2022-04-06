@@ -70,33 +70,35 @@ namespace MicrofyWebApp.Controllers
             }
 
             string checklistdet = GetChecklistDetailsAsync(projectname);
-            if (checklistdet != null || checklistdet != "")
+            if (checklistdet != "")
                 checklist = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(checklistdet);
-
-            if (checklist.Plans.Count > 0)
+            if (checklist.Plans != null)
             {
-                var planval = from x in checklistPlanView.Plans
-                              join y in checklist.Plans
-                                     on new { a = x.PhaseName } equals new { a = y.PhaseName }
-                              select new { x, y };
+                if (checklist.Plans.Count > 0)
+                {
+                    var planval = from x in checklistPlanView.Plans
+                                  join y in checklist.Plans
+                                         on new { a = x.PhaseName } equals new { a = y.PhaseName }
+                                  select new { x, y };
 
-                foreach (var match in planval)
-                {
-                    match.y.HasValue = true;
-                    match.x.HasValue = true;
-                    match.x.Start = match.y.Start;
-                    match.x.End = match.y.End;
+                    foreach (var match in planval)
+                    {
+                        match.y.HasValue = true;
+                        match.x.HasValue = true;
+                        match.x.Start = match.y.Start;
+                        match.x.End = match.y.End;
+                    }
+                    foreach (var chk in checklist.Plans.Where(p => p.HasValue != true))
+                    {
+                        chk.HasValue = true;
+                        //checklistPlanView.Plans.Add(chk);
+                    }
+                    checklistPlanView.Plans.Clear();
+                    checklistPlanView.Plans = checklist.Plans;
                 }
-                foreach (var chk in checklist.Plans.Where(p => p.HasValue != true))
-                {
-                    chk.HasValue = true;
-                    //checklistPlanView.Plans.Add(chk);
-                }
-                checklistPlanView.Plans.Clear();
-                checklistPlanView.Plans = checklist.Plans;
             }
-
             checklistPlanView.selectedProjectname = projectname;
+            checklistPlanView.userRole = HttpContext.Session.GetString("_UserRole");
 
             return View(checklistPlanView);
         }
@@ -144,34 +146,37 @@ namespace MicrofyWebApp.Controllers
             }
 
             string checklistdet = GetChecklistDetailsAsync(projectname);
-            if (checklistdet != null || checklistdet != "")
+            if (checklistdet != "")
                 checklist = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(checklistdet);
-
-            if (checklist.Deliverables.Count > 0)
+            if (checklist.Deliverables != null)
             {
-                var delval = from x in checklistPlanView.Deliverables
-                             join y in checklist.Deliverables
-                                    on new { a = x.Name } equals new { a = y.Name }
-                             select new { x, y };
-
-                foreach (var match in delval)
+                if (checklist.Deliverables.Count > 0)
                 {
-                    match.y.HasValue = true;
-                    match.x.HasValue = true;
-                    match.x.PlannedDeliveryDate = match.y.PlannedDeliveryDate;
-                    match.x.Owner = match.y.Owner;
-                }
-                foreach (var chk in checklist.Deliverables.Where(p => p.HasValue != true))
-                {
-                    chk.HasValue = true;
-                    //checklistPlanView.Deliverables.Add(chk);
-                }
+                    var delval = from x in checklistPlanView.Deliverables
+                                 join y in checklist.Deliverables
+                                        on new { a = x.Name } equals new { a = y.Name }
+                                 select new { x, y };
 
-                checklistPlanView.Deliverables.Clear();
-                checklistPlanView.Deliverables = checklist.Deliverables;
+                    foreach (var match in delval)
+                    {
+                        match.y.HasValue = true;
+                        match.x.HasValue = true;
+                        match.x.PlannedDeliveryDate = match.y.PlannedDeliveryDate;
+                        match.x.Owner = match.y.Owner;
+                    }
+                    foreach (var chk in checklist.Deliverables.Where(p => p.HasValue != true))
+                    {
+                        chk.HasValue = true;
+                        //checklistPlanView.Deliverables.Add(chk);
+                    }
+
+                    checklistPlanView.Deliverables.Clear();
+                    checklistPlanView.Deliverables = checklist.Deliverables;
+                }
             }
-
             checklistPlanView.selectedProjectname = projectname;
+            checklistPlanView.userRole = HttpContext.Session.GetString("_UserRole");
+
             return View(checklistPlanView);
         }
 
@@ -342,7 +347,7 @@ namespace MicrofyWebApp.Controllers
             }
             string checklistdet = GetChecklistDetailsAsync(projectname);
 
-            if (checklistdet != null || checklistdet != "")
+            if (checklistdet != "")
             {
                 checklist = JsonConvert.DeserializeObject<ChecklistPlanInsertModel>(checklistdet);
                 if (checklist.BestPractices.Count > 0)
@@ -356,7 +361,7 @@ namespace MicrofyWebApp.Controllers
             bestPracticesView.selectedProjectname = projectname;
             bestPracticesView.projectServices = JsonConvert.DeserializeObject<ProjectViewModel>(GetProjectDetails(projectname));
 
-
+            bestPracticesView.userRole = HttpContext.Session.GetString("_UserRole");
 
             return View(bestPracticesView);
         }

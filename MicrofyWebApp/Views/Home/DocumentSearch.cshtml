@@ -1,0 +1,171 @@
+﻿@model MicrofyWebApp.Models.DocumentViewModel
+@{
+    var count = 0;
+}
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<div class="row col-md-12 mb-2">
+    <div class="col-md-8">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-docrepo-tab" data-toggle="tab" href="#nav-docrepo" role="tab" aria-controls="nav-docrepo" aria-selected="true">Search Results</a>
+            </div>
+        </nav>
+    </div>
+    <div class="col-md-4">
+        <div class="float-right" style="padding-top:15px;">
+            <p class="docdescrip">
+                Total Count : @if (Model.searchResults != null)
+                {@Model.searchResults.Count}
+            else
+            { @count;
+        }
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="tab-content mt-2">
+    <div class="tab-pane fade show active">
+        <div class="container" id="searchdoc">
+            @if (Model.searchResults != null)
+            {
+                foreach (var p in Model.searchResults)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body docrepo">
+                            <div class="row col-md-12">
+                                @*<div class="col-md-3">Phase </div>*@
+                                <ul class="breadcrumb">
+
+                                    @if (p.subPhase != "")
+                                    {
+                                        <li><a href="#" title="Phase" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=p.phase,SubPhase=p.subPhase }) + "'");">@p.phase</a></li>
+                                        <li><a href="#" title="Sub Phase" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=p.phase,SubPhase=p.subPhase }) + "'");">@p.subPhase</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="#" title="Phase" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=p.phase,SubPhase=string.Empty }) + "'");">@p.phase</a></li>
+                                    }
+                                </ul>
+                            </div>
+
+                            <div class="row col-md-12">
+
+                                <div class="form-check" style="display:flex">
+                                    <i class="fas @p.filetype fa-3x"></i>
+                                    <p class="doctitle">@p.documentName</p>
+                                </div>
+                            </div>
+                            @*<div class="row col-md-12">
+                                    <div class="col-md-3">File Name </div>
+                                    <div class="col-md-9">@p.filename</div>
+                                </div>*@
+                            @*<div class="row col-md-12">
+                                    <div class="col-md-3">Phase </div>
+                                    <div class="col-md-9">@p.phase</div>
+                                </div>
+                                @if (p.subPhase != null)
+                                {
+                                    <div class="row col-md-12">
+                                        <div class="col-md-3">Sub Phase </div>
+                                        <div class="col-md-9">@p.subPhase</div>
+                                    </div>
+                                }*@
+
+                            @*<div class="row col-md-12 ml-2 docdescrip" style="padding-top: 5px; padding-left:28px; overflow-wrap: break-word;">
+                                    @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.highlightedContent).Replace("<br />", "\r\n"))
+                                </div>*@
+
+                            <div class="row col-md-12 ml-2 docsearch" style="padding-top: 5px;">
+                                @Html.Raw(System.Web.HttpUtility.HtmlDecode(p.description).Replace("\r\n", "<br />"))
+                            </div>
+
+                            <div class="row col-md-12" style="padding-top: 5px;">
+                                <div class="col-md-3">Uploaded Date </div>
+                                <div class="col-md-9">@p.uploadedOn</div>
+                            </div>
+                            <div class="row col-md-12 ml-2" style="padding:5px;">
+                                <p class="doctitle">Tags</p>
+                            </div>
+                            <div class="row col-md-12 ">
+                                <div class="tagcloud01 ml-2 ">
+                                    <ul>
+                                        @foreach (var tags in p.Tags)
+                                        {
+                                            foreach (var keyval in tags)
+                                            {
+                                                <li><a onclick="SearchTag('@keyval.Value')"><span>@keyval.Value</span></a></li>
+
+                                            }
+
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="float-right" style="display:flex;">
+                                <div>
+                                    @{
+                                        var splitVals = p.documentUrl.Split('/');
+                                        var Phase = splitVals[4];
+                                        var SubPhase = string.Empty;
+                                        @if (Phase == "Adopt")
+                                        {
+                                            SubPhase = splitVals[5];
+                                        }
+                                    }
+
+                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = p.documentUrl, phase=p.phase,subphase=p.subPhase }) + "'");">
+                                        <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="card mb-3">
+                    <div class="card-body docrepo">
+                        <div class="row col-md-12">
+
+                            <div class="form-check" style="display:flex">
+                                <p>No Records found</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+        <div id="pagination-container"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        debugger;
+        var search = $('#search').val();
+        //highlight(search);
+        //TextWrap();
+    });
+
+    var items = $("#searchdoc .card");
+    var numItems = items.length;
+    var perPage = 10;
+
+    items.slice(perPage).hide();
+
+    $('#pagination-container').pagination({
+        items: numItems,
+        itemsOnPage: perPage,
+        prevText: "&laquo;",
+        nextText: "&raquo;",
+        onPageClick: function (pageNumber) {
+            var showFrom = perPage * (pageNumber - 1);
+            var showTo = showFrom + perPage;
+            items.hide().slice(showFrom, showTo).show();
+        }
+    });
+
+</script>

@@ -1,4 +1,4 @@
-﻿@model List<MicrofyWebApp.Models.ProjectViewModel>
+﻿@model MicrofyWebApp.Models.ProjectView
 @{
     var status = "";
     ViewData["Title"] = "Projects";
@@ -85,7 +85,7 @@
             </thead>
             <tbody>
 
-                @foreach (var p in Model)
+                @foreach (var p in Model.ProjectsList)
                 {
                     <tr>
                         <td>@p.ProjectName</td>
@@ -162,8 +162,14 @@
                                     <div class="input-group">
                                         <div id="dynamic-Serv-field-1" class=" col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
                                             <span class="input-group-addon col-sm-1"><i class="glyphicon glyphicon-briefcase"></i></span>
-                                            <input name="servicename" id="servicename-1" placeholder="Services" class="col-md-4 form-control" type="text" onkeydown="addser($(this))" required>
-
+                                            @*<input name="servicename" id="servicename-1" placeholder="Services" class="col-md-4 form-control" type="text" onkeydown="addser($(this))" required>*@
+                                            <select class="col-md-8 form-control selectpicker" name="servicename" id="servicename-1" placeholder="Services" onchange="addser($(this))">
+                                                <option value="">Select</option>
+                                                @foreach (var val in Model.Services)
+                                                {
+                                                    <option value="@val">@val</option>
+                                                }
+                                            </select>
                                             <a href="#" class="add" title="Add Service" style="padding:5px; display:block;" onclick="Viewser(); return false;">
                                                 <i class="fas fa-plus"></i>
                                             </a>

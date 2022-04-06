@@ -11,6 +11,7 @@ namespace MicrofyWebApp.Models
         public List<Plan> Plans { get; set; }
         public List<Deliverables> Deliverables { get; set; }
         public string selectedProjectname { get; set; }
+        public string userRole { get; set; }
     }
     public class Plan
     {

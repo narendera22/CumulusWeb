@@ -80,7 +80,16 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-8">
+        @{
+            string display = "";
+            string disable = "";
+            if (Model.userRole == "Auditor")
+            {
+                display = "none";
+                disable = "disabled";
+            }
+        }
+        <div class="col-md-8" style="display:@display;">
             <div class="float-right" id="btnadd" style="margin-right:-15px;">
                 <a href="#" id="btnAdd" class="btn btn-primary">
                     <i class="fa fa-plus"></i> Add
@@ -91,34 +100,34 @@
         </div>
     </div>
     <!--<div class="row col-md-12 pt-2">-->
-        @*<div class="col-md-1">
-                <button type="button" id="btnTable" class="btn btn-primary">
-                    <i class="fa fa-table"></i>
-                </button>
-            </div>*@
-        <!--<div class="col-md-3">
-            <a href="#" id="btnAdd" class="btn btn-primary">
-                <i class="fa fa-plus"></i> Add
-            </a>
-        </div>-->
-        @*<div class="col-md-4">
-                <div class="input-group">
-                    <label class="switch">
-                        <input type="checkbox" id="statusCheck" class="togglecheckbox">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-            </div>*@
-        @*<div class="col-md-1">
-                <button type="button" id="btnTable" class="btn btn-primary">
-                    <i class="fa fa-table"></i>
-                </button>
+    @*<div class="col-md-1">
+            <button type="button" id="btnTable" class="btn btn-primary">
+                <i class="fa fa-table"></i>
+            </button>
+        </div>*@
+    <!--<div class="col-md-3">
+        <a href="#" id="btnAdd" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Add
+        </a>
+    </div>-->
+    @*<div class="col-md-4">
+            <div class="input-group">
+                <label class="switch">
+                    <input type="checkbox" id="statusCheck" class="togglecheckbox">
+                    <span class="slider round"></span>
+                </label>
             </div>
-            <div class="col-md-1">
-                <button type="button" id="btnchart" class="btn btn-primary">
-                    <i class="fa fa-chart-bar"></i>
-                </button>
-            </div>*@
+        </div>*@
+    @*<div class="col-md-1">
+            <button type="button" id="btnTable" class="btn btn-primary">
+                <i class="fa fa-table"></i>
+            </button>
+        </div>
+        <div class="col-md-1">
+            <button type="button" id="btnchart" class="btn btn-primary">
+                <i class="fa fa-chart-bar"></i>
+            </button>
+        </div>*@
 
     <!--</div>-->
     <div style="padding-top:5px; padding-left:15px;">
@@ -129,7 +138,7 @@
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th data-orderable="false"></th>
-                    <th data-orderable="false"></th>
+                    <th data-orderable="false" style="display:@display;"></th>
                 </tr>
             </thead>
             <tbody>
@@ -146,9 +155,9 @@
                                 if (plan.value.HasValue == true)
                                     check = "checked";
                             }
-                            <input type="checkbox" @check />
+                            <input type="checkbox" @check @disable />
                         </td>
-                        <td>
+                        <td style="display:@display;">
                             <a href="" class="planedit" title="Edit Plan" onclick="fnedit(this);return false;">
                                 <span class="fa fa-pencil" style="font-size:25px;"></span>
                             </a>

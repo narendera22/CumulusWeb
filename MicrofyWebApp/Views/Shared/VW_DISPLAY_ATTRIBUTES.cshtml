@@ -7,7 +7,7 @@
 {
     if (Model.Value == "" || Model.Value == null)
     {
-        <select class="form-control selectpicker" data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
+        <select class="form-control selectpicker" @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
             <option value="">Select</option>
             @foreach (var val in dropval)
             {
@@ -17,7 +17,7 @@
     }
     else
     {
-        <select class="form-control selectpicker" data-service="@Model.Service" data-impactarea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
+        <select class="form-control selectpicker" @Model.disable data-service="@Model.Service" data-impactarea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
             <option value="">Select</option>
             @foreach (var val in dropval)
             {

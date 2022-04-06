@@ -3,7 +3,6 @@
 @{
     string FirstPanel = string.Empty;
     string LastPanel = string.Empty;
-    string display = "block";
     string isactivenav = "active";
 
 }
@@ -74,7 +73,16 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-8">
+        @{
+            string display = "block";
+            string disable = "";
+            if (Model.userRole == "Auditor")
+            {
+                display = "none";
+                disable = "readonly";
+            }
+        }
+        <div class="col-md-8" style="display:@display;">
             <div class="float-right">
                 <div id="btnadd" style="margin-right:-15px;">
                     <a href="#" class="btn btn-warning"><i class="fa fa-times"></i> Cancel</a>
@@ -142,7 +150,7 @@
                                                                 <b>@checklist.Title</b>
 
                                                                 <p class="practicedesp">
-                                                                    @{ 
+                                                                    @{
                                                                         Regex r = new Regex(@"(https?://[^\s]+)");
                                                                         var myString = r.Replace(checklist.Description, "<a href=\"$1\" style=\"color: #0366d6;\">$1</a>");
                                                                     }
@@ -166,6 +174,7 @@
                                                                     comp.Mandatory = checklist.DisplayAttributes.Mandatory;
                                                                     comp.ListOfValues = checklist.DisplayAttributes.ListOfValues;
                                                                     comp.Value = checklist.Value;
+                                                                    comp.disable = disable;
                                                                 }
                                                                 @await Html.PartialAsync("VW_DISPLAY_ATTRIBUTES", comp)
                                                             </div>

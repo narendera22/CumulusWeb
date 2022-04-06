@@ -81,7 +81,16 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-8">
+        @{
+            string display = "";
+            string disable = "";
+            if (Model.userRole == "Auditor")
+            {
+                display = "none";
+                disable = "disabled";
+            }
+        }
+        <div class="col-md-8" style="display:@display;">
             <div class="float-right" id="btnadd" style="margin-right:-15px;">
                 <a href="#" id="btnAdd" class="btn btn-primary">
                     <i class="fa fa-plus"></i> Add
@@ -106,7 +115,7 @@
                     <th>Planned Delivery Date</th>
                     <th>Owner Name</th>
                     <th data-orderable="false"></th>
-                    <th data-orderable="false"></th>
+                    <th data-orderable="false" style="display:@display;"></th>
                 </tr>
             </thead>
             <tbody>
@@ -123,9 +132,9 @@
                                 if (del.value.HasValue == true)
                                     check = "checked";
                             }
-                            <input type="checkbox" @check />
+                            <input type="checkbox" @check @disable />
                         </td>
-                        <td>
+                        <td style="display:@display;">
                             <a href="" class="planedit" title="Edit Plan" onclick="fnedit(this);return false;">
                                 <span class="fa fa-pencil" style="font-size:25px;"></span>
                             </a>

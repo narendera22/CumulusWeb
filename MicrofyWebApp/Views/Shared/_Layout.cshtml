@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@{ 
+@{
 
-    var displaymode = HttpContextAccessor.HttpContext.Session.GetString("_UserRole");
+    var role = HttpContextAccessor.HttpContext.Session.GetString("_UserRole");
 }
 <style type="text/css">
     .card-deck {
@@ -16,7 +16,6 @@
     .card {
         border: none !important;
     }
-   
 </style>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,9 +71,17 @@
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
-                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");" style="display:@displaymode;"><i class="fas fa-tasks"></i> Projects</a>
-                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");" style="display:@displaymode;"><i class="fas fa-user"></i> Users</a>
-                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");" style="display:@displaymode;"><i class="fas fa-briefcase"></i> Activity</a>
+                                        @if (role == "ProjectOwner")
+                                        {
+                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
+                                        }
+                                        @if (role == "Administrator")
+                                        {
+                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
+                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"><i class="fas fa-user"></i> Users</a>
+                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"><i class="fas fa-briefcase"></i> Activity</a>
+                                        }
+
                                         <a class="dropdown-item" href="~/Login/Logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
                                     </div>
                                 </div>
