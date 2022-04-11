@@ -261,6 +261,12 @@ namespace MicrofyWebApp.Controllers
                     userViewModel.responseMessage = await result.Content.ReadAsStringAsync();
 
                 }
+                userid = HttpContext.Session.GetString("_userId");
+                if (userid == users.username)
+                {
+                    string LoginUserResponse = await GetLoginUserDetails(authKey, userid);
+                    HttpContext.Session.SetString("_UserDet", LoginUserResponse);
+                }
                 userViewModel.DefaultPassword = DefaultPassword;
             }
             return userViewModel;
@@ -383,12 +389,15 @@ namespace MicrofyWebApp.Controllers
         public async Task<IActionResult> ProjectService()
         {
             string userdet = HttpContext.Session.GetString("_UserDet");
+            string role = HttpContext.Session.GetString("_UserRole");
+
             if (userdet == null)
             {
                 return RedirectToAction("Login");
             }
             UserViewModel userViewModel = new UserViewModel();
-            userViewModel = JsonConvert.DeserializeObject<UserViewModel>(userdet);
+
+
 
             List<ProjectViewModel> projectlist = new List<ProjectViewModel>();
             //List<ProjectViewModel> projRespon = new List<ProjectViewModel>();
@@ -399,16 +408,45 @@ namespace MicrofyWebApp.Controllers
             var bestPractices = GetMasterTemplate(BestPractices);
             bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(bestPractices);
 
-            foreach (var prj in userViewModel.projects)
+            if (role == "Administrator")
             {
-                ProjectViewModel prjmodel = new ProjectViewModel();
-                prjmodel.ProjectName = prj.projectName;
-                prjmodel.CustomerName = prj.customerName;
-                projectlist.Add(prjmodel);
+                userViewModel = await ListAllUsersAsync();
+                foreach (var usr in userViewModel.usersDetails)
+                {
+                    foreach (var prj in usr.projects)
+                    {
+                        if (!(projectlist.Any(pro => pro.ProjectName == prj.projectName)))
+                        {
+                            ProjectViewModel prjmodel = new ProjectViewModel();
+                            prjmodel.ProjectName = prj.projectName;
+                            prjmodel.CustomerName = prj.customerName;
+                            projectlist.Add(prjmodel);
+                        }
+                    }
+                }
+                project.ProjectsList = projectlist;
             }
-            project.ProjectsList = projectlist;
+            else
+            {
+                userViewModel = JsonConvert.DeserializeObject<UserViewModel>(userdet);
+                foreach (var prj in userViewModel.projects)
+                {
+                    ProjectViewModel prjmodel = new ProjectViewModel();
+                    prjmodel.ProjectName = prj.projectName;
+                    prjmodel.CustomerName = prj.customerName;
+                    projectlist.Add(prjmodel);
+                }
+                project.ProjectsList = projectlist;
+            }
+
+
             string projectResponse = string.Empty;
-            string Requestapi = $"api/GetProjects/{userViewModel.username}?{ProjectCode}";
+            string Requestapi = string.Empty;
+
+            if (role == "Administrator")
+                Requestapi = $"api/GetAllProjects?{ProjectCode}";
+            else
+                Requestapi = $"api/GetProjects/{userViewModel.username}?{ProjectCode}";
 
             using (var client = new HttpClient())
             {
@@ -423,6 +461,21 @@ namespace MicrofyWebApp.Controllers
                 }
 
             }
+            //if (role == "Administrator")
+            //{
+            //    //project.ProjectsList.Clear();
+            //    //foreach (var prj in projRespon.ProjectsList)
+            //    //{
+            //    //    ProjectViewModel prjmodel = new ProjectViewModel();
+            //    //    prjmodel.ProjectName = prj.ProjectName;
+            //    //    prjmodel.CustomerName = prj.CustomerName;
+            //    //    projectlist.Add(prjmodel);
+            //    //}
+            //    //project.ProjectsList = projectlist;
+            //    var result = project.ProjectsList.Union(projRespon.ProjectsList).OrderBy(x => x.ProjectName).ToList();
+            //    project.ProjectsList.Clear();
+            //    project.ProjectsList = result;
+            //}
             if (projRespon.ProjectsList.Count > 0)
             {
                 var projectval = from x in project.ProjectsList
@@ -436,10 +489,11 @@ namespace MicrofyWebApp.Controllers
                     match.x.AzureTechnologies = match.y.AzureTechnologies;
                 }
             }
+
             List<string> servicesname = new List<string>();
             if (bestPracticesView.BestPractices.Count > 0)
             {
-                foreach(var ser in bestPracticesView.BestPractices)
+                foreach (var ser in bestPracticesView.BestPractices)
                 {
                     servicesname.Add(ser.Service.ToString());
                 }

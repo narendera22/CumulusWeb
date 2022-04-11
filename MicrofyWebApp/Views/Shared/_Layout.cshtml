@@ -65,25 +65,29 @@
                                 <a href="#" class="btn btn-dark" onclick="SearchDocument()"><i class="fa fa-search" aria-hidden="true"></i></a>
                             </div>
                             <div class="col-md-2">
-                                <div class="dropdown" style="text-align: center;">
-                                    <button class="btn btn-dark" type="button" id="myaccout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span class="fas fa-user"></span>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
-                                        @if (role == "ProjectOwner")
-                                        {
-                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
-                                        }
-                                        @if (role == "Administrator")
-                                        {
-                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
-                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"><i class="fas fa-user"></i> Users</a>
-                                        <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"><i class="fas fa-briefcase"></i> Activity</a>
-                                        }
+                                @*<div class="dropdown" style="text-align: center;">
+                                        <button class="btn btn-dark" type="button" id="myaccout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="fas fa-user"></span>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
+                                            @if (role == "ProjectOwner")
+                                            {
+                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
+                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"><i class="fas fa-user"></i> Users</a>
+                                            }
+                                            @if (role == "Administrator")
+                                            {
+                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
+                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"><i class="fas fa-user"></i> Users</a>
+                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"><i class="fas fa-briefcase"></i> Activity</a>
+                                            }
 
-                                        <a class="dropdown-item" href="~/Login/Logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-                                    </div>
+                                            <a class="dropdown-item" href="~/Login/Logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                                        </div>
+                                    </div>*@
+                                <div style="text-align: center;">
+                                    <a href="#" onclick="@("window.location.href='" + @Url.Action("Logout", "Login") + "'");"><i class="fa fa-power-off"></i> Sign Out</a>
                                 </div>
                             </div>
                         </div>

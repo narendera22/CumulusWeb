@@ -180,9 +180,9 @@
                             }
                         </ul>
                     </li>
-                    
-                    <li class="nav-item" >
-                        <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Checklist.jpg" style="width:50px;" />  <span class="">Checklist</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Checklist.jpg" style="width:45px;" />  <span class="">Checklist</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
                         <ul class="submenu dropdown-menu" style="display:none;">
                             <li>
                                 <a class="nav-link" href="#">Dashboard</a>
@@ -198,8 +198,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item" >
-                        <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Compliance.png" style="width:50px;" />  <span class="">Compliance</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Compliances.png" style="width:50px;" />  <span class="">Compliance</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
                         <ul class="submenu dropdown-menu" style="display:none;">
                             <li>
                                 <a class="nav-link" href="#">Dashboard</a>
@@ -212,6 +212,23 @@
                             </li>
                             <li>
                                 <a class="nav-link" href="#">Best Practices</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Settings.jpg" style="width:50px;" />  <span class="">Settings</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
+                        <ul class="submenu dropdown-menu" style="display:none;">
+                            <li>
+                                <a class="dropdown-item" href="~/Login/MyProfile"> My Profile</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"> Projects</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"> Users</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"> Activity</a>
                             </li>
                         </ul>
                     </li>

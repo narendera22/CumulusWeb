@@ -29,6 +29,9 @@ namespace MicrofyWebApp.Controllers
         string Checklisturl = string.Empty;
         string ChecklistCode = string.Empty;
         private IConfiguration _configuration;
+        string Userurl = string.Empty;
+        string Usercode = string.Empty;
+        string userid = string.Empty;
 
         public ChecklistController(ILogger<ChecklistController> logger, IConfiguration configuration)
         {
@@ -43,13 +46,40 @@ namespace MicrofyWebApp.Controllers
             ProjectCode = _configuration.GetValue<string>("Values:ProjectCode");
             Checklisturl = _configuration.GetValue<string>("Values:ChecklistUrl");
             ChecklistCode = _configuration.GetValue<string>("Values:ChecklistCode");
+            Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
+            Usercode = _configuration.GetValue<string>("Values:UsersCode");
 
         }
+        public async Task<UserViewModel> ListAllUsersAsync()
+        {
+            userid = HttpContext.Session.GetString("_userId");
+            string authKey = HttpContext.Session.GetString("_AuthKey");
 
-        public IActionResult ChecklistPlan(string projectname = null)
+            UserViewModel userViewModel = new UserViewModel();
+            string userResponse = string.Empty;
+            string Requestapi = $"api/GetUserList?{Usercode}";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Userurl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", authKey);
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    userResponse = Res.Content.ReadAsStringAsync().Result;
+                    userViewModel.usersDetails = JsonConvert.DeserializeObject<List<ListUserDetails>>(value: userResponse);
+                }
+
+            }
+            return userViewModel;
+        }
+
+        public async Task<IActionResult> ChecklistPlanAsync(string projectname = null)
         {
             string UserDet = HttpContext.Session.GetString("_UserDet");
-
+            string role = HttpContext.Session.GetString("_UserRole");
             if (UserDet == null)
             {
                 return RedirectToAction("Login", "Login");
@@ -60,8 +90,31 @@ namespace MicrofyWebApp.Controllers
 
             checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(ChecklistPlanfile));
 
-            userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
-            checklistPlanView.projects = userViewModel.projects;
+            List<projects> projectlist = new List<projects>();
+            if (role == "Administrator")
+            {
+                userViewModel = await ListAllUsersAsync();
+                foreach (var usr in userViewModel.usersDetails)
+                {
+                    foreach (var prj in usr.projects)
+                    {
+                        if (!(projectlist.Any(pro => pro.projectName == prj.projectName)))
+                        {
+                            projects prjmodel = new projects();
+                            prjmodel.projectName = prj.projectName;
+                            prjmodel.customerName = prj.customerName;
+                            projectlist.Add(prjmodel);
+                        }
+                    }
+                }
+                checklistPlanView.projects = projectlist;
+            }
+            else
+            {
+                userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
+                checklistPlanView.projects = userViewModel.projects;
+            }
+
 
             if (projectname == null)
             {
@@ -98,7 +151,7 @@ namespace MicrofyWebApp.Controllers
                 }
             }
             checklistPlanView.selectedProjectname = projectname;
-            checklistPlanView.userRole = HttpContext.Session.GetString("_UserRole");
+            checklistPlanView.userRole = role;
 
             return View(checklistPlanView);
         }
@@ -122,10 +175,11 @@ namespace MicrofyWebApp.Controllers
             return template;
         }
 
-        public IActionResult ChecklistDeliverable(string projectname = null)
+        public async Task<IActionResult> ChecklistDeliverableAsync(string projectname = null)
         {
-            string UserDet = HttpContext.Session.GetString("_UserDet");
 
+            string UserDet = HttpContext.Session.GetString("_UserDet");
+            string role = HttpContext.Session.GetString("_UserRole");
             if (UserDet == null)
             {
                 return RedirectToAction("Login", "Login");
@@ -136,8 +190,30 @@ namespace MicrofyWebApp.Controllers
 
             checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(ChecklistDeliverablesfile));
 
-            userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
-            checklistPlanView.projects = userViewModel.projects;
+            List<projects> projectlist = new List<projects>();
+            if (role == "Administrator")
+            {
+                userViewModel = await ListAllUsersAsync();
+                foreach (var usr in userViewModel.usersDetails)
+                {
+                    foreach (var prj in usr.projects)
+                    {
+                        if (!(projectlist.Any(pro => pro.projectName == prj.projectName)))
+                        {
+                            projects prjmodel = new projects();
+                            prjmodel.projectName = prj.projectName;
+                            prjmodel.customerName = prj.customerName;
+                            projectlist.Add(prjmodel);
+                        }
+                    }
+                }
+                checklistPlanView.projects = projectlist;
+            }
+            else
+            {
+                userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
+                checklistPlanView.projects = userViewModel.projects;
+            }
 
             if (projectname == null)
             {
@@ -175,7 +251,7 @@ namespace MicrofyWebApp.Controllers
                 }
             }
             checklistPlanView.selectedProjectname = projectname;
-            checklistPlanView.userRole = HttpContext.Session.GetString("_UserRole");
+            checklistPlanView.userRole = role;
 
             return View(checklistPlanView);
         }
@@ -216,8 +292,16 @@ namespace MicrofyWebApp.Controllers
                 checklistPlanInsert = JsonConvert.DeserializeObject<ChecklistPlanInsertModel>(checklist);
                 Requestapi = $"api/UpdateChecklist?{ChecklistCode}";
             }
-
-            checklistPlanInsert.Project = JsonConvert.DeserializeObject<ProjectViewModel>(GetProjectDetails(dataele.ProjectName));
+            var projdet = GetProjectDetails(dataele.ProjectName);
+            if (projdet != string.Empty)
+            {
+                checklistPlanInsert.Project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
+            }
+            else
+            {
+                checklistPlanInsert.Project = new ProjectViewModel();
+                checklistPlanInsert.Project.ProjectName = dataele.ProjectName;
+            }
             checklistPlanInsert.Plans = dataele.Plan;
             checklistPlanInsert.UserId = HttpContext.Session.GetString("_userId"); ;
 
@@ -263,7 +347,27 @@ namespace MicrofyWebApp.Controllers
                 Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
                 HttpResponseMessage resp = new HttpResponseMessage();
                 resp = response.Result;
-                projDet = resp.Content.ReadAsStringAsync().Result;
+                if (resp.IsSuccessStatusCode)
+                    projDet = resp.Content.ReadAsStringAsync().Result;
+            }
+
+            return projDet;
+        }
+
+        public string GetAllProjectDetails()
+        {
+            string projDet = string.Empty;
+            string Requestapi = $"api/GetAllProjects?{ProjectCode}";
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Projecturl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
+                HttpResponseMessage resp = new HttpResponseMessage();
+                resp = response.Result;
+                if (resp.IsSuccessStatusCode)
+                    projDet = resp.Content.ReadAsStringAsync().Result;
             }
 
             return projDet;
@@ -286,7 +390,16 @@ namespace MicrofyWebApp.Controllers
                 Requestapi = $"api/UpdateChecklist?{ChecklistCode}";
             }
 
-            checklistPlanInsert.Project = JsonConvert.DeserializeObject<ProjectViewModel>(GetProjectDetails(dataele.ProjectName));
+            var projdet = GetProjectDetails(dataele.ProjectName);
+            if (projdet != string.Empty)
+            {
+                checklistPlanInsert.Project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
+            }
+            else
+            {
+                checklistPlanInsert.Project = new ProjectViewModel();
+                checklistPlanInsert.Project.ProjectName = dataele.ProjectName;
+            }
             checklistPlanInsert.Deliverables = dataele.Deliverables;
             checklistPlanInsert.UserId = HttpContext.Session.GetString("_userId"); ;
 
@@ -320,9 +433,10 @@ namespace MicrofyWebApp.Controllers
             return resp;
         }
 
-        public IActionResult ChecklistBestPractices(string projectname = null)
+        public async Task<IActionResult> ChecklistBestPracticesAsync(string projectname = null)
         {
             string UserDet = HttpContext.Session.GetString("_UserDet");
+            string role = HttpContext.Session.GetString("_UserRole");
 
             if (UserDet == null)
             {
@@ -337,8 +451,30 @@ namespace MicrofyWebApp.Controllers
             var bestPractices = GetMasterTemplate(BestPractices);
             bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(bestPractices);
 
-            userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
-            bestPracticesView.projects = userViewModel.projects;
+            List<projects> projectlist = new List<projects>();
+            if (role == "Administrator")
+            {
+                userViewModel = await ListAllUsersAsync();
+                foreach (var usr in userViewModel.usersDetails)
+                {
+                    foreach (var prj in usr.projects)
+                    {
+                        if (!(projectlist.Any(pro => pro.projectName == prj.projectName)))
+                        {
+                            projects prjmodel = new projects();
+                            prjmodel.projectName = prj.projectName;
+                            prjmodel.customerName = prj.customerName;
+                            projectlist.Add(prjmodel);
+                        }
+                    }
+                }
+                bestPracticesView.projects = projectlist;
+            }
+            else
+            {
+                userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
+                bestPracticesView.projects = userViewModel.projects;
+            }
 
             if (projectname == null)
             {
@@ -361,7 +497,7 @@ namespace MicrofyWebApp.Controllers
             bestPracticesView.selectedProjectname = projectname;
             bestPracticesView.projectServices = JsonConvert.DeserializeObject<ProjectViewModel>(GetProjectDetails(projectname));
 
-            bestPracticesView.userRole = HttpContext.Session.GetString("_UserRole");
+            bestPracticesView.userRole = role;
 
             return View(bestPracticesView);
         }

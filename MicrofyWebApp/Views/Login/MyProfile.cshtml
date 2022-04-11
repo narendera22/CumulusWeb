@@ -37,6 +37,7 @@
         <div id="divbreadcrumb" style="padding-bottom:5px;">
             <ol class="breadcrumb breadcrumb-arrow">
                 <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                <li class=""><a href="#">Settings</a></li>
                 <li class="active"><span>My Profile</span></li>
             </ol>
         </div>
@@ -231,10 +232,25 @@
     var password = $('#user_password').val();
     var confrmpassword = $('#confirm_password').val();
 
-    var Projects = [{
-        "ProjectName": projectname,
-        "CustomerName": custname
-    }];
+    //var Projects = [{
+    //    "ProjectName": projectname,
+    //    "CustomerName": custname
+    //}];
+
+        var $projCus = $('.dynamic-field');
+        var prj = [];
+        $projCus.each(function (key, value) {
+            var Proj = $("#project_name-" + (key + 1)).val();
+            var Cust = $("#cust_name-" + (key + 1)).val();
+            if (Proj != "") {
+                var obj = {};
+                obj = {
+                    "ProjectName": Proj,
+                    "CustomerName": Cust
+                };
+                prj.push(obj);
+            }
+        });
 
     var UserDetails = {
         "username": userid,
@@ -242,7 +258,7 @@
         "fullName": username,
         "userRole": role,
         "isActive": true,
-        "projects": Projects
+        "projects": prj
         }
         var ActivityTracker = {
             "UserName": userid,
