@@ -443,10 +443,10 @@ namespace MicrofyWebApp.Controllers
             string projectResponse = string.Empty;
             string Requestapi = string.Empty;
 
-            if (role == "Administrator")
+            //if (role == "Administrator")
                 Requestapi = $"api/GetAllProjects?{ProjectCode}";
-            else
-                Requestapi = $"api/GetProjects/{userViewModel.username}?{ProjectCode}";
+            //else
+            //    Requestapi = $"api/GetProjects/{userViewModel.username}?{ProjectCode}";
 
             using (var client = new HttpClient())
             {
