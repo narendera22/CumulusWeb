@@ -488,8 +488,36 @@ namespace MicrofyWebApp.Controllers
                 checklist = JsonConvert.DeserializeObject<ChecklistPlanInsertModel>(checklistdet);
                 if (checklist.BestPractices.Count > 0)
                 {
-                    bestPracticesView.BestPractices.Clear();
-                    bestPracticesView.BestPractices = checklist.BestPractices;
+                    //bestPracticesView.BestPractices.Clear();
+                    foreach(var bp in bestPracticesView.BestPractices)
+                    {
+                        foreach(var chk in checklist.BestPractices)
+                        {
+                            if (bp.Service == chk.Service)
+                            {
+                                foreach(var sec in bp.Section)
+                                {
+                                    foreach(var chksec in chk.Section)
+                                    {
+                                        if (sec.ImpactArea == chksec.ImpactArea)
+                                        {
+                                            foreach(var chklist in sec.Checklist)
+                                            {
+                                                foreach(var check in chksec.Checklist)
+                                                {
+                                                    if (chklist.Title == check.Title)
+                                                    {
+                                                        chklist.Value = check.Value;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //bestPracticesView.BestPractices = checklist.BestPractices;
                 }
             }
 
