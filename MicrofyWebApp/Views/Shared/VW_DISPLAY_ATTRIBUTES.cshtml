@@ -51,11 +51,11 @@
 {
     if (Model.Value == "" || Model.Value == null)
     {
-        <textarea class="form-control"  @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value"></textarea>
+        <textarea class="form-control" placeholder="Enter Remarks"  @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value"></textarea>
     }
     else
     {
-        <textarea class="form-control"  @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value" >@Model.Value</textarea>
+        <textarea class="form-control" placeholder="Enter Remarks"  @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value" >@Model.Value</textarea>
 
     }
 }

@@ -106,9 +106,10 @@
                         <td>@p.Auditor</td>
                         <td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>
                         <td>
-                            <a href="" class="prjedit" title="Edit Project">
-                                <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
+                            <a href="" class="prjedit btn btn-warning" title="Edit Project">
+                                <span class="glyphicon glyphicon-edit" style="font-size:15px;"></span> Edit Project
                             </a>
+                           
                         </td>
                         <td>
                             <button type="button" id="btsAssess" class="btn btn-warning" onclick="@("window.location.href='" + @Url.Action("Audit", "Checklist", new { projectname=p.ProjectName }) + "' ");"><span class="fa fa-cogs"></span>  Audit</button>
@@ -183,7 +184,7 @@
 
                             <!-- Button -->
                             <div class="form-group">
-                                <div class="col-md-7 control-label">
+                                <div class="col-md-7 control-label pull-right">
                                     <button type="submit" id="btnsave" style="display:block;" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                                     <button type="submit" id="btnupdate" style="display:none;" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
                                 </div>
@@ -211,7 +212,7 @@
             $("#users.multiselect").multiselect();
             return false;
         });
-        $("a[class='prjedit']").click(function () {
+        $(".prjedit").click(function () {
             debugger;
             var projectname = $(this).closest("tr").find('td:eq(0)').text();
             var customername = $(this).closest("tr").find('td:eq(1)').text();
@@ -233,7 +234,8 @@
             $('#projectname').val(projectname);
             $('#customername').val(customername);
             $('#auditor').val(auditor);
-
+            $("#btnupdate").show();
+            $("#btnsave").hide();
             $("#projectEditPopup").modal("show");
             return false;
         });
