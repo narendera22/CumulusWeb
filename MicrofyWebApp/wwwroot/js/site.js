@@ -760,6 +760,7 @@ function GetAllValues() {
 }
 
 function buildJsonInputData(form) {
+    debugger;
     var select = form.find('select'),
         input = form.find('input'),
         textarea = form.find('textarea');
@@ -782,15 +783,201 @@ function buildJsonInputData(form) {
             "Value": selectval,
             "Mandatory": $(select[i]).data('mandatory'),
             "Field": $(select[i]).data('field'),
-            "ListOfValues": $(select[i]).data('listOfValues')
+            "ListOfValues": $(select[i]).data('listOfValues'),
+            "Remarks": ""
         };
         InputData.push(ddlvalue);
+    }
+    for (var i = 0; i < input.length; i++) {
+        if ($(input[i]).attr('type') !== 'file' && $(input[i]).attr('type') !== 'checkbox' && $(input[i]).attr('type') != "button" && $(input[i]).attr('type') != "submit") {
+            var inputval;
+            inputval = $(input[i]).val();
+            //displayattr = {
+            //    "Mandatory": $(input[i]).data('mandatory'),
+            //    "Field": $(input[i]).data('field'),
+            //    "ListOfValues": $(input[i]).data('listOfValues')
+            //};
+            var inputValue = {
+                "Service": $(input[i]).data('service'),
+                "ImpactArea": $(input[i]).data('impactarea'),
+                "Title": $(input[i]).data('title'),
+                "Description": $(input[i]).data('description'),
+                "Value": inputval,
+                "Mandatory": $(input[i]).data('mandatory'),
+                "Field": $(input[i]).data('field'),
+                "ListOfValues": $(input[i]).data('listOfValues')
+            };
+            $(InputData).each(function (key, value) {
+                if (value.Title == inputValue.Title && value.ImpactArea == inputValue.ImpactArea) {
+                    if (value.values != "Required – Implemented") {
+                        value.Remarks = inputval;
+                    }
+                }
+            });
+            //InputData.push(inputValue);
+        }
+    }
+    for (var i = 0; i < textarea.length; i++) {
+        var inputval;
+        inputval = $(textarea[i]).val();
+        //displayattr = {
+        //    "Mandatory": $(input[i]).data('mandatory'),
+        //    "Field": $(input[i]).data('field'),
+        //    "ListOfValues": $(input[i]).data('listOfValues')
+        //};
+        var inputValue = {
+            "Service": $(textarea[i]).data('service'),
+            "ImpactArea": $(textarea[i]).data('impactarea'),
+            "Title": $(textarea[i]).data('title'),
+            "Description": $(textarea[i]).data('description'),
+            "Value": inputval,
+            "Mandatory": $(textarea[i]).data('mandatory'),
+            "Field": $(textarea[i]).data('field'),
+            "ListOfValues": $(textarea[i]).data('listOfValues')
+        };
+        $(InputData).each(function (key, value) {
+            if (value.Title == inputValue.Title && value.ImpactArea == inputValue.ImpactArea) {
+                if (value.values != "Required – Implemented") {
+                    value.Remarks = inputval;
+                }
+            }
+        });
+        //InputData.push(inputValue);
     }
 
 
     return InputData;
 }
 
+function buildProjectjson(form) {
+    debugger;
+    var select = form.find('select.ProjectDet'),
+        input = form.find('input.form-control.ProjectDet'),
+        textarea = form.find('textarea.ProjectDet');
+
+    var InputData = {};
+    for (var i = 0; i < select.length; i++) {
+        var selectval;
+        if ($(select[i]).data('field') == "multiselect") {
+            if ($(select[i]).val() != null) {
+                selectval = ($(select[i]).val()).join();
+            }
+        }
+        else {
+            selectval = $(select[i]).val();
+        }
+        var selectname = $(select[i]).attr('name');
+
+        InputData[selectname] = selectval;
+    }
+
+    for (var i = 0; i < input.length; i++) {
+        if ($(input[i]).attr('type') !== 'file' && $(input[i]).attr('type') !== 'checkbox' && $(input[i]).attr('type') != "button" && $(input[i]).attr('type') != "submit") {
+            var inputval;
+            inputval = $(input[i]).val();
+            var inputname = $(input[i]).attr('name');
+
+            InputData[inputname] = inputval;
+        }
+        else if ($(input[i]).attr('type') == 'file') {
+            var file = jQuery($(input[i])).get(0).files[0];
+            var fileurl;
+            if (file != null) {
+                fileurl = buildFileInput(file, $(input[i]).data('projectname'));
+                var fname = file.name;
+                $(input[i]).attr('data-link', fileurl);
+                $(input[i]).parent().find('span').find('span').text(fname);
+                $(input[i]).parent().find('span').show();
+                $(input[i]).val('');
+            }
+            else {
+                fileurl = $(input[i]).data('link');
+            }
+
+            var inputname = $(input[i]).attr('name');
+
+            InputData[inputname] = fileurl;
+        }
+    }
+
+    for (var i = 0; i < textarea.length; i++) {
+        var textareaval;
+        textareaval = $(textarea[i]).val();
+        var textareaname = $(textarea[i]).attr('name');
+
+        InputData[textareaname] = textareaval;
+    }
+    //table values
+    var table = form.find('table');
+    for (var i = 0; i < table.length; i++) {
+        var tabledata = [];
+        var tableref = $(table[i]);
+        var rowctr = $(tableref).rowCount();
+        var colctr = $(tableref).columnCount();
+        if (rowctr > 0) {
+            var tbInputData = [];
+            for (var j = 1; j <= rowctr; j++) {
+                var colprop = {};
+                for (var k = 0; k < (colctr - 1); k++) {
+                    var columnval = $(tableref).find('tr:eq(' + j + ')').find('td:eq(' + k + ')').text();
+                    var columnname = $(tableref).find('tr:eq(' + j + ')').find('td:eq(' + k + ')').attr("name");
+                    colprop[columnname] = columnval;
+                }
+                tbInputData.push(colprop);
+            }
+            //tabledata.push(tbInputData);
+        }
+        var tabname = $(tableref).attr("name");
+        InputData[tabname] = tbInputData;
+    }
+
+
+    return InputData;
+}
+
+$.fn.rowCount = function () {
+    return $('tr', $(this).find('tbody')).length;
+};
+
+$.fn.columnCount = function () {
+    return $('th', $(this).find('thead')).length;
+};
+
+function buildFileInput(file, folder) {
+    var fileurl = "";
+    if (file != null) {
+        $.ajax({
+            url: "/Home/Upload",
+            type: "POST",
+            data: function () {
+                var data = new FormData();
+                data.append("phase", "Checklist");
+                data.append("subphase", folder);
+                data.append("file", jQuery("#fileToUpload").get(0).files[0]);
+                data.append("tags", "");
+                data.append("displaytags", "");
+                return data;
+            }(),
+            async: false,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                fileurl = response.encodedurl;
+            },
+            error: function (jqXHR, textStatus, errorMessage) {
+                console.log(errorMessage);
+                $.alert({
+                    title: 'Error!!',
+                    content: errorMessage,
+                });
+            }
+        });
+    }
+    return fileurl;
+}
+function removeFile(e) {
+    $(e).parent().parent().find('span').remove();
+}
 function redirect() {
     console.log($('#projectname').val());
     var projectname = $('#projectname').val();
@@ -825,3 +1012,33 @@ function YearformatDate(date) {
 
     return [year, month, day].join('-');
 }
+function LoadService(NavParam) {
+    debugger;
+    var json = $.parseJSON(NavParam);
+    var dataele = {
+        "Checklist": buildJsonInputData($('#' + json.prevDivid)),
+        "ProjectName": json.projectName,
+        "ProductCategory": json.prevProdCat,
+        "Service": json.prevService
+    };
+    var redirecturl = "/Checklist/InsertBestPractices";
+    $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
+
+    });
+    $.ajax({
+        async: false,
+        type: "GET",
+        url: "/Checklist/LoadService",
+        data: { "productcat": json.currentProdCat, "service": json.currentService, "projectname": json.projectName },
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+            $("#" + json.currentDivid).html(data);
+        },
+        error: function (data) {
+            console.log(JSON.stringify(data));
+        }
+    });
+
+    return false;
+}
+

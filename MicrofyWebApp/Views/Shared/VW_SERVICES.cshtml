@@ -1,0 +1,110 @@
+﻿@model MicrofyWebApp.Models.AuditViewModel
+@using System.Text.RegularExpressions
+@{
+    string FirstPanel = string.Empty;
+    string LastPanel = string.Empty;
+    string isactivenav = "active";
+
+}
+
+@foreach (var inp in Model.BestPractices)
+{
+    foreach (var ipsection in inp.Section.Select((value, i) => new { i, value }))
+    {
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i" aria-expanded="false" aria-controls="@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i">
+                            @ipsection.value.ImpactArea
+                        </a>
+                    </h4>
+                </div>
+                <div id="@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        @foreach (var ipsec in inp.Section)
+                        {
+                            if (ipsec.ImpactArea == ipsection.value.ImpactArea)
+                            {
+                                foreach (var checklist in ipsec.Checklist)
+                                {
+                                    <div class="form-group row col-md-12" style="display: flex; margin-bottom: 0.1rem;">
+                                        <label class="control-label col-md-6">
+                                            <b>@checklist.Title</b>
+
+                                            <p class="practicedesp">
+                                                @{
+                                                    Regex r = new Regex(@"(https?://[^\s]+)");
+                                                    var myString = r.Replace(checklist.Description, "<a href=\"$1\" style=\"color: #0366d6;\">$1</a>");
+                                                }
+                                                @Html.Raw(myString)
+                                            </p>
+
+                                            @*@if (checklist.Description != "")
+                                                {
+                                                <i class="fa fa-info-circle" aria-hidden="true" title="@checklist.Description"></i>
+                                                }*@
+                                        </label>
+
+                                        <div class="col-md-3">
+                                            @{
+                                                var comp = new Models.Computation();
+                                                comp.Service = inp.Service;
+                                                comp.ImpactArea = ipsection.value.ImpactArea;
+                                                comp.Title = checklist.Title;
+                                                comp.Description = checklist.Description;
+                                                comp.Field = checklist.DisplayAttributes.Field;
+                                                comp.Mandatory = checklist.DisplayAttributes.Mandatory;
+                                                comp.ListOfValues = checklist.DisplayAttributes.ListOfValues;
+                                                comp.Value = checklist.Input.Value;
+                                                //comp.disable = disable;
+                                            }
+                                            @await Html.PartialAsync("VW_DISPLAY_ATTRIBUTES", comp)
+                                        </div>
+                                        @{
+                                            var displayatt = "none";
+                                            if (checklist.Input.Value != "Required – Implemented" && checklist.Input.Value!="")
+                                            {
+                                                displayatt = "block";
+                                            }
+                                        }
+                                        <div class="col-md-3 checklisttextbox" style="display:@displayatt;">
+                                            @{
+                                                var inputcomp = new Models.Computation();
+                                                inputcomp.Service = inp.Service;
+                                                inputcomp.ImpactArea = ipsection.value.ImpactArea;
+                                                inputcomp.Title = checklist.Title;
+                                                inputcomp.Description = checklist.Description;
+                                                inputcomp.Field = "TextBox";
+                                                inputcomp.Mandatory = checklist.DisplayAttributes.Mandatory;
+                                                inputcomp.ListOfValues = checklist.DisplayAttributes.ListOfValues;
+                                                inputcomp.Value = checklist.Input.Remarks;
+                                                //comp.disable = disable;
+                                            }
+                                            @await Html.PartialAsync("VW_DISPLAY_ATTRIBUTES", inputcomp)
+                                        </div>
+                                    </div>
+
+                                }
+                            }
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".form-control.selectpicker.checklistddl").change(function () {
+            debugger;
+            var ddlval = $(this).val();
+            if(ddlval!="Required – Implemented"){
+                var textbox=$(this).parent().next();
+                $(textbox).show();
+            }
+        });
+     });
+</script>

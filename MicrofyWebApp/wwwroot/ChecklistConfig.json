@@ -1,0 +1,16 @@
+{	
+"Services":[
+		{
+		"Name":"Azure APIM",
+		"File":"AzureAPIM.json"
+		},
+		{
+		"Name":"Azure App Service",
+		"File":"AzureAppService.json"
+		},
+	{
+		"Name": "Azure Sql Db Service",
+		"File": "AzureSqlDbService.json"
+	}
+	]
+}

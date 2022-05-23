@@ -25,8 +25,13 @@
     <title>@ViewData["Title"] - Welcome to Cumulus</title>
     <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+
+    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
+
     @*<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">*@
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" integrity="sha512-YdYyWQf8AS4WSB0WWdc3FbQ3Ypdm0QCWD2k4hgfqbQbRCJBEgX0iAegkl2S1Evma5ImaVXLBeUkIlP6hQ1eYKQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
@@ -34,6 +39,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -57,34 +63,34 @@
                             </div>
                             <div class="col-md-1">
                                 @* <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                        <i class="fas fa-align-justify"></i>
+                                    <i class="fas fa-align-justify"></i>
                                     </button> *@
                                 @*<button class="btn btn-dark" type="button" onclick="return false;">
-                                        <i class="fa fa-search"></i>
+                                    <i class="fa fa-search"></i>
                                     </button>*@
                                 <a href="#" class="btn btn-dark" onclick="SearchDocument()"><i class="fa fa-search" aria-hidden="true"></i></a>
                             </div>
                             <div class="col-md-2">
                                 @*<div class="dropdown" style="text-align: center;">
-                                        <button class="btn btn-dark" type="button" id="myaccout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <span class="fas fa-user"></span>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
-                                            @if (role == "ProjectOwner")
-                                            {
-                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
-                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"><i class="fas fa-user"></i> Users</a>
-                                            }
-                                            @if (role == "Administrator")
-                                            {
-                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
-                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"><i class="fas fa-user"></i> Users</a>
-                                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"><i class="fas fa-briefcase"></i> Activity</a>
-                                            }
+                                    <button class="btn btn-dark" type="button" id="myaccout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="fas fa-user"></span>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
+                                    @if (role == "ProjectOwner")
+                                    {
+                                    <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
+                                    <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"><i class="fas fa-user"></i> Users</a>
+                                    }
+                                    @if (role == "Administrator")
+                                    {
+                                    <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"><i class="fas fa-tasks"></i> Projects</a>
+                                    <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"><i class="fas fa-user"></i> Users</a>
+                                    <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"><i class="fas fa-briefcase"></i> Activity</a>
+                                    }
 
-                                            <a class="dropdown-item" href="~/Login/Logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-                                        </div>
+                                    <a class="dropdown-item" href="~/Login/Logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                                    </div>
                                     </div>*@
                                 <div style="text-align: center;">
                                     <a href="#" onclick="@("window.location.href='" + @Url.Action("Logout", "Login") + "'");"><i class="fa fa-power-off"></i> Sign Out</a>
@@ -126,7 +132,12 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>*@
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+
+
 
     @RenderSection("Scripts", required: false)
 </body>

@@ -1169,3 +1169,32 @@ a {
     margin-bottom: -1px;
     padding-right: 5px !important;
 }
+
+multiselect-container > li > a > label > input[type=checkbox] {
+    margin-bottom: 5px !important;
+    width: 15px !important;
+}
+
+.multiselect-container {
+    position: absolute;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 300px;
+}
+
+    .multiselect-container > li > a > label {
+        margin: 0;
+        height: 100%;
+        cursor: pointer;
+        font-weight: 400;
+        padding: 3px 20px 3px 40px;
+        color: black !important;
+    }
+
+.multiselect {
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}

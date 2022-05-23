@@ -1,0 +1,144 @@
+﻿@model MicrofyWebApp.Models.AuditViewModel
+<div class="row col-md-12">
+    <div class="form-group col-md-12 row ">
+        <label class="control-label col-md-3">
+            @*<span style="color:red;">*</span>*@
+            Customer Overview
+        </label>
+        <div class="col-md-9" style="padding-left: 0px;">
+            <textarea class="form-control ProjectDet" required name="CustomerOverview" rows="4" cols="50" placeholder="Enter Customer Overview">
+                @Html.Raw(System.Web.HttpUtility.HtmlDecode(Model.ProjectDetails.CustomerOverview).Replace("<br />","\r\n" ))
+                                                        </textarea>
+        </div>
+    </div>
+    <div class="form-group col-md-12 row">
+        <label class="control-label col-md-3">
+            Project Overview
+        </label>
+        <div class="col-md-9" style="padding-left: 0px;">
+            <textarea class="form-control ProjectDet" required name="ProjectOverview" rows="4" cols="50" placeholder="Enter Project Overview">
+                @Html.Raw(System.Web.HttpUtility.HtmlDecode(Model.ProjectDetails.ProjectOverview).Replace("<br />","\r\n" ))
+                                                        </textarea>
+        </div>
+    </div>
+    <div class="form-group col-md-6 row">
+        <label class="control-label col-md-5">
+            @*<span style="color:red;">*</span>*@
+            Project Start Date
+        </label>
+        <div class="col-md-6 ml-4">
+            <input class="form-control ProjectDet" placeholder="dd/mm/yyyy" id="startdate" name="ProjectStartDate" type="date" value="@Model.ProjectDetails.ProjectStartDate" min="1997-01-01" max="2030-12-31">
+        </div>
+    </div>
+    <div class="form-group col-md-6 row">
+        <label class="control-label col-md-5">
+            @*<span style="color:red;">*</span>*@
+            Tentative End Date
+        </label>
+        <div class="col-md-6 ml-4">
+            <input class="form-control ProjectDet" placeholder="dd/mm/yyyy" id="startdate" name="TentativeEndDate" type="date" value="@Model.ProjectDetails.TentativeEndDate" min="1997-01-01" max="2030-12-31">
+        </div>
+    </div>
+    <div class="form-group col-md-6 row">
+        <label class="control-label col-md-5">
+            @*<span style="color:red;">*</span>*@
+            Project Deliverables
+        </label>
+        <div class="col-md-6 ml-4">
+            <select multiple="multiple" id="users" name="ProjectDeliverables" class="form-control ProjectDet selectpicker  multiselect" data-live-search="true" data-field="multiselect">
+                @{
+                    string[] multiVal = { };
+                    if (Model.ProjectDetails.ProjectDeliverables != "" && Model.ProjectDetails.ProjectDeliverables != null)
+                        multiVal = Model.ProjectDetails.ProjectDeliverables.Split(",");
+                }
+                @foreach (var item in Model.Deliverables)
+                {
+
+                    if (multiVal.Contains(item.Name))
+                    {
+                        <option value="@item.Name" selected>@item.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Name">@item.Name</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group col-md-6 row">
+        <label class="control-label col-md-5">
+            @*<span style="color:red;">*</span>*@
+            Application Architecture
+        </label>
+        <div class="col-md-6 ml-4">
+            @{
+                string url = string.Empty;
+                url = System.Web.HttpUtility.UrlDecode(Model.ProjectDetails.ApplicationArchitecture);
+            }
+            <input type="file" class="form-control ProjectDet" data-link="@url" id="fileToUpload" data-projectname="@Model.projectname" name="ApplicationArchitecture" required />
+
+            <span class="tag badge rounded-pill bg-info">
+                <span>@Html.Raw(System.IO.Path.GetFileName(url))</span>
+                <a href="#" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = url, phase="Checklist",subphase=Model.project.ProjectName }) + "'");"><i class="fa fa-download" title="Download" aria-hidden="true"></i></a>
+                <a href="#" onclick="removeFile(this);"><i class="remove fa fa-times-circle glyphicon-white" title="Delete"></i></a>
+            </span>
+        </div>
+    </div>
+    <div class="form-group col-md-12 row">
+        <label class="control-label col-md-3">
+            Technologies in Use
+        </label>
+        <div class="col-md-9" style="padding-left: 0px;">
+            <textarea class="form-control ProjectDet" required name="TechnologiesInUse" rows="4" cols="50" placeholder="Enter Technologies in Use">
+                @Html.Raw(System.Web.HttpUtility.HtmlDecode(Model.ProjectDetails.TechnologiesInUse).Replace("<br />","\r\n" ))
+                                                        </textarea>
+        </div>
+    </div>
+    <div class="form-group col-md-12 row">
+        <label class="control-label col-md-3">
+            Azure Services Used
+        </label>
+        <div class=" row col-md-9 ">
+            <div id="dynamic-Serv-field-1" class=" col-md-12 form-group dynamic-field" style="display:flex;padding-left: 0px;" data-tags="add">
+                <select id="prodcat" name="ProductCategory" class=" col-md-6 form-control selectpicker mr-2">
+                    <option value="Select">Select</option>
+                    @foreach (var item in Model.Configuration)
+                    {
+                        <option value="@item.ProductCategory">@item.ProductCategory</option>
+                    }
+                </select>
+                <div id="divserv" style="display:none;">
+                    <select multiple="multiple" name="Services" id="ddlserv" class=" col-md-5 form-control selectpicker  multiselect" data-live-search="true" data-field="multiselect">
+                    </select>
+                </div>
+
+                <a href="#" class="add" title="Add Service" style="padding:5px; display:block;" onclick="addservices(); return false;">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="form-group col-md-12 row">
+        <table style="margin-left:15px;" id="tbservice" class="table table-bordered table-hover" name="AzureServicesUsed">
+            <thead class="thead-light">
+                <tr>
+                    <th>Product Category</th>
+                    <th>Services</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var ser in Model.ProjectDetails.AzureServicesUsed.Select((value, i) => new { i, value }))
+                {
+                    <tr data-row="@ser.i+1">
+                        <td name="ProductCategory">@ser.value.ProductCategory</td>
+                        <td name="Services">@ser.value.Services</td>
+                        <td><a href="" class="delete" onclick="fndelete(this);return false;"><i class="fa fa-trash" style="font-size:18px"></i></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,343 @@
+﻿@model MicrofyWebApp.Models.ProjectView
+@{
+    var status = "";
+    ViewData["Title"] = "Projects";
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Welcome to Cumulus</title>
+    <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+
+
+    <!-- jQuery library file -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js'></script>
+    @*<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>
+        <link rel="stylesheet" media="screen" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css' />*@
+
+    <!-- Datatable plugin CSS file -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+    <!-- Datatable plugin JS library file -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery-confirm.js"></script>
+
+
+
+    <style type="text/css">
+        .modal-dialog {
+            right: auto;
+            left: 0% !important;
+            width: 600px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .justify-content-lg-center {
+            justify-content: left !important;
+        }
+
+        .input-group-addon {
+            padding: 6px 20px !important;
+        }
+
+        table.dataTable thead th, table.dataTable thead td {
+            padding: 10px 10px !important;
+            border-bottom: 1px solid #111;
+        }
+
+        .dropdown-toggle::after {
+            display: inline-block;
+            margin-left: -0.5em !important;
+            margin-bottom: 0.1em !important;
+            vertical-align: -0.01em !important;
+            content: "";
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid" style="margin-left:15px;">
+
+        <div id="divbreadcrumb" style="padding-bottom:5px;">
+            <ol class="breadcrumb breadcrumb-arrow">
+                <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                <li class="active"><span>Projects</span></li>
+            </ol>
+        </div>
+        <div style="margin-bottom:5px;">
+            <button type="submit" class="btn btn-primary" id="btncreateprj"><i class="fa fa-plus"></i> Create Project</button>
+        </div>
+
+        <!--HTML table with student data-->
+        <table id="tbProject" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Project / Application Name</th>
+                    <th>Customer Name</th>
+                    <th>Auditor</th>
+                    <th data-orderable="false" style="display:none;"></th>
+                    <th data-orderable="false"></th>
+                    <th data-orderable="false"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.ProjectsList)
+                {
+                    <tr>
+                        <td>@p.ProjectName</td>
+                        <td>@p.CustomerName</td>
+                        <td>@p.Auditor</td>
+                        <td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>
+                        <td>
+                            <a href="" class="prjedit" title="Edit Project">
+                                <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <button type="button" id="btsAssess" class="btn btn-warning" onclick="@("window.location.href='" + @Url.Action("Audit", "Checklist", new { projectname=p.ProjectName }) + "' ");"><span class="fa fa-cogs"></span>  Audit</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @*<div class="form-group">
+            <div class="col-md-4 control-label" style="padding-bottom:15px;">
+            <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
+            </div>
+            </div>*@
+    </div>
+    <div class="modal fade" id="projectEditPopup" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="width:750px;margin:auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Project Details</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="well form-horizontal" action=" " method="post" id="UpdateProjectList_form">
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Project / Application Name</label>
+                                <div class="col-md-6 inputGroupContainer">
+                                    <div class="input-group">
+                                        <input name="projectname" id="projectname" placeholder="Project Name" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Customer Name</label>
+                                <div class="col-md-6 inputGroupContainer">
+                                    <div class="input-group">
+                                        <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Users</label>
+                                <div class="col-md-6 inputGroupContainer">
+                                    <div class="input-group">
+                                        <select multiple="multiple" id="users" class="form-control selectpicker  multiselect" data-live-search="true">
+                                            @foreach (var item in Model.ListUsers)
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span>  Auditor</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <select id="auditor" class="col-md-6 form-control selectpicker ">
+                                            <option value="">Select</option>
+                                            @foreach (var item in Model.ListAuditor)
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Button -->
+                            <div class="form-group">
+                                <div class="col-md-7 control-label">
+                                    <button type="submit" id="btnsave" style="display:block;" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                                    <button type="submit" id="btnupdate" style="display:none;" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
+                                </div>
+                            </div>
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+
+<script type="text/javascript">
+    $(function () {
+
+        $("#btncreateprj").click(function () {
+            $("#btnupdate").hide();
+            $("#btnsave").show();
+            $("#projectEditPopup").modal("show");
+            $("#users.multiselect").multiselect();
+            return false;
+        });
+        $("a[class='prjedit']").click(function () {
+            debugger;
+            var projectname = $(this).closest("tr").find('td:eq(0)').text();
+            var customername = $(this).closest("tr").find('td:eq(1)').text();
+            var auditor = $(this).closest("tr").find('td:eq(2)').text();
+            var users = $(this).closest("tr").find('td:eq(3)').text();
+            $("#users.multiselect").multiselect();
+
+            var listuser=users.split(",");
+            $.each(users.split(","), function(i,e){
+                $("#users option[value='" + e + "']").prop("selected", true);
+            });
+            //var i = 0, size = listuser.length;
+            //for(i; i < size; i++){
+            //  $("#users").multiselect("widget").find(":checkbox[value='"+valArr[i]+"']").attr("checked","checked");
+            //  $("#users option[value='" + valArr[i] + "']").attr("selected", 1);
+            //  $("#users").multiselect("refresh");
+            //}
+             //$('#users').val(listuser);
+            $('#projectname').val(projectname);
+            $('#customername').val(customername);
+            $('#auditor').val(auditor);
+
+            $("#projectEditPopup").modal("show");
+            return false;
+        });
+        $("#btnsave").click(function () {
+                   var projectname = $('#projectname').val();
+                   var customername = $('#customername').val();
+                   var users = $('#users').val();
+                   var auditor=$('#auditor').val();
+
+                   var ProjectDetails = {
+                    "ProjectName": projectname,
+                    "CustomerName": customername,
+                    "Auditor": auditor,
+                    "Users": users
+                   }
+                    var redirecturl = "/Login/UpdateProject";
+               $.post(redirecturl, { "project": ProjectDetails }, function (data) {
+                    var title = "";
+                    var type = "";
+                    if (data.statusCode == true) {
+                        title = "Success!!";
+                        type = "green";
+                    }
+                    else {
+                        title = "Error!!";
+                        type = "red";
+                    }
+                    $.alert({
+                            title: title,
+                            content: "Project created successfully",
+                            type: type,
+                            onAction: function () {
+                                window.location.href = '@Url.Action("Project","Checklist")';
+                            }
+                        });
+                })
+                .fail(function (response) {
+                   $.alert({
+                        title: 'Error!!',
+                        content: response,
+                        alignMiddle: true,
+                        type: 'red'
+                    });
+                });
+                return false;
+        });
+        $("#btnupdate").click(function () {
+                   var projectname = $('#projectname').val();
+                   var customername = $('#customername').val();
+                   var users = $('#users').val();
+                   var auditor=$('#auditor').val();
+
+                   var ProjectDetails = {
+                    "ProjectName": projectname,
+                    "CustomerName": customername,
+                    "Auditor": auditor,
+                    "Users": users
+                   }
+                    var redirecturl = "/Login/UpdateProject";
+               $.post(redirecturl, { "project": ProjectDetails }, function (data) {
+                    var title = "";
+                    var type = "";
+                    if (data.statusCode == true) {
+                        title = "Success!!";
+                        type = "green";
+                    }
+                    else {
+                        title = "Error!!";
+                        type = "red";
+                    }
+                    $.alert({
+                            title: title,
+                            content: "Project Modified successfully",
+                            type: type,
+                            onAction: function () {
+                                window.location.href = '@Url.Action("Project","Checklist")';
+                            }
+                        });
+                })
+                .fail(function (response) {
+                   $.alert({
+                        title: 'Error!!',
+                        content: response,
+                        alignMiddle: true,
+                        type: 'red'
+                    });
+                });
+                return false;
+        });
+        function reset(){
+            $('#projectname').val("");
+          $('#customername').val("");
+          $('#users').val("");
+          $('#auditor').val("");
+        }
+    });
+     /* Initialization of datatable */
+        $(document).ready(function () {
+            $('#tbProject').DataTable({
+            });
+             $('.multiselect').multiselect({
+                includeSelectAllOption: true
+            });
+        });
+</script>
+
+

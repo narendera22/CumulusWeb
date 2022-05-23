@@ -28,8 +28,16 @@ namespace MicrofyWebApp.Models
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Value { get; set; }
+        public Inputvalue Input { get; set; }
         public DisplayAttributes DisplayAttributes { get; set; }
+
+    }
+    public class Inputvalue
+    {
+        public string Title { get; set; }
+        public string Value { get; set; }
+        public string Remarks { get; set; }
+
     }
     public class DisplayAttributes
     {
@@ -53,6 +61,7 @@ namespace MicrofyWebApp.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public string Value { get; set; }
+        public string Remarks { get; set; }
         public string Mandatory { get; set; }
         public string Field { get; set; }
         public string ListOfValues { get; set; }
@@ -61,8 +70,28 @@ namespace MicrofyWebApp.Models
 
     public class BestPracticesFormInputData
     {
-        public List<Computation> BestPractices { get; set; }
+        public List<Computation> Checklist { get; set; }
         public string ProjectName { get; set; }
+        public string ProductCategory { get; set; }
+        public string Service { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class Configurations
+    {
+        public List<ChecklistConfig> Configuration { get; set; }
+    }
+
+    public class ChecklistConfig
+    {
+        public string ProductCategory { get; set; }
+
+        public List<Services> Services { get; set; }
+    }
+    public class Services
+    {
+        public string Name { get; set; }
+        public string FileName { get; set; }
     }
 
 }

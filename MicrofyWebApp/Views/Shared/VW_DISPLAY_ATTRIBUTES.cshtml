@@ -7,7 +7,7 @@
 {
     if (Model.Value == "" || Model.Value == null)
     {
-        <select class="form-control selectpicker" @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
+        <select class="form-control selectpicker checklistddl" @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
             <option value="">Select</option>
             @foreach (var val in dropval)
             {
@@ -17,7 +17,7 @@
     }
     else
     {
-        <select class="form-control selectpicker" @Model.disable data-service="@Model.Service" data-impactarea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
+        <select class="form-control selectpicker checklistddl" @Model.disable data-service="@Model.Service" data-impactarea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value">
             <option value="">Select</option>
             @foreach (var val in dropval)
             {
@@ -31,5 +31,31 @@
                 }
             }
         </select>
+    }
+}
+
+@if (Model.Field == "TextBox")
+{
+    if (Model.Value == "" || Model.Value == null)
+    {
+        <input class="form-control" placeholder="Enter Remarks" @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value" />
+    }
+    else
+    {
+        <input class="form-control" placeholder="Enter Remarks" @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value" value="@Model.Value" />
+
+    }
+}
+
+@if (Model.Field == "TextArea")
+{
+    if (Model.Value == "" || Model.Value == null)
+    {
+        <textarea class="form-control"  @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value"></textarea>
+    }
+    else
+    {
+        <textarea class="form-control"  @Model.disable data-service="@Model.Service" data-impactArea="@Model.ImpactArea" data-title="@Model.Title" data-description="@Model.Description" data-field="@Model.Field" data-mandatory="@Model.Mandatory" data-listOfValues="@Model.ListOfValues" data-value="@Model.Value" >@Model.Value</textarea>
+
     }
 }

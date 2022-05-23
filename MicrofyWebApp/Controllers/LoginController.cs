@@ -36,6 +36,9 @@ namespace MicrofyWebApp.Controllers
         string Asseturl = string.Empty;
         string AssetCode = string.Empty;
         string BestPractices = string.Empty;
+        string ChecklistconfigUrl = string.Empty;
+        string ChecklistconfigCode = string.Empty;
+        string bestpracFolder = string.Empty;
 
         public LoginController(ILogger<LoginController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
@@ -55,6 +58,10 @@ namespace MicrofyWebApp.Controllers
             Asseturl = _configuration.GetValue<string>("Values:AssetStrgeBaseUrl");
             AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
             BestPractices = _configuration.GetValue<string>("Values:BestPractices");
+            ChecklistconfigUrl = _configuration.GetValue<string>("Values:ChecklistconfigUrl");
+            ChecklistconfigCode = _configuration.GetValue<string>("Values:ChecklistconfigCode");
+            bestpracFolder = _configuration.GetValue<string>("Values:ServiceFolder");
+
         }
 
         public IActionResult Login()
@@ -405,8 +412,22 @@ namespace MicrofyWebApp.Controllers
             ProjectView projRespon = new ProjectView();
             BestPracticesViewModel bestPracticesView = new BestPracticesViewModel();
 
-            var bestPractices = GetMasterTemplate(BestPractices);
-            bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(bestPractices);
+            //var bestPractices = GetMasterTemplate(BestPractices);
+            //bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(bestPractices);
+
+            Configurations configurations = new Configurations();
+            List<BestPractices> bplist = new List<BestPractices>();
+
+            configurations = JsonConvert.DeserializeObject<Configurations>(GetChecklistConfig());
+
+            //foreach (var config in configurations.Services)
+            //{
+            //    BestPractices bp = new BestPractices();
+            //    var bestPrac = GetMasterTemplate(config.File, bestpracFolder);
+            //    bp = JsonConvert.DeserializeObject<BestPractices>(bestPrac);
+            //    bplist.Add(bp);
+            //}
+            //bestPracticesView.BestPractices = bplist;
 
             if (role == "Administrator")
             {
@@ -490,15 +511,15 @@ namespace MicrofyWebApp.Controllers
                 }
             }
 
-            List<string> servicesname = new List<string>();
-            if (bestPracticesView.BestPractices.Count > 0)
-            {
-                foreach (var ser in bestPracticesView.BestPractices)
-                {
-                    servicesname.Add(ser.Service.ToString());
-                }
-            }
-            project.Services = servicesname;
+            //List<string> servicesname = new List<string>();
+            //if (configurations.Services.Count > 0)
+            //{
+            //    foreach (var ser in configurations.Services)
+            //    {
+            //        servicesname.Add(ser.Name.ToString());
+            //    }
+            //}
+            //project.Services = servicesname;
 
             return View(project);
         }
@@ -534,7 +555,7 @@ namespace MicrofyWebApp.Controllers
             return projectViewModel;
         }
 
-        public string GetMasterTemplate(string mastertemplate)
+        public string GetMasterTemplate(string mastertemplate, string foldername = null)
         {
             //string folder = $"folder={foldername}";
             string template = string.Empty;
@@ -551,6 +572,25 @@ namespace MicrofyWebApp.Controllers
             }
 
             return template;
+        }
+
+        public string GetChecklistConfig()
+        {
+            string config = string.Empty;
+            string Requestapi = $"api/GetChecklistConfig?{ChecklistconfigCode}";
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ChecklistconfigUrl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
+                HttpResponseMessage resp = new HttpResponseMessage();
+                resp = response.Result;
+                if (resp.IsSuccessStatusCode)
+                    config = resp.Content.ReadAsStringAsync().Result;
+            }
+
+            return config;
         }
 
     }

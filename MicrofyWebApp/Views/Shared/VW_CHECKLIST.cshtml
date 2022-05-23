@@ -1,0 +1,194 @@
+﻿@model MicrofyWebApp.Models.AuditViewModel
+@using Newtonsoft.Json
+@using System.Text.RegularExpressions
+@{
+    string FirstPanel = string.Empty;
+    string LastPanel = string.Empty;
+    string isactivenav = "active";
+    var prevProdCat = string.Empty;
+    var prevService = string.Empty;
+    var prevDivid = string.Empty;
+
+
+}
+<style type="text/css">
+    .tab-content {
+        /*position: absolute;
+                                                    width: 450px;*/
+        height: auto;
+        /*margin-top: -50px;*/
+        background: #fff;
+        color: #000;
+        /*border-radius: 30px;*/
+        z-index: 1000;
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.4);
+        padding: 20px;
+        margin-bottom: 50px;
+        margin-left: 15px;
+    }
+
+        .tab-content button {
+            border-radius: 15px;
+            width: 100px;
+            margin: 0 auto;
+            float: right;
+        }
+</style>
+@if (Model.AzureServicesUsed != null)
+{
+    <div class="rounded shadow ml-3 pt-2 ">
+        <ul class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 " style="font-size:x-small" id="nav-tab" role="tablist">
+            @foreach (var mod in Model.AzureServicesUsed.Select((value, i) => new { i, value }))
+            {
+                FirstPanel = Model.AzureServicesUsed.First().Services;
+                isactivenav = string.Empty;
+                if (FirstPanel == mod.value.Services)
+                {
+                    isactivenav = "active";
+                }
+                var NavParam = new Models.NavtabParam();
+                NavParam.projectName = Model.ProjectDetails.ProjectName;
+                NavParam.prevProdCat = prevProdCat;
+                NavParam.prevService = prevService;
+                NavParam.prevDivid = prevDivid;
+                NavParam.currentProdCat = mod.value.ProductCategory;
+                NavParam.currentService = mod.value.Services;
+                NavParam.currentDivid = mod.value.Services.Substring(0, 3).Replace(" ", "") + "_" + mod.i.ToString();
+                var paramter = JsonConvert.SerializeObject(NavParam);
+                <li class="nav-item flex-sm">
+                    <a class="nav-link border-0 text-uppercase font-weight-bold  @isactivenav" onclick="LoadService('@paramter')" role="tab" aria-controls="home" aria-selected="true" data-toggle="tab" href="#@mod.value.Services.Substring(0, 3).Replace(" ", "")_@mod.i">@mod.value.Services</a>
+                </li>
+                prevProdCat = mod.value.ProductCategory;
+                prevService = mod.value.Services;
+                prevDivid = mod.value.Services.Substring(0, 3).Replace(" ", "") + "_" + mod.i.ToString();
+            }
+
+        </ul>
+
+    </div>
+    <div class="tab-content" id="bestPracDiv">
+        @foreach (var mod in Model.AzureServicesUsed.Select((value, i) => new { i, value }))
+        {
+            FirstPanel = Model.AzureServicesUsed.First().Services;
+            isactivenav = string.Empty;
+            if (FirstPanel == mod.value.Services)
+            {
+                isactivenav = "active show";
+            }
+
+            <div id="@mod.value.Services.Substring(0, 3).Replace(" ", "")_@mod.i" role="tabpanel" aria-labelledby="@mod.value.Services.Substring(0, 3).Replace(" ", "")_@mod.i-tab" class="tab-pane py-3 fade @isactivenav" data-prodcat="@mod.value.ProductCategory" data-services="@mod.value.Services">
+
+                @foreach (var inp in Model.BestPractices)
+                {
+                    if (inp.Service == mod.value.Services)
+                    {
+                        foreach (var ipsection in inp.Section.Select((value, i) => new { i, value }))
+                        {
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i" aria-expanded="false" aria-controls="@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i">
+                                                @ipsection.value.ImpactArea
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            @foreach (var ipsec in inp.Section)
+                                            {
+                                                if (ipsec.ImpactArea == ipsection.value.ImpactArea)
+                                                {
+                                                    foreach (var checklist in ipsec.Checklist)
+                                                    {
+                                                        <div class="form-group row col-md-12" style="display: flex; margin-bottom: 0.1rem;">
+                                                            <label class="control-label col-md-12">
+                                                                <b>@checklist.Title</b>
+
+                                                                <p class="practicedesp">
+                                                                    @{
+                                                                        Regex r = new Regex(@"(https?://[^\s]+)");
+                                                                        var myString = r.Replace(checklist.Description, "<a href=\"$1\" style=\"color: #0366d6;\">$1</a>");
+                                                                    }
+                                                                    @Html.Raw(myString)
+                                                                </p>
+
+                                                                @*@if (checklist.Description != "")
+                                                                    {
+                                                                    <i class="fa fa-info-circle" aria-hidden="true" title="@checklist.Description"></i>
+                                                                    }*@
+                                                            </label>
+                                                            <div class="col-md-6">
+                                                                @{
+                                                                    var comp = new Models.Computation();
+                                                                    comp.Service = mod.value.Services;
+                                                                    comp.ImpactArea = ipsection.value.ImpactArea;
+                                                                    comp.Title = checklist.Title;
+                                                                    comp.Description = checklist.Description;
+                                                                    comp.Field = checklist.DisplayAttributes.Field;
+                                                                    comp.Mandatory = checklist.DisplayAttributes.Mandatory;
+                                                                    comp.ListOfValues = checklist.DisplayAttributes.ListOfValues;
+                                                                    comp.Value = checklist.Input.Value;
+                                                                    //comp.disable = disable;
+                                                                }
+                                                                @await Html.PartialAsync("VW_DISPLAY_ATTRIBUTES", comp)
+                                                            </div>
+                                                            @{
+                                                                var displayatt = "none";
+                                                                if (checklist.Input.Value != "Required – Implemented" && checklist.Input.Value != "")
+                                                                {
+                                                                    displayatt = "block";
+                                                                }
+                                                            }
+                                                            <div class="col-md-6 checklisttextbox" style="display:@displayatt;">
+                                                                @{
+                                                                    var inputcomp = new Models.Computation();
+                                                                    inputcomp.Service = mod.value.Services;
+                                                                    inputcomp.ImpactArea = ipsection.value.ImpactArea;
+                                                                    inputcomp.Title = checklist.Title;
+                                                                    inputcomp.Description = checklist.Description;
+                                                                    inputcomp.Field = "TextArea";
+                                                                    inputcomp.Mandatory = checklist.DisplayAttributes.Mandatory;
+                                                                    inputcomp.ListOfValues = checklist.DisplayAttributes.ListOfValues;
+                                                                    inputcomp.Value = checklist.Input.Remarks;
+                                                                    //comp.disable = disable;
+                                                                }
+                                                                @await Html.PartialAsync("VW_DISPLAY_ATTRIBUTES", inputcomp)
+                                                            </div>
+                                                        </div>
+                                                        <hr class="solid">
+                                                    }
+                                                }
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    }
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div> No Services to Display</div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".form-control.selectpicker.checklistddl").change(function () {
+            debugger;
+            var ddlval = $(this).val();
+             var textbox=$(this).parent().next();
+            if(ddlval!="Required – Implemented"){
+                $(textbox).show();
+            }
+            else{
+                 $(textbox).hide();
+            }
+        });
+     });
+</script>
