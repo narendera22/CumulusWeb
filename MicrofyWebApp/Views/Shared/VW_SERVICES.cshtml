@@ -29,7 +29,7 @@
                                 foreach (var checklist in ipsec.Checklist)
                                 {
                                     <div class="form-group row col-md-12" style="display: flex; margin-bottom: 0.1rem;">
-                                        <label class="control-label col-md-6">
+                                        <label class="control-label col-md-12">
                                             <b>@checklist.Title</b>
 
                                             <p class="practicedesp">
@@ -45,8 +45,7 @@
                                                 <i class="fa fa-info-circle" aria-hidden="true" title="@checklist.Description"></i>
                                                 }*@
                                         </label>
-
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
                                             @{
                                                 var comp = new Models.Computation();
                                                 comp.Service = inp.Service;
@@ -63,19 +62,19 @@
                                         </div>
                                         @{
                                             var displayatt = "none";
-                                            if (checklist.Input.Value != "Required – Implemented" && checklist.Input.Value!="")
+                                            if (checklist.Input.Value != "Required – Implemented" && checklist.Input.Value != "")
                                             {
                                                 displayatt = "block";
                                             }
                                         }
-                                        <div class="col-md-3 checklisttextbox" style="display:@displayatt;">
+                                        <div class="col-md-6 checklisttextbox" style="display:@displayatt;">
                                             @{
                                                 var inputcomp = new Models.Computation();
                                                 inputcomp.Service = inp.Service;
                                                 inputcomp.ImpactArea = ipsection.value.ImpactArea;
                                                 inputcomp.Title = checklist.Title;
                                                 inputcomp.Description = checklist.Description;
-                                                inputcomp.Field = "TextBox";
+                                                inputcomp.Field = "TextArea";
                                                 inputcomp.Mandatory = checklist.DisplayAttributes.Mandatory;
                                                 inputcomp.ListOfValues = checklist.DisplayAttributes.ListOfValues;
                                                 inputcomp.Value = checklist.Input.Remarks;
@@ -84,6 +83,7 @@
                                             @await Html.PartialAsync("VW_DISPLAY_ATTRIBUTES", inputcomp)
                                         </div>
                                     </div>
+                                    <hr class="solid">
 
                                 }
                             }

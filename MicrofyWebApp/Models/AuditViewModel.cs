@@ -16,7 +16,7 @@ namespace MicrofyWebApp.Models
         public List<ActionItems> ActionItems { get; set; }
         public List<Deliverables> Deliverables { get; set; }
         public string Status { get; set; }
-
+        public List<AuditChecklistModel> AuditChecklistModel { get; set; }
 
     }
     public class ChecklistFormInputData
@@ -80,5 +80,13 @@ namespace MicrofyWebApp.Models
         public string currentProdCat { get; set; }
         public string currentService { get; set; }
         public string currentDivid { get; set; }
+    }
+    public class Summary
+    {
+        public string projectname { get; set; }
+        public string RequiredCount { get; set; }
+        public string NotImplementedCount { get; set; }
+        public string ObservationCount { get; set; }
+        public string ActionItemsCount { get; set; }
     }
 }

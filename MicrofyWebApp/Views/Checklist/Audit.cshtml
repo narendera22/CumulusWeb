@@ -20,7 +20,7 @@
             <div id="divbreadcrumb">
                 <ol class="breadcrumb breadcrumb-arrow">
                     <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
-                    <li class=""><a href="~/Checklist/Project">Project</a></li>
+                    <li class=""><a href="~/Checklist/Project">Application</a></li>
                     <li class="active"><span>@Model.projectname</span></li>
 
                 </ol>
@@ -37,10 +37,11 @@
                                 <form id="msform">
                                     <!-- progressbar -->
                                     <ul id="progressbar">
-                                        <li class="active" id="project"><strong>Project Overview</strong></li>
+                                        <li class="active" id="project"><strong>Application Overview</strong></li>
                                         <li id="checklist"><strong>Checklist</strong></li>
                                         <li id="observation"><strong>Observation</strong></li>
                                         <li id="action"><strong>Action Items</strong></li>
+                                        <li id="summary"><strong>Summary</strong></li>
                                     </ul>
                                     <!-- fieldsets -->
                                     <fieldset>
@@ -49,7 +50,7 @@
                                                 <div class="form-group col-md-6 row ">
                                                     <label class="control-label col-md-5">
                                                         @*<span style="color:red;">*</span>*@
-                                                        Project Name
+                                                        Application Name
                                                     </label>
                                                     <div class="col-md-6 ml-4">
                                                         <input name="ProjectName" value="@Model.project.ProjectName" class="form-control ProjectDet" type="text" readonly>
@@ -76,22 +77,22 @@
                                                         </label>
                                                         <div class="col-md-9" style="padding-left: 0px;">
                                                             <textarea class="summernote" required name="CustomerOverview" rows="4" cols="50" placeholder="Enter Customer Overview">
-                                                                                                                                                                            </textarea>
+                                                                                                                                                                                </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-12 row">
                                                         <label class="control-label col-md-3">
-                                                            Project Overview
+                                                            Application Overview
                                                         </label>
                                                         <div class="col-md-9" style="padding-left: 0px;">
                                                             <textarea class="summernote" required name="ProjectOverview" rows="4" cols="50" placeholder="Enter Project Overview">
-                                                                                                                                                                            </textarea>
+                                                                                                                                                                                </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-6 row">
                                                         <label class="control-label col-md-5">
                                                             @*<span style="color:red;">*</span>*@
-                                                            Project Start Date
+                                                            Start Date
                                                         </label>
                                                         <div class="col-md-6 ml-4">
                                                             <input class="form-control ProjectDet" placeholder="dd/mm/yyyy" id="startdate" name="ProjectStartDate" type="date" min="1997-01-01" max="2030-12-31">
@@ -109,7 +110,7 @@
                                                     <div class="form-group col-md-6 row">
                                                         <label class="control-label col-md-5">
                                                             @*<span style="color:red;">*</span>*@
-                                                            Project Deliverables
+                                                            Deliverables
                                                         </label>
                                                         <div class="col-md-6 ml-4">
                                                             <select multiple="multiple" id="users" name="ProjectDeliverables" class="form-control ProjectDet selectpicker  multiselect" data-live-search="true" data-field="multiselect">
@@ -140,7 +141,7 @@
                                                         </label>
                                                         <div class="col-md-9" style="padding-left: 0px;">
                                                             <textarea class="summernote" required name="TechnologiesInUse" rows="4" cols="50" placeholder="Enter Technologies in Use">
-                                                                                                                                                                            </textarea>
+                                                                                                                                                                                </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-12 row">
@@ -355,6 +356,11 @@
                                         <input type="button" name="submit" class="submit action-button-previous btn btn-primary" value="Submit" />
 
                                     </fieldset>
+                                    <fieldset>
+                                        <div class="form-card" id="Summary" name="Summary" data-projectname="@Model.project.ProjectName">
+                                        </div>
+                                        <input type="button" name="next" class="goback action-button btn btn-primary" value="Go To Application" />
+                                    </fieldset>
                                 </form>
                             </div>
                         </div>
@@ -491,6 +497,22 @@
         return false;
     }
 
+     function LoadSummary(projectname){
+         $.ajax({
+            async: false,
+            type: "GET",
+            url: "/Checklist/LoadSummary",
+            data: { "projectname": projectname },
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $("#Summary").html(data);
+            },
+            error: function (data) {
+                console.log(JSON.stringify(data));
+            }
+        });
+        return false;
+    }
 
 </script>
 <script type="text/javascript">
@@ -501,9 +523,13 @@
        var opacity;
       $(".submit").click(function(){
             current_fs = $(this).parent();
-            var inputdiv=$(this).parent().children().attr('id');
-            var divname=$(this).parent().children().attr('name');
-            var projectname=$('#'+inputdiv).data('projectname');
+            next_fs = $(this).parent().next();
+           var next_divname=$(next_fs).children().attr('name');
+
+           var inputdiv=$(this).parent().children().attr('id');
+           var divname=$(this).parent().children().attr('name');
+           var projectname=$('#'+inputdiv).data('projectname');
+
             var actionitem=buildProjectjson($('#'+inputdiv));
             var dataele = {
             "ActionItems":actionitem.ActionItems,
@@ -513,37 +539,28 @@
             console.log(dataele);
             var redirecturl =  "/Checklist/InsertChecklist";
             $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
-                    var title = "";
-                    var type = "";
-                    var content="";
-                    if (data.isSuccess == true) {
-                        title = "Success!!";
-                        type = "green";
-                        content="Audit Completed successfully";
-                    }
-                    else {
-                        title = "Error!!";
-                        type = "red";
-                        content="Error"
-                    }
-                    $.alert({
-                            title: title,
-                            content: content ,
-                            type: type,
-                            onAction: function () {
-                                window.location.href = '@Url.Action("Project","Checklist")';
-                            }
-                        });
-                })
-                .fail(function (response) {
-                   $.alert({
-                        title: 'Error!!',
-                        content: response,
-                        alignMiddle: true,
-                        type: 'red'
-                    });
+                   LoadSummary(projectname);
                 });
-                return false;
+           $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+           //show the next fieldset
+           next_fs.show();
+           //hide the current fieldset with style
+           current_fs.animate({opacity: 0}, {
+               step: function(now) {
+                   // for making fielset appear animation
+                   opacity = 1 - now;
+
+                   current_fs.css({
+                       'display': 'none',
+                       'position': 'relative'
+                   });
+                   next_fs.css({'opacity': opacity});
+               },
+               duration: 600
+           });
+
+            return false;
         });
 
 
@@ -562,7 +579,7 @@
                var dataele = {
                 "ProjectDetails":projdet,
                 "projectname":projdet.ProjectName,
-                "Status":"Partially Completed"
+                "Status":""
                 }
                var redirecturl =  "/Checklist/InsertChecklist";
                 $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
@@ -582,7 +599,7 @@
                     "ProjectName": projectname,
                     "ProductCategory": prodcat,
                     "Service": services,
-                    "Status":"Partially Completed"
+                    "Status":""
                 };
                 var redirecturl = "/Checklist/InsertBestPractices";
 
@@ -595,7 +612,7 @@
                var dataele = {
                 "observation":observation.Observation,
                 "projectname":projectname,
-                "Status":"Partially Completed"
+                "Status":""
                 }
                var redirecturl =  "/Checklist/InsertChecklist";
                 $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {

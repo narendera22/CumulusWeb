@@ -78,23 +78,24 @@
         <div id="divbreadcrumb" style="padding-bottom:5px;">
             <ol class="breadcrumb breadcrumb-arrow">
                 <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
-                <li class="active"><span>Projects</span></li>
+                <li class="active"><span>Application</span></li>
             </ol>
         </div>
         <div style="margin-bottom:5px;">
-            <button type="submit" class="btn btn-primary" id="btncreateprj"><i class="fa fa-plus"></i> Create Project</button>
+            <button type="submit" class="btn btn-primary" id="btncreateprj"><i class="fa fa-plus"></i> Create Application</button>
         </div>
 
         <!--HTML table with student data-->
         <table id="tbProject" class="display" style="width:100%">
             <thead>
                 <tr>
-                    <th>Project / Application Name</th>
+                    <th>Application Name</th>
                     <th>Customer Name</th>
-                    <th>Auditor</th>
+                    <th>Solution Collaborator</th>
                     <th data-orderable="false" style="display:none;"></th>
-                    <th data-orderable="false"></th>
-                    <th data-orderable="false"></th>
+                    <th>Status</th>
+                    <th data-orderable="false">Edit Application</th>
+                    <th data-orderable="false">Solution Observation</th>
                 </tr>
             </thead>
             <tbody>
@@ -105,14 +106,17 @@
                         <td>@p.CustomerName</td>
                         <td>@p.Auditor</td>
                         <td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>
+                        <td>@p.Status</td>
                         <td>
-                            <a href="" class="prjedit btn btn-warning" title="Edit Project">
-                                <span class="glyphicon glyphicon-edit" style="font-size:15px;"></span> Edit Project
+                            <a href="" class="prjedit btn btn-warning" title="Edit Application">
+                                <span class="glyphicon glyphicon-edit" style="font-size:15px;"></span>
                             </a>
-                           
+
                         </td>
                         <td>
-                            <button type="button" id="btsAssess" class="btn btn-warning" onclick="@("window.location.href='" + @Url.Action("Audit", "Checklist", new { projectname=p.ProjectName }) + "' ");"><span class="fa fa-cogs"></span>  Audit</button>
+                            <a href="#" class="btn btn-warning"  title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("Audit", "Checklist", new { projectname=p.ProjectName }) + "' ");">
+                                <span class="glyphicon glyphicon-eye-open" style="font-size:15px;"></span> 
+                            </a>
                         </td>
                     </tr>
                 }
@@ -128,7 +132,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" style="width:750px;margin:auto;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLongTitle">Project Details</h3>
+                    <h3 class="modal-title" id="exampleModalLongTitle">Application Details</h3>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -137,7 +141,7 @@
                     <form class="well form-horizontal" action=" " method="post" id="UpdateProjectList_form">
                         <fieldset>
                             <div class="form-group">
-                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Project / Application Name</label>
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Application Name</label>
                                 <div class="col-md-6 inputGroupContainer">
                                     <div class="input-group">
                                         <input name="projectname" id="projectname" placeholder="Project Name" class="form-control" required>
@@ -168,7 +172,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label"><span style="color:red;">*</span>  Auditor</label>
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span>  Solution Collaborator</label>
                                 <div class="col-md-8 inputGroupContainer">
                                     <div class="input-group">
                                         <select id="auditor" class="col-md-6 form-control selectpicker ">

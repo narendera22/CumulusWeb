@@ -82,6 +82,28 @@ namespace MicrofyWebApp.Controllers
             return userViewModel;
         }
 
+        public async Task<AuditViewModel> ListAllChecklistAsync()
+        {
+            AuditViewModel auditViewModel = new AuditViewModel();
+            string auditResponse = string.Empty;
+            string Requestapi = $"api/GetAllChecklist?{ChecklistCode}";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Checklisturl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage Res = await client.GetAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    auditResponse = Res.Content.ReadAsStringAsync().Result;
+                    auditViewModel.AuditChecklistModel = JsonConvert.DeserializeObject<List<AuditChecklistModel>>(value: auditResponse);
+                }
+
+            }
+            return auditViewModel;
+        }
+
         public async Task<IActionResult> ChecklistPlanAsync(string projectname = null)
         {
             string UserDet = HttpContext.Session.GetString("_UserDet");
@@ -655,7 +677,7 @@ namespace MicrofyWebApp.Controllers
             auditChecklist.Checklist = audit.BestPractices;
 
             auditChecklist.UserId = HttpContext.Session.GetString("_userId");
-            if (auditChecklist.Status == "Partially Completed")
+            if (auditChecklist.Status == "Partially Completed" || auditChecklist.Status == string.Empty || auditChecklist.Status == null)
                 auditChecklist.Status = dataele.Status;
             string json = JsonConvert.SerializeObject(auditChecklist);
 
@@ -734,6 +756,8 @@ namespace MicrofyWebApp.Controllers
         {
             ProjectView projRespon = new ProjectView();
             UserViewModel userViewModel = new UserViewModel();
+            AuditViewModel auditViewModel = new AuditViewModel();
+            auditViewModel = await ListAllChecklistAsync();
             userViewModel = await ListAllUsersAsync();
             List<string> users = new List<string>();
             List<string> auditor = new List<string>();
@@ -767,6 +791,17 @@ namespace MicrofyWebApp.Controllers
             }
             projRespon.ListUsers = users;
             projRespon.ListAuditor = auditor;
+            foreach (var prj in projRespon.ProjectsList)
+            {
+                foreach (var mdl in auditViewModel.AuditChecklistModel)
+                {
+                    if (prj.ProjectName.Equals(mdl.ProjectDetails.ProjectName))
+                    {
+                        prj.Status = mdl.Status;
+                    }
+                }
+            }
+
             return View(projRespon);
         }
         [HttpPost]
@@ -798,7 +833,7 @@ namespace MicrofyWebApp.Controllers
                 auditChecklist.ActionItems = dataele.ActionItems;
             }
             auditChecklist.UserId = HttpContext.Session.GetString("_userId");
-            if(auditChecklist.Status== "Partially Completed")
+            if (auditChecklist.Status == "Partially Completed" || auditChecklist.Status == string.Empty || auditChecklist.Status == null)
                 auditChecklist.Status = dataele.Status;
             string json = JsonConvert.SerializeObject(auditChecklist);
 
@@ -980,6 +1015,46 @@ namespace MicrofyWebApp.Controllers
 
 
             return PartialView("VW_SERVICES", audit);
+
+        }
+        public async Task<ActionResult> LoadSummary(string projectname)
+        {
+            AuditChecklistModel auditChecklist = new AuditChecklistModel();
+            Summary summary = new Summary();
+            string checklist = GetChecklistDetailsAsync(projectname);
+            auditChecklist = JsonConvert.DeserializeObject<AuditChecklistModel>(checklist);
+            var countimp = 0;
+            foreach (var check in auditChecklist.Checklist)
+            {
+                foreach (var ser in check.Section)
+                {
+                    foreach (var chk in ser.Checklist.Where(q => (q.Input.Value == "Required – Implemented" || q.Input.Value == "Required – Alternative Implemented")))
+                    {
+                        countimp++;
+                    }
+                }
+            }
+            var countnotimp = 0;
+            foreach (var check in auditChecklist.Checklist)
+            {
+                foreach (var ser in check.Section)
+                {
+                    foreach (var chk in ser.Checklist.Where(q => q.Input.Value == "Required – Not Implemented"))
+                    {
+                        countnotimp++;
+                    }
+                }
+            }
+            var obsCount = auditChecklist.Observations.Count();
+            var actionCount = auditChecklist.ActionItems.Count();
+
+            summary.projectname = auditChecklist.ProjectDetails.ProjectName;
+            summary.RequiredCount = countimp.ToString();
+            summary.NotImplementedCount = countnotimp.ToString();
+            summary.ObservationCount=obsCount.ToString();
+            summary.ActionItemsCount=actionCount.ToString();
+
+            return PartialView("VW_CHECKLIST_SUMMARY", summary);
 
         }
     }

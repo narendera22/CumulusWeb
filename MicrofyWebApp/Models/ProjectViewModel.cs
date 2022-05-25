@@ -22,6 +22,8 @@ namespace MicrofyWebApp.Models
         public List<AzureTech> AzureTechnologies { get; set; }
         public bool StatusCode { get; set; }
 
+        public string Status { get; set; }
+
     }
 
     public class AzureTech

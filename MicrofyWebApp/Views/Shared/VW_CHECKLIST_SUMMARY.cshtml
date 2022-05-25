@@ -1,0 +1,44 @@
+﻿@model MicrofyWebApp.Models.Summary
+<div class="form-card">
+    <h2 class="fs-title text-center">Success !</h2> <br>
+    <div class="col-md-12 row justify-content">
+        <div class="col-md-12" style="display: inline-flex;">
+            <img src="https://img.icons8.com/color/96/000000/ok--v2.png" class="fit-image pull-right" style="width: 5%;">
+            <h5 style="margin-top: 8px;">Thanks for providing inputs for @Model.projectname </h5>
+        </div>
+    </div><br />
+    <div>
+        <ul style="list-style-type:none;">
+            <li>
+                <h6>Here is the summary on how the Application aligns to best practices and recommendations:</h6><br />
+                <ol style="list-style-type:none;">
+                    <li>
+                        <div class="col-md-12" style="display: inline-flex;">
+                            <img src="https://img.icons8.com/color/96/000000/ok--v2.png" class="fit-image pull-right" style="width: 5%;">
+                            <h6 style="margin-top: 8px;">Best Practices Implemented : @Model.RequiredCount</h6>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="col-md-12" style="display: inline-flex;">
+                            <img src="https://img.icons8.com/emoji/344/cross-mark-emoji.png" class="fit-image pull-right" style="width: 5%;">
+                            <h6 style="margin-top: 8px;">Best Practices Not Implemented : @Model.NotImplementedCount</h6>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="col-md-12" style="display: inline-flex;">
+                            <img src="https://img.icons8.com/small/344/visible.png" class="fit-image pull-right" style="width: 5%;">
+                            <h6 style="margin-top: 8px;">Observation Recorded : @Model.ObservationCount</h6>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="col-md-12" style="display: inline-flex;">
+                            <img src="https://cdn-icons.flaticon.com/png/512/4201/premium/4201973.png?token=exp=1653503144~hmac=822e751fcb85fefeb30d2636399feeb4" class="fit-image pull-right" style="width: 5%;">
+                            <h6 style="margin-top: 8px;">Actionable Items : @Model.ActionItemsCount</h6>
+                        </div>
+                    </li>
+                </ol>
+            </li>
+
+        </ul>
+    </div>
+</div>
