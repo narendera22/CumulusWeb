@@ -37,10 +37,7 @@
     @*<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>
         <link rel="stylesheet" media="screen" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css' />*@
 
-    <!-- Datatable plugin CSS file -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
-    <!-- Datatable plugin JS library file -->
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+   
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/jquery/dist/jquery-confirm.js"></script>
 
@@ -166,12 +163,46 @@
                    includeSelectAllOption: true,
                    buttonWidth: '180px'
                });
-       $    ("#btnsave").click(function () {
+               //$('.multiselect-container').addClass('show')
+               //$('#users.multiselect').click(function)
+           $("#btnsave").click(function () {
                    var projectname = $('#projectname').val();
                    var customername = $('#customername').val();
                    var users = $('#users').val();
                    var auditor=$('#auditor').val();
 
+                   if(projectname==""){
+                        $.alert({
+                           title: "Error",
+                           content: "Enter Application Name",
+                           type: "red"
+                       });
+                       return false;
+                   }
+                   if(customername==""){
+                        $.alert({
+                           title: "Error",
+                           content: "Enter Customer Name",
+                           type: "red"
+                       });
+                       return false;
+                   }
+                   if(users==""){
+                        $.alert({
+                           title: "Error",
+                           content: "Select Users",
+                           type: "red"
+                       });
+                       return false;
+                   }
+                   if(auditor==""){
+                        $.alert({
+                           title: "Error",
+                           content: "Select Solution Collaborator",
+                           type: "red"
+                       });
+                       return false;
+                   }
                    var ProjectDetails = {
                    "ProjectName": projectname,
                    "CustomerName": customername,

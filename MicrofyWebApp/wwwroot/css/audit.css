@@ -170,7 +170,7 @@
         content: "\f071";
     }
 
-    #progressbar #observation:before {
+    #progressbar #observations:before {
         font-family: FontAwesome;
         content: "\f06e";
     }
