@@ -1,0 +1,219 @@
+﻿@model MicrofyWebApp.Models.AuditViewModel
+@{
+    var status = "";
+    ViewData["Title"] = "Application";
+    var applname = string.Empty;
+    var custname = string.Empty;
+    var auditor = string.Empty;
+    List<string> multiuserVal = new List<string>();
+    if (Model.project != null)
+    {
+        applname = Model.project.ProjectName;
+        custname = Model.project.CustomerName;
+        auditor = Model.project.Auditor;
+        multiuserVal = Model.project.Users;
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Welcome to Cumulus</title>
+    <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-confirm.css" />
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+
+
+    <!-- jQuery library file -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js'></script>
+    @*<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>
+        <link rel="stylesheet" media="screen" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css' />*@
+
+    <!-- Datatable plugin CSS file -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+    <!-- Datatable plugin JS library file -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery-confirm.js"></script>
+
+</head>
+<style type="text/css">
+
+        .justify-content-lg-center {
+            justify-content: left !important;
+        }
+
+        .input-group-addon {
+            padding: 6px 20px !important;
+        }
+
+        .dropdown-toggle::after {
+            display: inline-block;
+            margin-left: -0.5em !important;
+            margin-bottom: 0.1em !important;
+            vertical-align: -0.01em !important;
+            content: "";
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
+        }
+    </style>
+<body>
+    <div class="container-fluid" style="margin-left:15px;">
+
+        <div id="divbreadcrumb" style="padding-bottom:5px;">
+            <ol class="breadcrumb breadcrumb-arrow">
+                <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                <li class="active"><span>Application</span></li>
+            </ol>
+        </div>
+        <div class="content">
+            <div>
+                <form class="well form-horizontal" action=" " method="post" id="UpdateProjectList_form">
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"><span style="color:red;">*</span> Application Name</label>
+                            <div class="col-md-6 inputGroupContainer">
+                                <div class="input-group">
+                                    <input name="projectname" id="projectname" placeholder="Application Name" class="form-control" required value=@applname>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"><span style="color:red;">*</span> Customer Name</label>
+                            <div class="col-md-6 inputGroupContainer">
+                                <div class="input-group">
+                                    <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required value=@custname>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"><span style="color:red;">*</span> Users</label>
+                            <div class="col-md-6 inputGroupContainer">
+                                <select multiple="multiple" id="users" class="form-control selectpicker  multiselect" data-live-search="true" data-field="multiselect">
+                                    @foreach (var item in Model.ListUsers)
+                                    {
+                                        @if (multiuserVal.Count > 0)
+                                        {
+                                            if (multiuserVal.Equals(item))
+                                            {
+                                                <option value="@item" selected>@item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"><span style="color:red;">*</span>  Solution Collaborator</label>
+                            <div class="col-md-8 inputGroupContainer">
+                                <div class="input-group">
+                                    <select id="auditor" class="col-md-6 form-control selectpicker ">
+                                        <option value="">Select</option>
+                                        @foreach (var item in Model.ListAuditor)
+                                        {
+                                            if (auditor.Equals(item))
+                                            {
+                                                <option value="@item" selected>@item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Button -->
+                        <div class="form-group">
+                            <div class="col-md-7 control-label ">
+                                <button type="submit" id="btnsave" style="display:block;" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript">
+           $(document).ready(function () {
+                $('#users.multiselect').multiselect({
+                   includeSelectAllOption: true
+               });
+       $    ("#btnsave").click(function () {
+                   var projectname = $('#projectname').val();
+                   var customername = $('#customername').val();
+                   var users = $('#users').val();
+                   var auditor=$('#auditor').val();
+
+                   var ProjectDetails = {
+                   "ProjectName": projectname,
+                   "CustomerName": customername,
+                   "Auditor": auditor,
+                   "Users": users
+                   }
+                   var redirecturl = "/Login/UpdateProject";
+               $.post(redirecturl, { "project": ProjectDetails }, function (data) {
+                   var title = "";
+                   var type = "";
+                   if (data.statusCode == true) {
+                       title = "Success!!";
+                       type = "green";
+                   }
+                   else {
+                       title = "Error!!";
+                       type = "red";
+                   }
+                   $.alert({
+                           title: title,
+                           content: "Project created successfully",
+                           type: type,
+                           onAction: function () {
+                               window.location.href = '@Url.Action("Project","Checklist")';
+                           }
+                       });
+               })
+               .fail(function (response) {
+                   $.alert({
+                       title: 'Error!!',
+                       content: response,
+                       alignMiddle: true,
+                       type: 'red'
+                   });
+               });
+               return false;
+       });
+    });
+
+               function reset(){
+                   $('#projectname').val("");
+                 $('#customername').val("");
+                 $('#users').val("");
+                 $('#auditor').val("");
+               }
+</script>

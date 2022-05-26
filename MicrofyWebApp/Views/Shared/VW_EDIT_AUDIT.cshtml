@@ -1,4 +1,5 @@
 ﻿@model MicrofyWebApp.Models.AuditViewModel
+
 <div class="row col-md-12">
     <div class="form-group col-md-12 row ">
         <label class="control-label col-md-3">
@@ -7,7 +8,12 @@
         </label>
         <div class="col-md-9" style="padding-left: 0px;">
             <textarea class="form-control ProjectDet" required name="CustomerOverview" rows="4" cols="50" placeholder="Enter Customer Overview">
-                @Html.Raw(System.Web.HttpUtility.HtmlDecode(Model.ProjectDetails.CustomerOverview).Replace("<br />","\r\n" ))
+                @{
+                    var val = string.Empty;
+                    if (Model.ProjectDetails.CustomerOverview != null)
+                        val = Model.ProjectDetails.CustomerOverview;
+                }
+                @Html.Raw(System.Web.HttpUtility.HtmlDecode(val).Replace("<br />","\r\n" ))
                                                         </textarea>
         </div>
     </div>
@@ -17,7 +23,12 @@
         </label>
         <div class="col-md-9" style="padding-left: 0px;">
             <textarea class="form-control ProjectDet" required name="ProjectOverview" rows="4" cols="50" placeholder="Enter Project Overview">
-                @Html.Raw(System.Web.HttpUtility.HtmlDecode(Model.ProjectDetails.ProjectOverview).Replace("<br />","\r\n" ))
+                @{
+                    var appval = string.Empty;
+                    if (Model.ProjectDetails.ProjectOverview != null)
+                        appval = Model.ProjectDetails.ProjectOverview;
+                }
+                @Html.Raw(System.Web.HttpUtility.HtmlDecode(appval).Replace("<br />","\r\n" ))
                                                         </textarea>
         </div>
     </div>
@@ -45,7 +56,7 @@
             Deliverables
         </label>
         <div class="col-md-6 ml-4">
-            <select multiple="multiple" id="users" name="ProjectDeliverables" class="form-control ProjectDet selectpicker  multiselect" data-live-search="true" data-field="multiselect">
+            <select multiple="multiple" id="users" name="ProjectDeliverables" style="width: 10em;" class="form-control ProjectDet selectpicker  multiselect" data-live-search="true" data-field="multiselect">
                 @{
                     string[] multiVal = { };
                     if (Model.ProjectDetails.ProjectDeliverables != "" && Model.ProjectDetails.ProjectDeliverables != null)
@@ -78,11 +89,14 @@
             }
             <input type="file" class="form-control ProjectDet" data-link="@url" id="fileToUpload" data-projectname="@Model.projectname" name="ApplicationArchitecture" required />
 
-            <span class="tag badge rounded-pill bg-info">
-                <span>@Html.Raw(System.IO.Path.GetFileName(url))</span>
-                <a href="#" style="padding-left:3px;" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = url, phase="Checklist",subphase=Model.project.ProjectName }) + "'");"><i class="fa fa-download" title="Download" aria-hidden="true"></i></a>
-                <a href="#" style="padding-left:3px;" onclick="removeFile(this);"><i class="remove fa fa-times-circle glyphicon-white" title="Delete"></i></a>
-            </span>
+            @if (url != "")
+            {
+                <span class="tag badge rounded-pill bg-info">
+                    <span>@Html.Raw(System.IO.Path.GetFileName(url))</span>
+                    <a href="#" style="padding-left:3px;" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = url, phase="Checklist",subphase=Model.project.ProjectName }) + "'");"><i class="fa fa-download" title="Download" aria-hidden="true"></i></a>
+                    <a href="#" style="padding-left:3px;" onclick="removeFile(this);"><i class="remove fa fa-times-circle glyphicon-white" title="Delete"></i></a>
+                </span>
+            }
         </div>
     </div>
     <div class="form-group col-md-12 row">
@@ -91,7 +105,12 @@
         </label>
         <div class="col-md-9" style="padding-left: 0px;">
             <textarea class="form-control ProjectDet" required name="TechnologiesInUse" rows="4" cols="50" placeholder="Enter Technologies in Use">
-                @Html.Raw(System.Web.HttpUtility.HtmlDecode(Model.ProjectDetails.TechnologiesInUse).Replace("<br />","\r\n" ))
+                @{
+                    var techval = string.Empty;
+                    if (Model.ProjectDetails.ProjectOverview != null)
+                        techval = Model.ProjectDetails.TechnologiesInUse;
+                }
+                @Html.Raw(System.Web.HttpUtility.HtmlDecode(techval).Replace("<br />","\r\n" ))
                                                         </textarea>
         </div>
     </div>
@@ -142,3 +161,31 @@
         </table>
     </div>
 </div>
+<script type="text/javascript">
+    var service = @Html.Raw(Json.Serialize(Model.Configuration));
+      $(document).ready(function(){
+         $("#prodcat").change(function () {
+              var end = this.value;
+              var val = $('#prodcat').val();
+              var config=service;
+              $('#ddlserv').empty()
+              if(val=="Select"){
+                  $('#divserv').hide();
+              }
+              for (var i=0;i<config.length;i++){
+                  if(val==config[i].productCategory){
+                      for(var j=0;j<config[i].services.length;j++){
+                          if(config[i].services[j].fileName!=""){
+                          jQuery('#ddlserv').append(jQuery("<option></option>").val(config[i].services[j].name).text(config[i].services[j].name));
+                          }
+                      }
+                      $("#ddlserv.multiselect").multiselect('destroy');
+                      $("#ddlserv.multiselect").multiselect({
+                          includeSelectAllOption: true
+                      });
+                      $('#divserv').show();
+                  }
+               }
+          });
+      });
+</script>

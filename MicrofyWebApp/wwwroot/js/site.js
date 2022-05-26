@@ -1014,6 +1014,7 @@ function YearformatDate(date) {
 }
 function LoadService(NavParam) {
     debugger;
+    $("div.loading").show();
     var json = $.parseJSON(NavParam);
     var dataele = {
         "Checklist": buildJsonInputData($('#' + json.prevDivid)),
@@ -1036,6 +1037,11 @@ function LoadService(NavParam) {
         },
         error: function (data) {
             console.log(JSON.stringify(data));
+        },
+        complete: function (data) {
+            // Hide image container
+            $("div.loading").hide();
+
         }
     });
 

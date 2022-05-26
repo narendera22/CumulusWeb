@@ -1051,11 +1051,36 @@ namespace MicrofyWebApp.Controllers
             summary.projectname = auditChecklist.ProjectDetails.ProjectName;
             summary.RequiredCount = countimp.ToString();
             summary.NotImplementedCount = countnotimp.ToString();
-            summary.ObservationCount=obsCount.ToString();
-            summary.ActionItemsCount=actionCount.ToString();
+            summary.ObservationCount = obsCount.ToString();
+            summary.ActionItemsCount = actionCount.ToString();
 
             return PartialView("VW_CHECKLIST_SUMMARY", summary);
 
+        }
+        public async Task<IActionResult> EditProject(string projectname = null)
+        {
+            AuditViewModel audit = new AuditViewModel();
+            var projdet = GetProjectDetails(projectname);
+            audit.project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
+            UserViewModel userViewModel = new UserViewModel();
+            userViewModel = await ListAllUsersAsync();
+            List<string> users = new List<string>();
+            List<string> auditor = new List<string>();
+            if (userViewModel.usersDetails.Count > 0)
+            {
+                foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "User"))
+                {
+                    users.Add(usr.fullName.ToString());
+                }
+                foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
+                {
+                    auditor.Add(usr.fullName.ToString());
+                }
+            }
+
+            audit.ListUsers = users;
+            audit.ListAuditor = auditor;
+            return View(audit);
         }
     }
 }

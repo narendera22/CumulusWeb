@@ -1,7 +1,7 @@
 ﻿@model MicrofyWebApp.Models.ProjectView
 @{
     var status = "";
-    ViewData["Title"] = "Projects";
+    ViewData["Title"] = "Application";
 
 }
 <!DOCTYPE html>
@@ -82,7 +82,7 @@
             </ol>
         </div>
         <div style="margin-bottom:5px;">
-            <button type="submit" class="btn btn-primary" id="btncreateprj"><i class="fa fa-plus"></i> Create Application</button>
+            <button type="submit" class="btn btn-primary" id="btncreateprj" onclick="@("window.location.href='" + @Url.Action("EditProject", "Checklist", null) + "' ");"><i class="fa fa-plus"></i> Create Application</button>
         </div>
 
         <!--HTML table with student data-->
@@ -108,7 +108,7 @@
                         <td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>
                         <td>@p.Status</td>
                         <td>
-                            <a href="" class="prjedit btn btn-warning" title="Edit Application">
+                            <a href="#" class="prjedit btn btn-warning" title="Edit Application" onclick="@("window.location.href='" + @Url.Action("EditProject", "Checklist", new { projectname=p.ProjectName }) + "' ");">
                                 <span class="glyphicon glyphicon-edit" style="font-size:15px;"></span>
                             </a>
 
@@ -128,7 +128,7 @@
             </div>
             </div>*@
     </div>
-    <div class="modal fade" id="projectEditPopup" role="dialog" tabindex="-1">
+   @* <div class="modal fade" id="projectEditPopup" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg" style="width:750px;margin:auto;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -199,7 +199,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>*@
 
 
 </body>
@@ -209,126 +209,84 @@
 <script type="text/javascript">
     $(function () {
 
-        $("#btncreateprj").click(function () {
-            $("#btnupdate").hide();
-            $("#btnsave").show();
-            $("#projectEditPopup").modal("show");
-            $("#users.multiselect").multiselect();
-            return false;
-        });
-        $(".prjedit").click(function () {
-            debugger;
-            var projectname = $(this).closest("tr").find('td:eq(0)').text();
-            var customername = $(this).closest("tr").find('td:eq(1)').text();
-            var auditor = $(this).closest("tr").find('td:eq(2)').text();
-            var users = $(this).closest("tr").find('td:eq(3)').text();
-            $("#users.multiselect").multiselect();
+        //$("#btncreateprj").click(function () {
+        //    $("#btnupdate").hide();
+        //    $("#btnsave").show();
+        //    $("#projectEditPopup").modal("show");
+        //    $("#users.multiselect").multiselect();
+        //    return false;
+        //});
+        //$(".prjedit").click(function () {
+        //    debugger;
+        //    var projectname = $(this).closest("tr").find('td:eq(0)').text();
+        //    var customername = $(this).closest("tr").find('td:eq(1)').text();
+        //    var auditor = $(this).closest("tr").find('td:eq(2)').text();
+        //    var users = $(this).closest("tr").find('td:eq(3)').text();
+        //    $("#users.multiselect").multiselect();
 
-            var listuser=users.split(",");
-            $.each(users.split(","), function(i,e){
-                $("#users option[value='" + e + "']").prop("selected", true);
-            });
-            //var i = 0, size = listuser.length;
-            //for(i; i < size; i++){
-            //  $("#users").multiselect("widget").find(":checkbox[value='"+valArr[i]+"']").attr("checked","checked");
-            //  $("#users option[value='" + valArr[i] + "']").attr("selected", 1);
-            //  $("#users").multiselect("refresh");
-            //}
-             //$('#users').val(listuser);
-            $('#projectname').val(projectname);
-            $('#customername').val(customername);
-            $('#auditor').val(auditor);
-            $("#btnupdate").show();
-            $("#btnsave").hide();
-            $("#projectEditPopup").modal("show");
-            return false;
-        });
-        $("#btnsave").click(function () {
-                   var projectname = $('#projectname').val();
-                   var customername = $('#customername').val();
-                   var users = $('#users').val();
-                   var auditor=$('#auditor').val();
+        //    var listuser=users.split(",");
+        //    $.each(users.split(","), function(i,e){
+        //        $("#users option[value='" + e + "']").prop("selected", true);
+        //    });
+        //    //var i = 0, size = listuser.length;
+        //    //for(i; i < size; i++){
+        //    //  $("#users").multiselect("widget").find(":checkbox[value='"+valArr[i]+"']").attr("checked","checked");
+        //    //  $("#users option[value='" + valArr[i] + "']").attr("selected", 1);
+        //    //  $("#users").multiselect("refresh");
+        //    //}
+        //     //$('#users').val(listuser);
+        //    $('#projectname').val(projectname);
+        //    $('#customername').val(customername);
+        //    $('#auditor').val(auditor);
+        //    $("#btnupdate").show();
+        //    $("#btnsave").hide();
+        //    $("#projectEditPopup").modal("show");
+        //    return false;
+        //});
+        
+        //$("#btnupdate").click(function () {
+        //           var projectname = $('#projectname').val();
+        //           var customername = $('#customername').val();
+        //           var users = $('#users').val();
+        //           var auditor=$('#auditor').val();
 
-                   var ProjectDetails = {
-                    "ProjectName": projectname,
-                    "CustomerName": customername,
-                    "Auditor": auditor,
-                    "Users": users
-                   }
-                    var redirecturl = "/Login/UpdateProject";
-               $.post(redirecturl, { "project": ProjectDetails }, function (data) {
-                    var title = "";
-                    var type = "";
-                    if (data.statusCode == true) {
-                        title = "Success!!";
-                        type = "green";
-                    }
-                    else {
-                        title = "Error!!";
-                        type = "red";
-                    }
-                    $.alert({
-                            title: title,
-                            content: "Project created successfully",
-                            type: type,
-                            onAction: function () {
-                                window.location.href = '@Url.Action("Project","Checklist")';
-                            }
-                        });
-                })
-                .fail(function (response) {
-                   $.alert({
-                        title: 'Error!!',
-                        content: response,
-                        alignMiddle: true,
-                        type: 'red'
-                    });
-                });
-                return false;
-        });
-        $("#btnupdate").click(function () {
-                   var projectname = $('#projectname').val();
-                   var customername = $('#customername').val();
-                   var users = $('#users').val();
-                   var auditor=$('#auditor').val();
-
-                   var ProjectDetails = {
-                    "ProjectName": projectname,
-                    "CustomerName": customername,
-                    "Auditor": auditor,
-                    "Users": users
-                   }
-                    var redirecturl = "/Login/UpdateProject";
-               $.post(redirecturl, { "project": ProjectDetails }, function (data) {
-                    var title = "";
-                    var type = "";
-                    if (data.statusCode == true) {
-                        title = "Success!!";
-                        type = "green";
-                    }
-                    else {
-                        title = "Error!!";
-                        type = "red";
-                    }
-                    $.alert({
-                            title: title,
-                            content: "Project Modified successfully",
-                            type: type,
-                            onAction: function () {
-                                window.location.href = '@Url.Action("Project","Checklist")';
-                            }
-                        });
-                })
-                .fail(function (response) {
-                   $.alert({
-                        title: 'Error!!',
-                        content: response,
-                        alignMiddle: true,
-                        type: 'red'
-                    });
-                });
-                return false;
-        });
+        //           var ProjectDetails = {
+        //            "ProjectName": projectname,
+        //            "CustomerName": customername,
+        //            "Auditor": auditor,
+        //            "Users": users
+        //           }
+        //            var redirecturl = "/Login/UpdateProject";
+        //       $.post(redirecturl, { "project": ProjectDetails }, function (data) {
+        //            var title = "";
+        //            var type = "";
+        //            if (data.statusCode == true) {
+        //                title = "Success!!";
+        //                type = "green";
+        //            }
+        //            else {
+        //                title = "Error!!";
+        //                type = "red";
+        //            }
+        //            $.alert({
+        //                    title: title,
+        //                    content: "Project Modified successfully",
+        //                    type: type,
+        //                    onAction: function () {
+        //                        window.location.href = '@Url.Action("Project","Checklist")';
+        //                    }
+        //                });
+        //        })
+        //        .fail(function (response) {
+        //           $.alert({
+        //                title: 'Error!!',
+        //                content: response,
+        //                alignMiddle: true,
+        //                type: 'red'
+        //            });
+        //        });
+        //        return false;
+        //});
         function reset(){
             $('#projectname').val("");
           $('#customername').val("");
@@ -340,9 +298,7 @@
         $(document).ready(function () {
             $('#tbProject').DataTable({
             });
-             $('.multiselect').multiselect({
-                includeSelectAllOption: true
-            });
+            
         });
 </script>
 

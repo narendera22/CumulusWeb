@@ -77,7 +77,7 @@
                                                         </label>
                                                         <div class="col-md-9" style="padding-left: 0px;">
                                                             <textarea class="summernote" required name="CustomerOverview" rows="4" cols="50" placeholder="Enter Customer Overview">
-                                                                                                                                                                                </textarea>
+                                                                                                                                                                                                                                </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-12 row">
@@ -86,7 +86,7 @@
                                                         </label>
                                                         <div class="col-md-9" style="padding-left: 0px;">
                                                             <textarea class="summernote" required name="ProjectOverview" rows="4" cols="50" placeholder="Enter Project Overview">
-                                                                                                                                                                                </textarea>
+                                                                                                                                                                                                                                </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-6 row">
@@ -113,7 +113,7 @@
                                                             Deliverables
                                                         </label>
                                                         <div class="col-md-6 ml-4">
-                                                            <select multiple="multiple" id="users" name="ProjectDeliverables" class="form-control ProjectDet selectpicker  multiselect" data-live-search="true" data-field="multiselect">
+                                                            <select multiple="multiple" id="users" name="ProjectDeliverables" class="form-control ProjectDet selectpicker  multiselect" data-live-search="true" data-field="multiselect" style="width: 10em;">
                                                                 @foreach (var item in Model.Deliverables)
                                                                 {
 
@@ -141,7 +141,7 @@
                                                         </label>
                                                         <div class="col-md-9" style="padding-left: 0px;">
                                                             <textarea class="summernote" required name="TechnologiesInUse" rows="4" cols="50" placeholder="Enter Technologies in Use">
-                                                                                                                                                                                </textarea>
+                                                                                                                                                                                                                                </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-12 row">
@@ -368,6 +368,11 @@
                 </div>
             </div>
         </div>
+        @*<div class="lds-dual-ring" id=loader></div>*@
+        @* <div id='loader' style='display: none;'>
+            <img src="~/Image/loading.gif" width='32px' height='32px'>
+            </div>*@
+        <div class="loading" style="display:none;">Loading&#8230;</div>
     </div>
 
 </body>
@@ -387,7 +392,9 @@
             for (var i=0;i<config.length;i++){
                 if(val==config[i].productCategory){
                     for(var j=0;j<config[i].services.length;j++){
+                        if(config[i].services[j].fileName!=""){
                         jQuery('#ddlserv').append(jQuery("<option></option>").val(config[i].services[j].name).text(config[i].services[j].name));
+                        }
                     }
                     $("#ddlserv.multiselect").multiselect('destroy');
                     $("#ddlserv.multiselect").multiselect({
@@ -481,35 +488,57 @@
 }
 <script type="text/javascript">
     function Loadchecklist(projectname){
+
          $.ajax({
             async: false,
             type: "GET",
             url: "/Checklist/LoadChecklist",
             data: { "projectname": projectname },
             contentType: "application/json; charset=utf-8",
+            beforeSend: function(){
+                   // Show image container
+              $("div.loading").show();
+
+               },
             success: function (data) {
                 $("#ChecklistServices").html(data);
             },
             error: function (data) {
                 console.log(JSON.stringify(data));
-            }
+            },
+            complete:function(data){
+            // Hide image container
+            $("div.loading").hide();
+
+           }
         });
         return false;
     }
 
      function LoadSummary(projectname){
+
          $.ajax({
             async: false,
             type: "GET",
             url: "/Checklist/LoadSummary",
             data: { "projectname": projectname },
             contentType: "application/json; charset=utf-8",
+             beforeSend: function(){
+                   // Show image container
+             $("div.loading").show();
+
+               },
             success: function (data) {
                 $("#Summary").html(data);
             },
             error: function (data) {
                 console.log(JSON.stringify(data));
-            }
+            },
+            complete:function(data){
+            // Hide image container
+            $("div.loading").hide();
+
+           }
         });
         return false;
     }
@@ -522,6 +551,7 @@
        var current_fs, next_fs, previous_fs; //fieldsets
        var opacity;
       $(".submit").click(function(){
+              $("div.loading").show();
             current_fs = $(this).parent();
             next_fs = $(this).parent().next();
            var next_divname=$(next_fs).children().attr('name');
@@ -536,7 +566,6 @@
             "projectname":projectname,
             "Status":"Completed"
             }
-            console.log(dataele);
             var redirecturl =  "/Checklist/InsertChecklist";
             $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
                    LoadSummary(projectname);
@@ -565,7 +594,6 @@
 
 
        $(".next").click(function(){
-
            current_fs = $(this).parent();
            next_fs = $(this).parent().next();
            var next_divname=$(next_fs).children().attr('name');
@@ -575,6 +603,8 @@
            var projectname=$('#'+inputdiv).data('projectname');
 
            if(divname=="Project Details"){
+              $("div.loading").show();
+
                var projdet=buildProjectjson($('#'+inputdiv));
                var dataele = {
                 "ProjectDetails":projdet,
@@ -618,15 +648,15 @@
                 $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
 
                 });
-           }
 
+           }
            //Add Class Active
            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
 
            //show the next fieldset
            next_fs.show();
            //hide the current fieldset with style
-           current_fs.animate({opacity: 0}, {
+          current_fs.animate({opacity: 0}, {
                step: function(now) {
                    // for making fielset appear animation
                    opacity = 1 - now;
@@ -639,7 +669,6 @@
                },
                duration: 600
            });
-
             return false;
        });
 
@@ -673,7 +702,7 @@
 
 
         $('.multiselect').multiselect({
-                   includeSelectAllOption: true
+                   includeSelectAllOption: true,maxwidth: '200px',buttonWidth: '180px'
                });
          $('textarea').summernote({
            //placeholder: 'Enter Description',
