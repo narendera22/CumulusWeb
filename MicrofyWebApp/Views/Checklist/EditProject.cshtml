@@ -82,7 +82,7 @@
                     <fieldset>
                         <div class="form-group">
                             <label class="col-md-4 control-label"><span style="color:red;">*</span> Application Name</label>
-                            <div class="col-md-6 inputGroupContainer">
+                            <div class="col-md-4 inputGroupContainer">
                                 <div class="input-group">
                                     <input name="projectname" id="projectname" placeholder="Application Name" class="form-control" required value=@applname>
                                 </div>
@@ -90,7 +90,7 @@
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label"><span style="color:red;">*</span> Customer Name</label>
-                            <div class="col-md-6 inputGroupContainer">
+                            <div class="col-md-4 inputGroupContainer">
                                 <div class="input-group">
                                     <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required value=@custname>
                                 </div>
@@ -99,13 +99,13 @@
 
                         <div class="form-group">
                             <label class="col-md-4 control-label"><span style="color:red;">*</span> Users</label>
-                            <div class="col-md-6 inputGroupContainer">
+                            <div class="col-md-4 inputGroupContainer">
                                 <select multiple="multiple" id="users" class="form-control selectpicker  multiselect" data-live-search="true" data-field="multiselect">
                                     @foreach (var item in Model.ListUsers)
                                     {
                                         @if (multiuserVal.Count > 0)
                                         {
-                                            if (multiuserVal.Equals(item))
+                                            if (multiuserVal.Contains(item))
                                             {
                                                 <option value="@item" selected>@item</option>
                                             }
@@ -125,9 +125,9 @@
 
                         <div class="form-group">
                             <label class="col-md-4 control-label"><span style="color:red;">*</span>  Solution Collaborator</label>
-                            <div class="col-md-8 inputGroupContainer">
+                            <div class="col-md-4 inputGroupContainer">
                                 <div class="input-group">
-                                    <select id="auditor" class="col-md-6 form-control selectpicker ">
+                                    <select id="auditor" class="col-md-12 form-control selectpicker ">
                                         <option value="">Select</option>
                                         @foreach (var item in Model.ListAuditor)
                                         {
@@ -163,7 +163,8 @@
 <script type="text/javascript">
            $(document).ready(function () {
                 $('#users.multiselect').multiselect({
-                   includeSelectAllOption: true
+                   includeSelectAllOption: true,
+                   buttonWidth: '180px'
                });
        $    ("#btnsave").click(function () {
                    var projectname = $('#projectname').val();
