@@ -14,37 +14,7 @@ namespace MicrofyWebApp.Models
         public string userRole { get; set; }
     }
 
-    public class BestPractices
-    {
-        public string Service { get; set; }
-        public List<Section> Section { get; set; }
-    }
-    public class Section
-    {
-        public string ImpactArea { get; set; }
-        public List<Checklist> Checklist { get; set; }
-    }
-    public class Checklist
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public Inputvalue Input { get; set; }
-        public DisplayAttributes DisplayAttributes { get; set; }
-
-    }
-    public class Inputvalue
-    {
-        public string Title { get; set; }
-        public string Value { get; set; }
-        public string Remarks { get; set; }
-
-    }
-    public class DisplayAttributes
-    {
-        public string Mandatory { get; set; }
-        public string Field { get; set; }
-        public string ListOfValues { get; set; }
-    }
+    
 
     public class BestPracticesInsertModel
     {

@@ -94,31 +94,36 @@
                     <th>Solution Collaborator</th>
                     <th data-orderable="false" style="display:none;"></th>
                     <th>Status</th>
-                    <th data-orderable="false">Edit Application</th>
                     <th data-orderable="false">Solution Observation</th>
+                    <th data-orderable="false">Edit/Delete Application</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var p in Model.ProjectsList)
+                @if (Model.ProjectsList.Count > 0)
                 {
-                    <tr>
-                        <td>@p.ProjectName</td>
-                        <td>@p.CustomerName</td>
-                        <td>@p.Auditor</td>
-                        <td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>
-                        <td>@p.Status</td>
-                        <td>
-                            <a href="#" class="prjedit btn btn-warning" title="Edit Application" onclick="@("window.location.href='" + @Url.Action("EditProject", "Checklist", new { projectname=p.ProjectName }) + "' ");">
-                                <span class="glyphicon glyphicon-edit" style="font-size:15px;"></span>
-                            </a>
-
-                        </td>
-                        <td>
-                            <a href="#" class="btn btn-warning"  title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("Audit", "Checklist", new { projectname=p.ProjectName }) + "' ");">
-                                <span class="glyphicon glyphicon-eye-open" style="font-size:15px;"></span> 
-                            </a>
-                        </td>
-                    </tr>
+                    @foreach (var p in Model.ProjectsList)
+                    {
+                        <tr>
+                            <td>@p.ProjectName</td>
+                            <td>@p.CustomerName</td>
+                            <td>@p.Auditor</td>
+                            <td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>
+                            <td>@(p.Status!="" ? p.Status : "New")</td>
+                            <td>
+                                <a href="#" class="btn btn-warning" title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("Audit", "Checklist", new { projectname=p.ProjectName }) + "' ");">
+                                    <span class="glyphicon glyphicon-eye-open" style="font-size:15px;"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#" class="prjedit btn btn-warning" title="Edit Application" onclick="@("window.location.href='" + @Url.Action("EditProject", "Checklist", new { projectname=p.ProjectName }) + "' ");">
+                                    <span class="glyphicon glyphicon-edit" style="font-size:15px;"></span>
+                                </a>
+                                <a href="#" class="prjdelete btn btn-warning" title="Delete Application" >
+                                    <span class="glyphicon glyphicon-trash" style="font-size:15px;"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>
@@ -128,78 +133,78 @@
             </div>
             </div>*@
     </div>
-   @* <div class="modal fade" id="projectEditPopup" role="dialog" tabindex="-1">
+    @* <div class="modal fade" id="projectEditPopup" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg" style="width:750px;margin:auto;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLongTitle">Application Details</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form class="well form-horizontal" action=" " method="post" id="UpdateProjectList_form">
-                        <fieldset>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Application Name</label>
-                                <div class="col-md-6 inputGroupContainer">
-                                    <div class="input-group">
-                                        <input name="projectname" id="projectname" placeholder="Project Name" class="form-control" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Customer Name</label>
-                                <div class="col-md-6 inputGroupContainer">
-                                    <div class="input-group">
-                                        <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Users</label>
-                                <div class="col-md-6 inputGroupContainer">
-                                    <div class="input-group">
-                                        <select multiple="multiple" id="users" class="form-control selectpicker  multiselect" data-live-search="true">
-                                            @foreach (var item in Model.ListUsers)
-                                            {
-                                                <option value="@item">@item</option>
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-4 control-label"><span style="color:red;">*</span>  Solution Collaborator</label>
-                                <div class="col-md-8 inputGroupContainer">
-                                    <div class="input-group">
-                                        <select id="auditor" class="col-md-6 form-control selectpicker ">
-                                            <option value="">Select</option>
-                                            @foreach (var item in Model.ListAuditor)
-                                            {
-                                                <option value="@item">@item</option>
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Button -->
-                            <div class="form-group">
-                                <div class="col-md-7 control-label ">
-                                    <button type="submit" id="btnsave" style="display:block;" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
-                                    <button type="submit" id="btnupdate" style="display:none;" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
-                                </div>
-                            </div>
-
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
+        <div class="modal-content">
+        <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLongTitle">Application Details</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
         </div>
-    </div>*@
+        <div class="modal-body">
+        <form class="well form-horizontal" action=" " method="post" id="UpdateProjectList_form">
+        <fieldset>
+        <div class="form-group">
+        <label class="col-md-4 control-label"><span style="color:red;">*</span> Application Name</label>
+        <div class="col-md-6 inputGroupContainer">
+        <div class="input-group">
+        <input name="projectname" id="projectname" placeholder="Project Name" class="form-control" required>
+        </div>
+        </div>
+        </div>
+        <div class="form-group">
+        <label class="col-md-4 control-label"><span style="color:red;">*</span> Customer Name</label>
+        <div class="col-md-6 inputGroupContainer">
+        <div class="input-group">
+        <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required>
+        </div>
+        </div>
+        </div>
+
+        <div class="form-group">
+        <label class="col-md-4 control-label"><span style="color:red;">*</span> Users</label>
+        <div class="col-md-6 inputGroupContainer">
+        <div class="input-group">
+        <select multiple="multiple" id="users" class="form-control selectpicker  multiselect" data-live-search="true">
+        @foreach (var item in Model.ListUsers)
+        {
+        <option value="@item">@item</option>
+        }
+        </select>
+        </div>
+        </div>
+        </div>
+
+        <div class="form-group">
+        <label class="col-md-4 control-label"><span style="color:red;">*</span>  Solution Collaborator</label>
+        <div class="col-md-8 inputGroupContainer">
+        <div class="input-group">
+        <select id="auditor" class="col-md-6 form-control selectpicker ">
+        <option value="">Select</option>
+        @foreach (var item in Model.ListAuditor)
+        {
+        <option value="@item">@item</option>
+        }
+        </select>
+        </div>
+        </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+        <div class="col-md-7 control-label ">
+        <button type="submit" id="btnsave" style="display:block;" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
+        <button type="submit" id="btnupdate" style="display:none;" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
+        </div>
+        </div>
+
+        </fieldset>
+        </form>
+        </div>
+        </div>
+        </div>
+        </div>*@
 
 
 </body>
@@ -243,7 +248,7 @@
         //    $("#projectEditPopup").modal("show");
         //    return false;
         //});
-        
+
         //$("#btnupdate").click(function () {
         //           var projectname = $('#projectname').val();
         //           var customername = $('#customername').val();
@@ -298,8 +303,46 @@
         $(document).ready(function () {
             $('#tbProject').DataTable({
             });
-            
+             $(".prjdelete").click(function () {
+                var Applname = $(this).closest("tr").find('td:eq(0)').text();
+                $.ajax({
+                    type: "GET",
+                    url: "/Checklist/DeleteProject",
+                    data: { "ApplicationName": Applname },
+                    contentType: "application/json; charset=utf-8",
+                    //dataType: 'json',
+                    success: function (data) {
+                        var title = "";
+                        var type = "";
+                        var content = "";
+                        if (data == true) {
+                            title = "Success!!";
+                            type = "green";
+                            content = "Application Deleted Successfully";
+                        }
+                        else {
+                            title = "Error!!";
+                            type = "red";
+                            content = "Application deletion failed";
+
+                        }
+                        $.alert({
+                            title: title,
+                            content: content,
+                            type: type,
+                            onAction: function () {
+                                window.location.href = 'Project';
+                            }
+                        });
+                    },
+                    error: function (data) {
+                        console.log(JSON.stringify(data));
+                    }
+                });
+                return false;
+            });
         });
+        
 </script>
 
 

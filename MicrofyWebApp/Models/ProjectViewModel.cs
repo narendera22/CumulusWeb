@@ -15,14 +15,14 @@ namespace MicrofyWebApp.Models
 
         public string Auditor { get; set; }
         public List<string> Users { get; set; }
-        public string Application { get; set; }
+        public string CreatedUserId { get; set; }
 
-        public string UserId { get; set; }
-
-        public List<AzureTech> AzureTechnologies { get; set; }
         public bool StatusCode { get; set; }
 
         public string Status { get; set; }
+        public List<AuditChecklistModel> SolutionObservations { get; set; }
+        public string flag { get; set; }
+
 
     }
 
@@ -37,6 +37,7 @@ namespace MicrofyWebApp.Models
         public List<string> Services { get; set; }
         public List<string> ListUsers { get; set; }
         public List<string> ListAuditor { get; set; }
+
     }
 }
 

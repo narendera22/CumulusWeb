@@ -21,13 +21,8 @@ namespace MicrofyWebApp.Controllers
 
         string Asseturl = string.Empty;
         string AssetCode = string.Empty;
-        string ChecklistPlanfile = string.Empty;
-        string ChecklistDeliverablesfile = string.Empty;
-        string BestPractices = string.Empty;
-        string Projecturl = string.Empty;
-        string ProjectCode = string.Empty;
-        string Checklisturl = string.Empty;
-        string ChecklistCode = string.Empty;
+        string SolutionObserBaseUrl = string.Empty;
+        string SolutionObserCode = string.Empty;
         private IConfiguration _configuration;
         string Userurl = string.Empty;
         string Usercode = string.Empty;
@@ -35,6 +30,7 @@ namespace MicrofyWebApp.Controllers
         string bestpracFolder = string.Empty;
         string ChecklistconfigUrl = string.Empty;
         string ChecklistconfigCode = string.Empty;
+        string ChecklistDeliverablesfile = string.Empty;
 
         public ChecklistController(ILogger<ChecklistController> logger, IConfiguration configuration)
         {
@@ -42,18 +38,15 @@ namespace MicrofyWebApp.Controllers
             _configuration = configuration;
             Asseturl = _configuration.GetValue<string>("Values:AssetStrgeBaseUrl");
             AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
-            ChecklistPlanfile = _configuration.GetValue<string>("Values:ChecklistPlan");
-            ChecklistDeliverablesfile = _configuration.GetValue<string>("Values:ChecklistDeliverables");
-            BestPractices = _configuration.GetValue<string>("Values:BestPractices");
-            Projecturl = _configuration.GetValue<string>("Values:ProjectBaseUrl");
-            ProjectCode = _configuration.GetValue<string>("Values:ProjectCode");
-            Checklisturl = _configuration.GetValue<string>("Values:ChecklistUrl");
-            ChecklistCode = _configuration.GetValue<string>("Values:ChecklistCode");
+            SolutionObserBaseUrl = _configuration.GetValue<string>("Values:SolutionObserBaseUrl");
+            SolutionObserCode = _configuration.GetValue<string>("Values:SolutionObserCode");
             Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
             Usercode = _configuration.GetValue<string>("Values:UsersCode");
             bestpracFolder = _configuration.GetValue<string>("Values:ServiceFolder");
             ChecklistconfigUrl = _configuration.GetValue<string>("Values:ChecklistconfigUrl");
             ChecklistconfigCode = _configuration.GetValue<string>("Values:ChecklistconfigCode");
+            ChecklistDeliverablesfile = _configuration.GetValue<string>("Values:ChecklistDeliverables");
+
 
         }
         public async Task<UserViewModel> ListAllUsersAsync()
@@ -82,107 +75,7 @@ namespace MicrofyWebApp.Controllers
             return userViewModel;
         }
 
-        public async Task<AuditViewModel> ListAllChecklistAsync()
-        {
-            AuditViewModel auditViewModel = new AuditViewModel();
-            string auditResponse = string.Empty;
-            string Requestapi = $"api/GetAllChecklist?{ChecklistCode}";
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Checklisturl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync(Requestapi);
-                if (Res.IsSuccessStatusCode)
-                {
-                    auditResponse = Res.Content.ReadAsStringAsync().Result;
-                    auditViewModel.AuditChecklistModel = JsonConvert.DeserializeObject<List<AuditChecklistModel>>(value: auditResponse);
-                }
-
-            }
-            return auditViewModel;
-        }
-
-        public async Task<IActionResult> ChecklistPlanAsync(string projectname = null)
-        {
-            string UserDet = HttpContext.Session.GetString("_UserDet");
-            string role = HttpContext.Session.GetString("_UserRole");
-            if (UserDet == null)
-            {
-                return RedirectToAction("Login", "Login");
-            }
-            UserViewModel userViewModel = new UserViewModel();
-            ChecklistPlanViewModel checklistPlanView = new ChecklistPlanViewModel();
-            ChecklistPlanViewModel checklist = new ChecklistPlanViewModel();
-
-            checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(ChecklistPlanfile));
-
-            List<projects> projectlist = new List<projects>();
-            if (role == "Administrator")
-            {
-                userViewModel = await ListAllUsersAsync();
-                foreach (var usr in userViewModel.usersDetails)
-                {
-                    foreach (var prj in usr.projects)
-                    {
-                        if (!(projectlist.Any(pro => pro.projectName == prj.projectName)))
-                        {
-                            projects prjmodel = new projects();
-                            prjmodel.projectName = prj.projectName;
-                            prjmodel.customerName = prj.customerName;
-                            projectlist.Add(prjmodel);
-                        }
-                    }
-                }
-                checklistPlanView.projects = projectlist;
-            }
-            else
-            {
-                userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
-                checklistPlanView.projects = userViewModel.projects;
-            }
-
-
-            if (projectname == null)
-            {
-                var project = checklistPlanView.projects.FirstOrDefault();
-                projectname = project.projectName;
-            }
-
-            string checklistdet = GetChecklistDetailsAsync(projectname);
-            if (checklistdet != "")
-                checklist = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(checklistdet);
-            if (checklist.Plans != null)
-            {
-                if (checklist.Plans.Count > 0)
-                {
-                    var planval = from x in checklistPlanView.Plans
-                                  join y in checklist.Plans
-                                         on new { a = x.PhaseName } equals new { a = y.PhaseName }
-                                  select new { x, y };
-
-                    foreach (var match in planval)
-                    {
-                        match.y.HasValue = true;
-                        match.x.HasValue = true;
-                        match.x.Start = match.y.Start;
-                        match.x.End = match.y.End;
-                    }
-                    foreach (var chk in checklist.Plans.Where(p => p.HasValue != true))
-                    {
-                        chk.HasValue = true;
-                        //checklistPlanView.Plans.Add(chk);
-                    }
-                    checklistPlanView.Plans.Clear();
-                    checklistPlanView.Plans = checklist.Plans;
-                }
-            }
-            checklistPlanView.selectedProjectname = projectname;
-            checklistPlanView.userRole = role;
-
-            return View(checklistPlanView);
-        }
 
         public string GetMasterTemplate(string mastertemplate, string foldername = null)
         {
@@ -203,94 +96,13 @@ namespace MicrofyWebApp.Controllers
             return template;
         }
 
-        public async Task<IActionResult> ChecklistDeliverableAsync(string projectname = null)
+        public string GetSolutionObsDetailsAsync(string ProjectName)
         {
-
-            string UserDet = HttpContext.Session.GetString("_UserDet");
-            string role = HttpContext.Session.GetString("_UserRole");
-            if (UserDet == null)
-            {
-                return RedirectToAction("Login", "Login");
-            }
-            UserViewModel userViewModel = new UserViewModel();
-            ChecklistPlanViewModel checklistPlanView = new ChecklistPlanViewModel();
-            ChecklistPlanViewModel checklist = new ChecklistPlanViewModel();
-
-            checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(ChecklistDeliverablesfile));
-
-            List<projects> projectlist = new List<projects>();
-            if (role == "Administrator")
-            {
-                userViewModel = await ListAllUsersAsync();
-                foreach (var usr in userViewModel.usersDetails)
-                {
-                    foreach (var prj in usr.projects)
-                    {
-                        if (!(projectlist.Any(pro => pro.projectName == prj.projectName)))
-                        {
-                            projects prjmodel = new projects();
-                            prjmodel.projectName = prj.projectName;
-                            prjmodel.customerName = prj.customerName;
-                            projectlist.Add(prjmodel);
-                        }
-                    }
-                }
-                checklistPlanView.projects = projectlist;
-            }
-            else
-            {
-                userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
-                checklistPlanView.projects = userViewModel.projects;
-            }
-
-            if (projectname == null)
-            {
-                var project = checklistPlanView.projects.FirstOrDefault();
-                projectname = project.projectName;
-            }
-
-            string checklistdet = GetChecklistDetailsAsync(projectname);
-            if (checklistdet != "")
-                checklist = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(checklistdet);
-            if (checklist.Deliverables != null)
-            {
-                if (checklist.Deliverables.Count > 0)
-                {
-                    var delval = from x in checklistPlanView.Deliverables
-                                 join y in checklist.Deliverables
-                                        on new { a = x.Name } equals new { a = y.Name }
-                                 select new { x, y };
-
-                    foreach (var match in delval)
-                    {
-                        match.y.HasValue = true;
-                        match.x.HasValue = true;
-                        match.x.PlannedDeliveryDate = match.y.PlannedDeliveryDate;
-                        match.x.Owner = match.y.Owner;
-                    }
-                    foreach (var chk in checklist.Deliverables.Where(p => p.HasValue != true))
-                    {
-                        chk.HasValue = true;
-                        //checklistPlanView.Deliverables.Add(chk);
-                    }
-
-                    checklistPlanView.Deliverables.Clear();
-                    checklistPlanView.Deliverables = checklist.Deliverables;
-                }
-            }
-            checklistPlanView.selectedProjectname = projectname;
-            checklistPlanView.userRole = role;
-
-            return View(checklistPlanView);
-        }
-
-        public string GetChecklistDetailsAsync(string ProjectName)
-        {
-            string Requestapi = $"api/GetChecklistDetails/{ProjectName}?{ChecklistCode}";
-            string checklist = string.Empty;
+            string Requestapi = $"api/GetProjectDetails/{ProjectName}?{SolutionObserCode}";
+            string SolObs = string.Empty;
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Checklisturl);
+                client.BaseAddress = new Uri(SolutionObserBaseUrl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
@@ -298,78 +110,21 @@ namespace MicrofyWebApp.Controllers
                 resp = response.Result;
                 if (resp.IsSuccessStatusCode)
                 {
-                    checklist = resp.Content.ReadAsStringAsync().Result;
+                    SolObs = resp.Content.ReadAsStringAsync().Result;
                 }
             }
-            return checklist;
+            return SolObs;
         }
 
-        [HttpPost]
-        public async Task<ServiceResponse> InsertChecklistPlan(string data)
-        {
-            FormInputData dataele = JsonConvert.DeserializeObject<FormInputData>(data);
-            ChecklistPlanInsertModel checklistPlanInsert = new ChecklistPlanInsertModel();
-            ServiceResponse resp = new ServiceResponse();
 
-            string checklist = GetChecklistDetailsAsync(dataele.ProjectName);
-
-            string Requestapi = $"api/CreateChecklist?{ChecklistCode}";
-
-            if (checklist != "")
-            {
-                checklistPlanInsert = JsonConvert.DeserializeObject<ChecklistPlanInsertModel>(checklist);
-                Requestapi = $"api/UpdateChecklist?{ChecklistCode}";
-            }
-            var projdet = GetProjectDetails(dataele.ProjectName);
-            if (projdet != string.Empty)
-            {
-                checklistPlanInsert.Project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
-            }
-            else
-            {
-                checklistPlanInsert.Project = new ProjectViewModel();
-                checklistPlanInsert.Project.ProjectName = dataele.ProjectName;
-            }
-            checklistPlanInsert.Plans = dataele.Plan;
-            checklistPlanInsert.UserId = HttpContext.Session.GetString("_userId"); ;
-
-            string json = JsonConvert.SerializeObject(checklistPlanInsert);
-
-
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Checklisturl);
-                if (checklist != "")
-                {
-                    var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(checklistPlanInsert), Encoding.UTF8, "application/json")).Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        resp.isSuccess = result.IsSuccessStatusCode;
-                        resp.data = await result.Content.ReadAsStringAsync();
-                    }
-                }
-                else
-                {
-                    var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(checklistPlanInsert), Encoding.UTF8, "application/json")).Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        resp.isSuccess = result.IsSuccessStatusCode;
-                        resp.data = await result.Content.ReadAsStringAsync();
-                    }
-                }
-
-            }
-            return resp;
-        }
 
         public string GetProjectDetails(string Projectname)
         {
             string projDet = string.Empty;
-            string Requestapi = $"api/GetProjectDetails/{Projectname}?{ProjectCode}";
+            string Requestapi = $"api/GetProjectDetails/{Projectname}?{SolutionObserCode}";
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Projecturl);
+                client.BaseAddress = new Uri(SolutionObserBaseUrl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
@@ -385,10 +140,10 @@ namespace MicrofyWebApp.Controllers
         public string GetAllProjectDetails()
         {
             string projDet = string.Empty;
-            string Requestapi = $"api/GetAllProjects?{ProjectCode}";
+            string Requestapi = $"api/GetAllProjects?{SolutionObserCode}";
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Projecturl);
+                client.BaseAddress = new Uri(SolutionObserBaseUrl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
@@ -419,181 +174,16 @@ namespace MicrofyWebApp.Controllers
             return config;
         }
 
-        [HttpPost]
-        public async Task<ServiceResponse> InsertChecklistDeliverable(string data)
-        {
-            FormInputData dataele = JsonConvert.DeserializeObject<FormInputData>(data);
-            ChecklistPlanInsertModel checklistPlanInsert = new ChecklistPlanInsertModel();
-            ServiceResponse resp = new ServiceResponse();
-
-            string checklist = GetChecklistDetailsAsync(dataele.ProjectName);
-
-            string Requestapi = $"api/CreateChecklist?{ChecklistCode}";
-
-            if (checklist != "")
-            {
-                checklistPlanInsert = JsonConvert.DeserializeObject<ChecklistPlanInsertModel>(checklist);
-                Requestapi = $"api/UpdateChecklist?{ChecklistCode}";
-            }
-
-            var projdet = GetProjectDetails(dataele.ProjectName);
-            if (projdet != string.Empty)
-            {
-                checklistPlanInsert.Project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
-            }
-            else
-            {
-                checklistPlanInsert.Project = new ProjectViewModel();
-                checklistPlanInsert.Project.ProjectName = dataele.ProjectName;
-            }
-            checklistPlanInsert.Deliverables = dataele.Deliverables;
-            checklistPlanInsert.UserId = HttpContext.Session.GetString("_userId"); ;
-
-            string json = JsonConvert.SerializeObject(checklistPlanInsert);
 
 
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Checklisturl);
-                if (checklist != "")
-                {
-                    var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(checklistPlanInsert), Encoding.UTF8, "application/json")).Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        resp.isSuccess = result.IsSuccessStatusCode;
-                        resp.data = await result.Content.ReadAsStringAsync();
-                    }
-                }
-                else
-                {
-                    var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(checklistPlanInsert), Encoding.UTF8, "application/json")).Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        resp.isSuccess = result.IsSuccessStatusCode;
-                        resp.data = await result.Content.ReadAsStringAsync();
-                    }
-                }
-
-            }
-            return resp;
-        }
-
-        public async Task<IActionResult> ChecklistBestPracticesAsync(string projectname = null)
-        {
-            string UserDet = HttpContext.Session.GetString("_UserDet");
-            string role = HttpContext.Session.GetString("_UserRole");
-
-            if (UserDet == null)
-            {
-                return RedirectToAction("Login", "Login");
-            }
-            UserViewModel userViewModel = new UserViewModel();
-            BestPracticesViewModel bestPracticesView = new BestPracticesViewModel();
-            ChecklistPlanInsertModel checklist = new ChecklistPlanInsertModel();
-            Configurations configurations = new Configurations();
-            List<BestPractices> bplist = new List<BestPractices>();
-
-            //var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"ChecklistConfig.json"}");
-            //var JSON = System.IO.File.ReadAllText(folderDetails);
-            configurations = JsonConvert.DeserializeObject<Configurations>(GetChecklistConfig());
-
-            //foreach (var config in configurations.Services)
-            //{
-            //    BestPractices bp = new BestPractices();
-            //    var bestPrac = GetMasterTemplate(config.File, bestpracFolder);
-            //    bp = JsonConvert.DeserializeObject<BestPractices>(bestPrac);
-            //    bplist.Add(bp);
-            //}
-            bestPracticesView.BestPractices = bplist;
-            //var bestPractices = GetMasterTemplate(BestPractices);
-            //bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(bestPractices);
-
-            List<projects> projectlist = new List<projects>();
-            if (role == "Administrator")
-            {
-                userViewModel = await ListAllUsersAsync();
-                foreach (var usr in userViewModel.usersDetails)
-                {
-                    foreach (var prj in usr.projects)
-                    {
-                        if (!(projectlist.Any(pro => pro.projectName == prj.projectName)))
-                        {
-                            projects prjmodel = new projects();
-                            prjmodel.projectName = prj.projectName;
-                            prjmodel.customerName = prj.customerName;
-                            projectlist.Add(prjmodel);
-                        }
-                    }
-                }
-                bestPracticesView.projects = projectlist;
-            }
-            else
-            {
-                userViewModel = JsonConvert.DeserializeObject<UserViewModel>(UserDet);
-                bestPracticesView.projects = userViewModel.projects;
-            }
-
-            if (projectname == null)
-            {
-                var project = bestPracticesView.projects.FirstOrDefault();
-                projectname = project.projectName;
-            }
-            string checklistdet = GetChecklistDetailsAsync(projectname);
-
-            //if (checklistdet != "")
-            //{
-            //    checklist = JsonConvert.DeserializeObject<ChecklistPlanInsertModel>(checklistdet);
-            //    if (checklist.BestPractices.Count > 0)
-            //    {
-            //        //bestPracticesView.BestPractices.Clear();
-            //        foreach (var bp in bestPracticesView.BestPractices)
-            //        {
-            //            foreach (var chk in checklist.BestPractices)
-            //            {
-            //                if (bp.Service == chk.Service)
-            //                {
-            //                    foreach (var sec in bp.Section)
-            //                    {
-            //                        foreach (var chksec in chk.Section)
-            //                        {
-            //                            if (sec.ImpactArea == chksec.ImpactArea)
-            //                            {
-            //                                foreach (var chklist in sec.Checklist)
-            //                                {
-            //                                    foreach (var check in chksec.Checklist)
-            //                                    {
-            //                                        if (chklist.Title == check.Title)
-            //                                        {
-            //                                            chklist.Value = check.Value;
-            //                                        }
-            //                                    }
-            //                                }
-            //                            }
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //        }
-            //        //bestPracticesView.BestPractices = checklist.BestPractices;
-            //    }
-            //}
-
-
-            bestPracticesView.selectedProjectname = projectname;
-            bestPracticesView.projectServices = JsonConvert.DeserializeObject<ProjectViewModel>(GetProjectDetails(projectname));
-
-            bestPracticesView.userRole = role;
-
-            return View(bestPracticesView);
-        }
 
 
         [HttpPost]
         public async Task<ServiceResponse> InsertBestPractices(string data)
         {
             BestPracticesFormInputData dataele = JsonConvert.DeserializeObject<BestPracticesFormInputData>(data);
-            AuditChecklistModel auditChecklist = new AuditChecklistModel();
+            ProjectViewModel auditChecklist = new ProjectViewModel();
             ServiceResponse resp = new ServiceResponse();
             AuditViewModel audit = new AuditViewModel();
             Configurations configurations = new Configurations();
@@ -620,19 +210,14 @@ namespace MicrofyWebApp.Controllers
             bp = JsonConvert.DeserializeObject<BestPractices>(bestPrac);
             bplist.Add(bp);
 
-            string checklist = GetChecklistDetailsAsync(dataele.ProjectName);
+            string checklist = GetSolutionObsDetailsAsync(dataele.ProjectName);
 
-            string Requestapi = $"api/CreateChecklist?{ChecklistCode}";
+            string Requestapi = $"api/UpdateProject?{SolutionObserCode}";
 
             if (checklist != "")
             {
-                auditChecklist = JsonConvert.DeserializeObject<AuditChecklistModel>(checklist);
-                Requestapi = $"api/UpdateChecklist?{ChecklistCode}";
+                auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
             }
-            //if (dataele.Checklist != null)
-            //{
-            //    auditChecklist.ProjectDetails = dataele.ProjectDetails;
-            //}
 
             foreach (var BestPrac in bplist)
             {
@@ -651,19 +236,11 @@ namespace MicrofyWebApp.Controllers
                 }
             }
 
-            if (auditChecklist.Checklist != null)
+            if (auditChecklist.SolutionObservations.FirstOrDefault().Checklist != null)
             {
-                foreach (var ser in auditChecklist.Checklist)
+                foreach (var ser in auditChecklist.SolutionObservations.FirstOrDefault().Checklist)
                 {
-                    //if (ser.Service.Contains(dataele.Service))
-                    //{
-                    //    auditChecklist.Checklist.Remove(ser);
-                    //    auditChecklist.Checklist = audit.BestPractices;
-                    //}
-                    //else if (!ser.Service.Contains(dataele.Service))
-                    //{
-                    //    auditChecklist.Checklist = audit.BestPractices;
-                    //}
+
                     if (!ser.Service.Equals(dataele.Service))
                     {
                         BestPractices bestPractices = new BestPractices();
@@ -674,35 +251,25 @@ namespace MicrofyWebApp.Controllers
             }
             audit.BestPractices = bplist;
 
-            auditChecklist.Checklist = audit.BestPractices;
+            auditChecklist.SolutionObservations.FirstOrDefault().Checklist = audit.BestPractices;
 
-            auditChecklist.UserId = HttpContext.Session.GetString("_userId");
-            if (auditChecklist.Status == "Partially Completed" || auditChecklist.Status == string.Empty || auditChecklist.Status == null)
+            auditChecklist.CreatedUserId = HttpContext.Session.GetString("_userId");
+            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null)
                 auditChecklist.Status = dataele.Status;
             string json = JsonConvert.SerializeObject(auditChecklist);
 
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Checklisturl);
-                if (checklist != "")
+                client.BaseAddress = new Uri(SolutionObserBaseUrl);
+
+                var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(auditChecklist), Encoding.UTF8, "application/json")).Result;
+                if (result.IsSuccessStatusCode)
                 {
-                    var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(auditChecklist), Encoding.UTF8, "application/json")).Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        resp.isSuccess = result.IsSuccessStatusCode;
-                        resp.data = await result.Content.ReadAsStringAsync();
-                    }
+                    resp.isSuccess = result.IsSuccessStatusCode;
+                    resp.data = await result.Content.ReadAsStringAsync();
                 }
-                else
-                {
-                    var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(auditChecklist), Encoding.UTF8, "application/json")).Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        resp.isSuccess = result.IsSuccessStatusCode;
-                        resp.data = await result.Content.ReadAsStringAsync();
-                    }
-                }
+
 
             }
             return resp;
@@ -713,17 +280,17 @@ namespace MicrofyWebApp.Controllers
             Configurations configurations = new Configurations();
             configurations = JsonConvert.DeserializeObject<Configurations>(GetChecklistConfig());
             audit.projectname = projectname;
-            var projdet = GetProjectDetails(projectname);
-            audit.project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
-            AuditChecklistModel auditChecklist = new AuditChecklistModel();
-            string checklist = GetChecklistDetailsAsync(projectname);
+            //var projdet = GetProjectDetails(projectname);
+            //audit.project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
+            ProjectViewModel auditChecklist = new ProjectViewModel();
+            string checklist = GetSolutionObsDetailsAsync(projectname);
             if (checklist != "")
             {
-                auditChecklist = JsonConvert.DeserializeObject<AuditChecklistModel>(checklist);
+                auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
             }
             else
             {
-                auditChecklist = new AuditChecklistModel();
+                auditChecklist = new ProjectViewModel();
             }
             UserViewModel userViewModel = new UserViewModel();
             userViewModel = await ListAllUsersAsync();
@@ -747,9 +314,14 @@ namespace MicrofyWebApp.Controllers
             audit.ListAuditor = auditor;
             audit.Deliverables = checklistPlanView.Deliverables;
             audit.Configuration = configurations.Configuration;
-            audit.ProjectDetails = auditChecklist.ProjectDetails;
-            audit.Observations = auditChecklist.Observations;
-            audit.ActionItems = auditChecklist.ActionItems;
+            audit.project = auditChecklist;
+            foreach (var solobs in auditChecklist.SolutionObservations)
+            {
+                audit.ProjectDetails = solobs.ProjectDetails;
+                audit.Observations = solobs.Observations;
+                audit.ActionItems = solobs.ActionItems;
+            }
+
             return View(audit);
         }
         public async Task<IActionResult> ProjectAsync()
@@ -757,7 +329,7 @@ namespace MicrofyWebApp.Controllers
             ProjectView projRespon = new ProjectView();
             UserViewModel userViewModel = new UserViewModel();
             AuditViewModel auditViewModel = new AuditViewModel();
-            auditViewModel = await ListAllChecklistAsync();
+            //auditViewModel = await ListAllChecklistAsync();
             userViewModel = await ListAllUsersAsync();
             List<string> users = new List<string>();
             List<string> auditor = new List<string>();
@@ -775,91 +347,152 @@ namespace MicrofyWebApp.Controllers
 
             string projectResponse = string.Empty;
             string Requestapi = string.Empty;
-            Requestapi = $"api/GetAllProjects?{ProjectCode}";
+            Requestapi = $"api/GetAllProjects?{SolutionObserCode}";
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Projecturl);
+                client.BaseAddress = new Uri(SolutionObserBaseUrl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 HttpResponseMessage Res = await client.GetAsync(Requestapi);
                 if (Res.IsSuccessStatusCode)
                 {
                     projectResponse = Res.Content.ReadAsStringAsync().Result;
-                    projRespon.ProjectsList = JsonConvert.DeserializeObject<List<ProjectViewModel>>(value: projectResponse);
+                    if (projectResponse != null || projectResponse != "")
+                        projRespon.ProjectsList = JsonConvert.DeserializeObject<List<ProjectViewModel>>(value: projectResponse);
                 }
 
             }
             projRespon.ListUsers = users;
             projRespon.ListAuditor = auditor;
-            foreach (var prj in projRespon.ProjectsList)
-            {
-                foreach (var mdl in auditViewModel.AuditChecklistModel)
-                {
-                    if (prj.ProjectName.Equals(mdl.ProjectDetails.ProjectName))
-                    {
-                        prj.Status = mdl.Status;
-                    }
-                }
-            }
 
             return View(projRespon);
         }
+
+        [HttpPost]
+        public async Task<ProjectViewModel> UpdateProject(ProjectViewModel project)
+        {
+
+            string UserResponse = string.Empty;
+            project.CreatedUserId = HttpContext.Session.GetString("_userId");
+            var createDoc = JsonConvert.SerializeObject(project);
+            ProjectViewModel projectViewModel = new ProjectViewModel();
+            string Requestapi = $"api/CreateProject?{SolutionObserCode}";
+            string checklist = GetSolutionObsDetailsAsync(project.ProjectName);
+
+            if (project.flag == "Update")
+            {
+                Requestapi = $"api/UpdateProject?{SolutionObserCode}";
+                if (checklist != "")
+                {
+                    projectViewModel = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
+                }
+                projectViewModel.ProjectName = projectViewModel.ProjectName;
+                projectViewModel.Status = projectViewModel.Status;
+            }
+            else
+            {
+                if (checklist != "")
+                {
+                    projectViewModel.StatusCode = false;
+                    projectViewModel.responseMessage = "Application Name already exists !!!";
+                    return projectViewModel;
+                }
+                projectViewModel.ProjectName = project.ProjectName;
+                projectViewModel.Status = "New";
+            }
+            
+            projectViewModel.CustomerName = project.CustomerName;
+            projectViewModel.Auditor = project.Auditor;
+            projectViewModel.Users = project.Users;
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(SolutionObserBaseUrl);
+                var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(projectViewModel), Encoding.UTF8, "application/json")).Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    projectViewModel.StatusCode = result.IsSuccessStatusCode;
+                    projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+
+                }
+                else
+                {
+                    projectViewModel.StatusCode = result.IsSuccessStatusCode;
+                    projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+
+                }
+            }
+            return projectViewModel;
+        }
+
         [HttpPost]
         public async Task<ServiceResponse> InsertChecklist(string data)
         {
             AuditViewModel audit = new AuditViewModel();
-            ChecklistFormInputData dataele = JsonConvert.DeserializeObject<ChecklistFormInputData>(data);
+            SolutionObservationFormInputData dataele = JsonConvert.DeserializeObject<SolutionObservationFormInputData>(data);
             ServiceResponse resp = new ServiceResponse();
-            AuditChecklistModel auditChecklist = new AuditChecklistModel();
-            string checklist = GetChecklistDetailsAsync(dataele.projectname);
+            ProjectViewModel auditChecklist = new ProjectViewModel();
+            string checklist = GetSolutionObsDetailsAsync(dataele.projectname);
 
-            string Requestapi = $"api/CreateChecklist?{ChecklistCode}";
+            string Requestapi = $"api/UpdateProject?{SolutionObserCode}";
 
             if (checklist != "")
             {
-                auditChecklist = JsonConvert.DeserializeObject<AuditChecklistModel>(checklist);
-                Requestapi = $"api/UpdateChecklist?{ChecklistCode}";
+                auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
             }
-            if (dataele.ProjectDetails != null)
+
+
+            if (auditChecklist.SolutionObservations.Count <= 0)
             {
-                auditChecklist.ProjectDetails = dataele.ProjectDetails;
+                AuditChecklistModel auditChecklistModel = new AuditChecklistModel();
+                if (dataele.ProjectDetails != null)
+                {
+                    auditChecklistModel.ProjectDetails = dataele.ProjectDetails;
+                }
+                else if (dataele.observation != null)
+                {
+                    auditChecklistModel.Observations = dataele.observation;
+                }
+                else if (dataele.ActionItems != null)
+                {
+                    auditChecklistModel.ActionItems = dataele.ActionItems;
+                }
+                auditChecklist.SolutionObservations.Add(auditChecklistModel);
             }
-            else if (dataele.observation != null)
+            else
             {
-                auditChecklist.Observations = dataele.observation;
+                foreach (var solobs in auditChecklist.SolutionObservations)
+                {
+                    if (dataele.ProjectDetails != null)
+                    {
+                        solobs.ProjectDetails = dataele.ProjectDetails;
+                    }
+                    else if (dataele.observation != null)
+                    {
+                        solobs.Observations = dataele.observation;
+                    }
+                    else if (dataele.ActionItems != null)
+                    {
+                        solobs.ActionItems = dataele.ActionItems;
+                    }
+                }
             }
-            else if (dataele.ActionItems != null)
-            {
-                auditChecklist.ActionItems = dataele.ActionItems;
-            }
-            auditChecklist.UserId = HttpContext.Session.GetString("_userId");
-            if (auditChecklist.Status == "Partially Completed" || auditChecklist.Status == string.Empty || auditChecklist.Status == null)
+            auditChecklist.CreatedUserId = HttpContext.Session.GetString("_userId");
+            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null)
                 auditChecklist.Status = dataele.Status;
             string json = JsonConvert.SerializeObject(auditChecklist);
 
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Checklisturl);
-                if (checklist != "")
+                client.BaseAddress = new Uri(SolutionObserBaseUrl);
+                var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(auditChecklist), Encoding.UTF8, "application/json")).Result;
+                if (result.IsSuccessStatusCode)
                 {
-                    var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(auditChecklist), Encoding.UTF8, "application/json")).Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        resp.isSuccess = result.IsSuccessStatusCode;
-                        resp.data = await result.Content.ReadAsStringAsync();
-                    }
+                    resp.isSuccess = result.IsSuccessStatusCode;
+                    resp.data = await result.Content.ReadAsStringAsync();
                 }
-                else
-                {
-                    var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(auditChecklist), Encoding.UTF8, "application/json")).Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        resp.isSuccess = result.IsSuccessStatusCode;
-                        resp.data = await result.Content.ReadAsStringAsync();
-                    }
-                }
-
             }
             return resp;
 
@@ -867,11 +500,11 @@ namespace MicrofyWebApp.Controllers
         public async Task<ActionResult> LoadChecklist(string projectname)
         {
             AuditViewModel audit = new AuditViewModel();
-            AuditChecklistModel auditChecklist = new AuditChecklistModel();
-            string checklist = GetChecklistDetailsAsync(projectname);
-            auditChecklist = JsonConvert.DeserializeObject<AuditChecklistModel>(checklist);
+            ProjectViewModel auditChecklist = new ProjectViewModel();
+            string checklist = GetSolutionObsDetailsAsync(projectname);
+            auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
 
-            audit.ProjectDetails = auditChecklist.ProjectDetails;
+            audit.ProjectDetails = auditChecklist.SolutionObservations.FirstOrDefault().ProjectDetails;
             List<Azuretech> services = new List<Azuretech>();
             foreach (var pro in audit.ProjectDetails.AzureServicesUsed)
             {
@@ -913,9 +546,9 @@ namespace MicrofyWebApp.Controllers
             audit.BestPractices = bplist;
 
 
-            if (auditChecklist.Checklist != null)
+            if (auditChecklist.SolutionObservations.FirstOrDefault().Checklist != null)
             {
-                foreach (var auditchk in auditChecklist.Checklist)
+                foreach (var auditchk in auditChecklist.SolutionObservations.FirstOrDefault().Checklist)
                 {
                     if (auditchk.Service.Equals(firstservice.Services))
                     {
@@ -951,16 +584,16 @@ namespace MicrofyWebApp.Controllers
         public async Task<ActionResult> LoadService(string productcat, string service, string projectname)
         {
             AuditViewModel audit = new AuditViewModel();
-            AuditChecklistModel auditChecklist = new AuditChecklistModel();
+            ProjectViewModel auditChecklist = new ProjectViewModel();
 
             Configurations configurations = new Configurations();
             List<BestPractices> bplist = new List<BestPractices>();
 
-            string checklist = GetChecklistDetailsAsync(projectname);
+            string checklist = GetSolutionObsDetailsAsync(projectname);
             configurations = JsonConvert.DeserializeObject<Configurations>(GetChecklistConfig());
-            auditChecklist = JsonConvert.DeserializeObject<AuditChecklistModel>(checklist);
+            auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
 
-            audit.ProjectDetails = auditChecklist.ProjectDetails;
+            audit.ProjectDetails = auditChecklist.SolutionObservations.FirstOrDefault().ProjectDetails;
             var configfile = string.Empty;
             foreach (var con in configurations.Configuration)
             {
@@ -982,9 +615,9 @@ namespace MicrofyWebApp.Controllers
             bplist.Add(bp);
             audit.BestPractices = bplist;
 
-            if (auditChecklist.Checklist != null)
+            if (auditChecklist.SolutionObservations.FirstOrDefault().Checklist != null)
             {
-                foreach (var auditchk in auditChecklist.Checklist)
+                foreach (var auditchk in auditChecklist.SolutionObservations.FirstOrDefault().Checklist)
                 {
                     if (auditchk.Service.Equals(service))
                     {
@@ -1019,36 +652,41 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<ActionResult> LoadSummary(string projectname)
         {
-            AuditChecklistModel auditChecklist = new AuditChecklistModel();
+            ProjectViewModel auditChecklist = new ProjectViewModel();
             Summary summary = new Summary();
-            string checklist = GetChecklistDetailsAsync(projectname);
-            auditChecklist = JsonConvert.DeserializeObject<AuditChecklistModel>(checklist);
+            string checklist = GetSolutionObsDetailsAsync(projectname);
+            auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
             var countimp = 0;
-            foreach (var check in auditChecklist.Checklist)
-            {
-                foreach (var ser in check.Section)
-                {
-                    foreach (var chk in ser.Checklist.Where(q => (q.Input.Value == "Required – Implemented" || q.Input.Value == "Required – Alternative Implemented")))
-                    {
-                        countimp++;
-                    }
-                }
-            }
             var countnotimp = 0;
-            foreach (var check in auditChecklist.Checklist)
-            {
-                foreach (var ser in check.Section)
+            var obsCount = 0;
+            var actionCount = 0;
+            foreach (var sol in auditChecklist.SolutionObservations) {
+                foreach (var check in sol.Checklist)
                 {
-                    foreach (var chk in ser.Checklist.Where(q => q.Input.Value == "Required – Not Implemented"))
+                    foreach (var ser in check.Section)
                     {
-                        countnotimp++;
+                        foreach (var chk in ser.Checklist.Where(q => (q.Input.Value == "Required – Implemented" || q.Input.Value == "Required – Alternative Implemented")))
+                        {
+                            countimp++;
+                        }
                     }
                 }
+                foreach (var check in sol.Checklist)
+                {
+                    foreach (var ser in check.Section)
+                    {
+                        foreach (var chk in ser.Checklist.Where(q => q.Input.Value == "Required – Not Implemented"))
+                        {
+                            countnotimp++;
+                        }
+                    }
+                }
+                obsCount = sol.Observations.Count();
+                actionCount = sol.ActionItems.Count();
             }
-            var obsCount = auditChecklist.Observations.Count();
-            var actionCount = auditChecklist.ActionItems.Count();
+            
 
-            summary.projectname = auditChecklist.ProjectDetails.ProjectName;
+            summary.projectname = auditChecklist.ProjectName;
             summary.RequiredCount = countimp.ToString();
             summary.NotImplementedCount = countnotimp.ToString();
             summary.ObservationCount = obsCount.ToString();
@@ -1081,6 +719,29 @@ namespace MicrofyWebApp.Controllers
             audit.ListUsers = users;
             audit.ListAuditor = auditor;
             return View(audit);
+        }
+        public async Task<bool> DeleteProject(string ApplicationName)
+        {
+            bool projectresp = false;
+            string Requestapi = $"api/DeleteProject/{ApplicationName}?{SolutionObserCode}";
+            //string JWTResponse = (string)_cache.Get("_UserLoginResponse");
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(SolutionObserBaseUrl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage Res = await client.DeleteAsync(Requestapi);
+                if (Res.IsSuccessStatusCode)
+                {
+                    projectresp = Res.IsSuccessStatusCode;
+                    //bool Activity = ActivityTracker("DeactivateUser", $"User {userid} has successfully deactivated {username}");
+
+                }
+
+            }
+            return projectresp;
         }
     }
 }

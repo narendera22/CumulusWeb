@@ -31,13 +31,8 @@ namespace MicrofyWebApp.Controllers
         string userid = string.Empty;
         string Phaseurl = string.Empty;
         string PhaseCode = string.Empty;
-        string Projecturl = string.Empty;
-        string ProjectCode = string.Empty;
         string Asseturl = string.Empty;
         string AssetCode = string.Empty;
-        string BestPractices = string.Empty;
-        string ChecklistconfigUrl = string.Empty;
-        string ChecklistconfigCode = string.Empty;
         string bestpracFolder = string.Empty;
 
         public LoginController(ILogger<LoginController> logger, IMemoryCache memoryCache, IConfiguration configuration)
@@ -53,13 +48,8 @@ namespace MicrofyWebApp.Controllers
             ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
             Phaseurl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
             PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
-            Projecturl = _configuration.GetValue<string>("Values:ProjectBaseUrl");
-            ProjectCode = _configuration.GetValue<string>("Values:ProjectCode");
             Asseturl = _configuration.GetValue<string>("Values:AssetStrgeBaseUrl");
             AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
-            BestPractices = _configuration.GetValue<string>("Values:BestPractices");
-            ChecklistconfigUrl = _configuration.GetValue<string>("Values:ChecklistconfigUrl");
-            ChecklistconfigCode = _configuration.GetValue<string>("Values:ChecklistconfigCode");
             bestpracFolder = _configuration.GetValue<string>("Values:ServiceFolder");
 
         }
@@ -199,7 +189,7 @@ namespace MicrofyWebApp.Controllers
                     {
                         Phase = Res.Content.ReadAsStringAsync().Result;
                         PhaseModel = JsonConvert.DeserializeObject<PhaseViewModel>(Phase);
-                        PhaseModel.documentRepository = documentModel.documentRepository;
+                        //PhaseModel.documentRepository = documentModel.documentRepository;
                         PhaseModel.UserRole = HttpContext.Session.GetString("_UserRole");
                         HttpContext.Session.SetString("_config", Phase);
                     }
@@ -393,167 +383,8 @@ namespace MicrofyWebApp.Controllers
             return resp;
         }
 
-        public async Task<IActionResult> ProjectService()
-        {
-            string userdet = HttpContext.Session.GetString("_UserDet");
-            string role = HttpContext.Session.GetString("_UserRole");
-
-            if (userdet == null)
-            {
-                return RedirectToAction("Login");
-            }
-            UserViewModel userViewModel = new UserViewModel();
-
-
-
-            List<ProjectViewModel> projectlist = new List<ProjectViewModel>();
-            //List<ProjectViewModel> projRespon = new List<ProjectViewModel>();
-            ProjectView project = new ProjectView();
-            ProjectView projRespon = new ProjectView();
-            BestPracticesViewModel bestPracticesView = new BestPracticesViewModel();
-
-            //var bestPractices = GetMasterTemplate(BestPractices);
-            //bestPracticesView = JsonConvert.DeserializeObject<BestPracticesViewModel>(bestPractices);
-
-            Configurations configurations = new Configurations();
-            List<BestPractices> bplist = new List<BestPractices>();
-
-            configurations = JsonConvert.DeserializeObject<Configurations>(GetChecklistConfig());
-
-            //foreach (var config in configurations.Services)
-            //{
-            //    BestPractices bp = new BestPractices();
-            //    var bestPrac = GetMasterTemplate(config.File, bestpracFolder);
-            //    bp = JsonConvert.DeserializeObject<BestPractices>(bestPrac);
-            //    bplist.Add(bp);
-            //}
-            //bestPracticesView.BestPractices = bplist;
-
-            if (role == "Administrator")
-            {
-                userViewModel = await ListAllUsersAsync();
-                foreach (var usr in userViewModel.usersDetails)
-                {
-                    foreach (var prj in usr.projects)
-                    {
-                        if (!(projectlist.Any(pro => pro.ProjectName == prj.projectName)))
-                        {
-                            ProjectViewModel prjmodel = new ProjectViewModel();
-                            prjmodel.ProjectName = prj.projectName;
-                            prjmodel.CustomerName = prj.customerName;
-                            projectlist.Add(prjmodel);
-                        }
-                    }
-                }
-                project.ProjectsList = projectlist;
-            }
-            else
-            {
-                userViewModel = JsonConvert.DeserializeObject<UserViewModel>(userdet);
-                foreach (var prj in userViewModel.projects)
-                {
-                    ProjectViewModel prjmodel = new ProjectViewModel();
-                    prjmodel.ProjectName = prj.projectName;
-                    prjmodel.CustomerName = prj.customerName;
-                    projectlist.Add(prjmodel);
-                }
-                project.ProjectsList = projectlist;
-            }
-
-
-            string projectResponse = string.Empty;
-            string Requestapi = string.Empty;
-
-            //if (role == "Administrator")
-                Requestapi = $"api/GetAllProjects?{ProjectCode}";
-            //else
-            //    Requestapi = $"api/GetProjects/{userViewModel.username}?{ProjectCode}";
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Projecturl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync(Requestapi);
-                if (Res.IsSuccessStatusCode)
-                {
-                    projectResponse = Res.Content.ReadAsStringAsync().Result;
-                    projRespon.ProjectsList = JsonConvert.DeserializeObject<List<ProjectViewModel>>(value: projectResponse);
-                }
-
-            }
-            //if (role == "Administrator")
-            //{
-            //    //project.ProjectsList.Clear();
-            //    //foreach (var prj in projRespon.ProjectsList)
-            //    //{
-            //    //    ProjectViewModel prjmodel = new ProjectViewModel();
-            //    //    prjmodel.ProjectName = prj.ProjectName;
-            //    //    prjmodel.CustomerName = prj.CustomerName;
-            //    //    projectlist.Add(prjmodel);
-            //    //}
-            //    //project.ProjectsList = projectlist;
-            //    var result = project.ProjectsList.Union(projRespon.ProjectsList).OrderBy(x => x.ProjectName).ToList();
-            //    project.ProjectsList.Clear();
-            //    project.ProjectsList = result;
-            //}
-            if (projRespon.ProjectsList.Count > 0)
-            {
-                var projectval = from x in project.ProjectsList
-                                 join y in projRespon.ProjectsList
-                                     on new { a = x.ProjectName, b = x.CustomerName } equals new { a = y.ProjectName, b = y.CustomerName }
-                                 select new { x, y };
-
-                foreach (var match in projectval)
-                {
-                    match.x.Application = String.Format("{0}", match.y.Application);
-                    match.x.AzureTechnologies = match.y.AzureTechnologies;
-                }
-            }
-
-            //List<string> servicesname = new List<string>();
-            //if (configurations.Services.Count > 0)
-            //{
-            //    foreach (var ser in configurations.Services)
-            //    {
-            //        servicesname.Add(ser.Name.ToString());
-            //    }
-            //}
-            //project.Services = servicesname;
-
-            return View(project);
-        }
-
-        [HttpPost]
-        public async Task<ProjectViewModel> UpdateProject(ProjectViewModel project)
-        {
-
-            string UserResponse = string.Empty;
-            project.UserId = HttpContext.Session.GetString("_userId");
-            var createDoc = JsonConvert.SerializeObject(project);
-            ProjectViewModel projectViewModel = new ProjectViewModel();
-            string Requestapi = $"api/UpdateProject?{ProjectCode}";
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Projecturl);
-                var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json")).Result;
-
-                if (result.IsSuccessStatusCode)
-                {
-                    projectViewModel.StatusCode = result.IsSuccessStatusCode;
-                    projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
-
-                }
-                else
-                {
-                    projectViewModel.StatusCode = result.IsSuccessStatusCode;
-                    projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
-
-                }
-            }
-            return projectViewModel;
-        }
+       
+        
 
         public string GetMasterTemplate(string mastertemplate, string foldername = null)
         {
@@ -572,25 +403,6 @@ namespace MicrofyWebApp.Controllers
             }
 
             return template;
-        }
-
-        public string GetChecklistConfig()
-        {
-            string config = string.Empty;
-            string Requestapi = $"api/GetChecklistConfig?{ChecklistconfigCode}";
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(ChecklistconfigUrl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
-                HttpResponseMessage resp = new HttpResponseMessage();
-                resp = response.Result;
-                if (resp.IsSuccessStatusCode)
-                    config = resp.Content.ReadAsStringAsync().Result;
-            }
-
-            return config;
         }
 
     }

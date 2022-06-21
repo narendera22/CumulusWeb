@@ -359,7 +359,7 @@
                                     <fieldset>
                                         <div class="form-card" id="Summary" name="Summary" data-projectname="@Model.project.ProjectName">
                                         </div>
-                                        <input type="button" name="next" class="goback action-button btn btn-primary" value="Go To Application" />
+                                        <input type="button" name="next" onclick="@("window.location.href='" + @Url.Action("Project", "Checklist") + "'");" class="goback action-button btn btn-primary" value="Go To Application" />
                                     </fieldset>
                                 </form>
                             </div>
@@ -609,7 +609,7 @@
                var dataele = {
                 "ProjectDetails":projdet,
                 "projectname":projdet.ProjectName,
-                "Status":""
+                "Status":"InProgress"
                 }
                var redirecturl =  "/Checklist/InsertChecklist";
                 $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
@@ -629,7 +629,7 @@
                     "ProjectName": projectname,
                     "ProductCategory": prodcat,
                     "Service": services,
-                    "Status":""
+                    "Status":"InProgress"
                 };
                 var redirecturl = "/Checklist/InsertBestPractices";
 
@@ -642,7 +642,7 @@
                var dataele = {
                 "observation":observation.Observation,
                 "projectname":projectname,
-                "Status":""
+                "Status":"InProgress"
                 }
                var redirecturl =  "/Checklist/InsertChecklist";
                 $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {

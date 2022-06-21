@@ -38,100 +38,7 @@
                         <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />
                     </div>
                 </div>
-                <!--<ul>
-                <li>
-                    <a href="#">-->
-                @*<i class="far fa-folder-open"></i>*@
-                <!--<img id="logo" alt="Logo" src="~/Image/MenuIcon/Repos.png" style="width:50px;" />  <span>Repository</span>
-                    </a>
-                    <ul class="nav-flyout">
-                        <li>
-                            <a href="#" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");">Dashboard</a>
-                        </li>
-                        @for (int j = 0; j < config.phases.Count; j++)
-                        {
-                            actstatus = string.Empty;
-                            if (selectedphase == config.phases[j].name)
-                            {
-                                actstatus = "active";
-                            }
-
-                            <li>
-                                <div class="anchor-link @actstatus">
-                                    @if (config.phases[j].subPhase != null)
-                                    {
-                                        <a href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=config.phases[j].subPhase.FirstOrDefault() }) + "'");" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu">@config.phases[j].name</a>
-                                    }
-                                    else
-                                    {
-                                        <a href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=string.Empty }) + "'");">@config.phases[j].name</a>
-                                    }
-                                </div>
-                                @if (config.phases[j].subPhase != null)
-                                {
-                                    var subphase = config.phases[j].subPhase;
-                                    <ul class="collapse list-unstyled show" id="@config.phases[j].name">
-                                        @for (int i = 0; i < subphase.Count; i++)
-                                        {
-                                            actstatus = string.Empty;
-                                            if (selectedphase == config.phases[j].name && selectedsubphase == subphase[i])
-                                            {
-                                                actstatus = "active";
-                                            }
-                                            <li class="subanchor-link @actstatus">
-                                                <a href="#" onclick="@(" window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=subphase[i] }) + "' ");">@subphase[i]</a>
-                                            </li>
-                                        }
-                                    </ul>
-
-                                }
-
-                            </li>
-                        }
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">-->
-                @*<i class="far fa-clipboard-list"></i>*@
-                <!--<img id="logo" alt="Logo" src="~/Image/MenuIcon/Checklist.jpg" style="width:50px;" />  <span class="">Checklist</span>
-                    </a>
-                    <ul class="nav-flyout">
-                        <li>
-                            <a href="#">Dashboard</a>
-                        </li>
-                        <li>
-                            <a href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistPlan", "Checklist") + "' ");">Plan</a>
-                        </li>
-                        <li>
-                            <a href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistDeliverable", "Checklist") + "' ");">Deliverables</a>
-                        </li>
-                        <li>
-                            <a href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistBestPractices", "Checklist") + "' ");">Best Practices</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">-->
-                @*<i class="far fa-clipboard-check"></i>*@
-                <!--<img id="logo" alt="Logo" src="~/Image/MenuIcon/Compliance.png" style="width:50px;" />  <span class="">Compliance</span>
-                        </a>
-                        <ul class="nav-flyout">
-                            <li>
-                                <a href="#">Dashboard</a>
-                            </li>
-                            <li>
-                                <a href="#">Plan</a>
-                            </li>
-                            <li>
-                                <a href="#">Deliverables</a>
-                            </li>
-                            <li>
-                                <a href="#">Best Practices</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                </ul>-->
+               
 
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -183,53 +90,25 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("Project", "Checklist") + "'");"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Checklist.jpg" style="width:45px;"  />  <span class="">Application</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
-                       @* <ul class="submenu dropdown-menu" style="display:none;">
-                            <li>
-                                <a class="nav-link" href="#">Dashboard</a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistPlan", "Checklist") + "' ");">Plan</a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistDeliverable", "Checklist") + "' ");">Deliverables</a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="#" onclick="@(" window.location.href='" + @Url.Action("ChecklistBestPractices", "Checklist") + "' ");">Best Practices</a>
-                            </li>
-                        </ul>*@
+                       
                     </li>
-                   @* <li class="nav-item">
-                        <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Compliances.png" style="width:50px;" />  <span class="">Compliance</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
-                        <ul class="submenu dropdown-menu" style="display:none;">
-                            <li>
-                                <a class="nav-link" href="#">Dashboard</a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="#">Plan</a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="#">Deliverables</a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="#">Best Practices</a>
-                            </li>
-                        </ul>
-                    </li>*@
+                   
+                     <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/activity.png" style="width:50px;"  />  <span class="">Activity</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
+                      
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Settings.jpg" style="width:50px;" />  <span class="">Settings</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
                         <ul class="submenu dropdown-menu" style="display:none;">
-                            <li>
+                            @*<li>
                                 <a class="dropdown-item" href="~/Login/MyProfile"> My Profile</a>
-                            </li>
-                            <li>
-                                @*<a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ProjectService", "Login") + "'");"> Projects</a>*@
-                            </li>
+                            </li>*@
                             <li>
                                 <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"> Users</a>
                             </li>
-                            <li>
+                            @*<li>
                                 <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"> Activity</a>
-                            </li>
+                            </li>*@
                         </ul>
                     </li>
                 </ul>

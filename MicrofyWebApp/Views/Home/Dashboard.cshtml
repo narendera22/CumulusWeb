@@ -61,129 +61,6 @@
     }
 </style>
 
-
-<!--<nav id="sidebar">
-
-    <section class="app">
-        <aside class="sidebar">
-
-            <nav class="sidebar-nav">
-                <div class="sidebar-header">
-                    <div class="imglogo">
-                        <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />
-                    </div>
-                </div>
-                <ul>
-                    <li>
-                        <a href="#"><i class="far fa-folder-open"></i> <span>Repository</span></a>
-                        <ul class="nav-flyout">
-                            @for (int j = 0; j < phase.Count; j++)
-                            {
-                                <li>
-                                    <div class="anchor-link">
-                                        @if (phase[j].subPhase != null)
-                                        {
-                                            <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu">@phase[j].name</a>
-                                        }
-                                        else
-                                        {
-                                            <a href="#">@phase[j].name</a>
-                                        }
-                                    </div>
-                                    @if (phase[j].subPhase != null)
-                                    {
-                                        var subphase = phase[j].subPhase;
-                                        <ul class="collapse list-unstyled show" id="@phase[j].name">
-                                            @for (int i = 0; i < subphase.Count; i++)
-                                            {
-                                                <li class="subanchor-link">
-                                                    <a href="#">@subphase[i]</a>
-                                                </li>
-                                            }
-                                        </ul>
-
-                                    }
-
-                                </li>
-                            }
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="far fa-clipboard-list"></i> <span class="">Checklist</span></a>
-                        <ul class="nav-flyout">
-                            <li>
-                                <a href="#">Dashboard</a>
-                            </li>
-                            <li>
-                                <a href="#" onclick="@("window.location.href='" + @Url.Action("ChecklistPlan", "Checklist") + "'");">Plan</a>
-                            </li>
-                            <li>
-                                <a href="#">Deliverables</a>
-                            </li>
-                            <li>
-                                <a href="#">Checklist</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="far fa-clipboard-check"></i> <span class="">Compliance</span></a>
-                        <ul class="nav-flyout">
-                            <li>
-                                <a href="#">Dashboard</a>
-                            </li>
-                            <li>
-                                <a href="#">Plan</a>
-                            </li>
-                            <li>
-                                <a href="#">Deliverables</a>
-                            </li>
-                            <li>
-                                <a href="#">Checklist</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                </ul>
-            </nav>
-        </aside>
-    </section>-->
-@*<ul class="list-unstyled">
-        @for (int j = 0; j < phase.Count; j++)
-        {
-            <li>
-                <div class="anchor-link">
-                    @if (phase[j].subPhase != null)
-                    {
-                        <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu">@phase[j].name</a>
-                    }
-                    else
-                    {
-                        <a href="#">@phase[j].name</a>
-                    }
-                </div>
-                @if (phase[j].subPhase != null)
-                {
-                    var subphase = phase[j].subPhase;
-                    <ul class="collapse list-unstyled show" id="@phase[j].name">
-                        @for (int i = 0; i < subphase.Count; i++)
-                        {
-                            <li class="subanchor-link">
-                                <a href="#">@subphase[i]</a>
-                            </li>
-                        }
-                    </ul>
-
-                }
-
-            </li>
-        }
-    </ul>*@
-
-<!--</nav>-->
-
-
-
-
 <div class="col-md-12" style="padding-left: 15px;">
     <div id="divbreadcrumb">
         <ol class="breadcrumb breadcrumb-arrow">
@@ -192,14 +69,6 @@
             <li class="active"><span>Dashboard</span></li>
         </ol>
     </div>
-    @*<div class="col-sm-2 col-sm-pull-12">
-            <div id="newdocdiv" style="display:none;">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newUploadCenter">
-                    <i class="fa fa-plus" aria-hidden="true"></i> New Document
-                </button>
-            </div>
-
-        </div>*@
 </div>
 
 <div class="container-fluid" id="dashboard" style="display: block;">
@@ -211,37 +80,13 @@
                 {
                     if (p.documents != null)
                     {
-                        @*<div class="card col-md-3 m-2">
-                                <div class="card-deck">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <p>@p.phase </p>
-                                            <p>@p.documents.Count()</p>
-                                            <button type="submit" class="btn btn-primary" id="btnView" onclick='ViewDocuments("@p.phase",null)'>
-                                                <i class="fa fa-eye" aria-hidden="true"></i> View
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>*@
                         var i = 1;
                         keyword = new List<string>();
                         <div class="col-lg-4.5 col-sm-6">
                             <div class="circle-tile ">
                                 <a onclick='ViewDocuments("@p.phase",null)'>
                                     <div class="circle-tile-heading" style="background-color: #ffffff">
-                                        @*@if (p.phase == "Pre - Plan")
-                                            {
-                                                <span class="icon-stack">
-                                                    <i class="fa fa-file-alt icon-stack-3x"></i>
-                                                    <i class="fa fa-pencil icon-stack-1x"></i>
-                                                </span>
-                                            }
-                                            else
-                                            {
-                                                <i class="@p.icon fa-fw fa-3x"></i>
-
-                                            }*@
+                                      
                                         <img id="logo" alt="Logo" src="~/Image/DashboardIcon/@p.icon" style="width:80px;" />
 
                                     </div>
@@ -250,47 +95,7 @@
                                     <div class="circle-tile-number text-faded">
                                         @p.phase &ensp;@p.documents.Count()
                                     </div>
-                                    @*<div class="circle-tile-number text-faded ">@p.documents.Count()</div>*@
-
-                                    @*@foreach (var doc in p.documents)
-                                        {
-                                            @foreach (var tags in doc.tags)
-                                            {
-
-                                                if (tags.AzureService != null)
-                                                {
-                                                    foreach (var type in tags.AzureService)
-                                                    {
-                                                        if (i < 5)
-                                                        {
-                                                            foreach (var keyval in type)
-                                                            {
-                                                                keyword.Add(keyval.Value);
-                                                            }
-                                                            i = i + 1;
-                                                        }
-                                                    }
-                                                }
-
-                                                @if (i < 5)
-                                                {
-                                                    if (tags.ProcessRelated != null)
-                                                    {
-                                                        foreach (var type in tags.ProcessRelated)
-                                                        {
-                                                            if (i < 5)
-                                                            {
-                                                                foreach (var keyval in type)
-                                                                {
-                                                                    keyword.Add(keyval.Value);
-                                                                }
-                                                                i = i + 1;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }*@
+                                   
                                     <div class="circle-tile ">@p.dashboardTag</div>
                                     <a class="circle-tile-footer" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=@p.phase,SubPhase=string.Empty }) + "'");">View Documents<i class="fa fa-chevron-circle-right"></i></a>
                                 </div>
@@ -310,52 +115,7 @@
                                 </a>
 
                                 <div class="circle-tile-content" style="background-color: #2a8bcc; ">
-                                    @*<div class="circle-tile-description text-faded"> @p.phase</div>*@
-                                    @*@foreach (var sub in p.subphase)
-                                        {
-                                            @if (sub.documents != null)
-                                            {
-                                                @foreach (var doc in sub.documents)
-                                                {
-                                                    @foreach (var tags in doc.tags)
-                                                    {
-                                                        if (tags.AzureService != null)
-                                                        {
-                                                            foreach (var type in tags.AzureService)
-                                                            {
-                                                                if (i < 5)
-                                                                {
-                                                                    foreach (var keyval in type)
-                                                                    {
-                                                                        keyword.Add(keyval.Value);
-                                                                    }
-                                                                    i = i + 1;
-                                                                }
-                                                            }
-                                                        }
-
-                                                        @if (i < 5)
-                                                        {
-                                                            if (tags.ProcessRelated != null)
-                                                            {
-                                                                foreach (var type in tags.ProcessRelated)
-                                                                {
-                                                                    if (i < 5)
-                                                                    {
-                                                                        foreach (var keyval in type)
-                                                                        {
-                                                                            keyword.Add(keyval.Value);
-                                                                        }
-                                                                        i = i + 1;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            subphaseDoc = subphaseDoc + sub.documents.Count();
-                                        }*@
+                                    
                                     <div class="circle-tile-number text-faded">
                                         @p.phase &ensp;@p.subphase.Sum(q => q.documents.Count)
                                     </div>
@@ -374,13 +134,7 @@
     </div>
 </div>
 
-@*<div class="container-fluid" id="documentpnl" style="display: none;">
 
-</div>
-
-<div class="container-fluid" id="uploadDocument" style="display: none;">
-
-</div>*@
 <div class="container-fluid" id="SerachDocument" style="display: none;">
 
 </div>

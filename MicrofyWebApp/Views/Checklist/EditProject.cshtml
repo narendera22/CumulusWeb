@@ -6,12 +6,14 @@
     var custname = string.Empty;
     var auditor = string.Empty;
     List<string> multiuserVal = new List<string>();
+    var flag = "Save";
     if (Model.project != null)
     {
         applname = Model.project.ProjectName;
         custname = Model.project.CustomerName;
         auditor = Model.project.Auditor;
         multiuserVal = Model.project.Users;
+        flag = "Update";
     }
 }
 <!DOCTYPE html>
@@ -145,7 +147,7 @@
                         <!-- Button -->
                         <div class="form-group">
                             <div class="col-md-7 control-label ">
-                                <button type="submit" id="btnsave" style="display:block;" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
+                                <button type="submit" id="btnsave" style="display:block;" class="btn btn-primary pull-right" data-flag="@flag"><i class="fa fa-save"></i> Save</button>
                             </div>
                         </div>
 
@@ -213,23 +215,27 @@
                    "ProjectName": projectname,
                    "CustomerName": customername,
                    "Auditor": auditor,
-                   "Users": users
+                   "Users": users,
+                   "flag":$(this).data("flag")
                    }
-                   var redirecturl = "/Login/UpdateProject";
+                   var redirecturl = "/Checklist/UpdateProject";
                $.post(redirecturl, { "project": ProjectDetails }, function (data) {
                    var title = "";
                    var type = "";
+                   var content="";
                    if (data.statusCode == true) {
                        title = "Success!!";
                        type = "green";
+                       content="Application created successfully";
                    }
                    else {
                        title = "Error!!";
                        type = "red";
+                       content=data.responseMessage;
                    }
                    $.alert({
                            title: title,
-                           content: "Project created successfully",
+                           content: content,
                            type: type,
                            onAction: function () {
                                window.location.href = '@Url.Action("Project","Checklist")';
