@@ -19,7 +19,7 @@
     }
 
     .dropdown-menu {
-        left: 35px !important;
+        left: 250px !important;
     }
 </style>
 <!DOCTYPE html>
@@ -85,7 +85,7 @@
                                         @username <i class="fa fa-angle-down" aria-hidden="true"></i>
                                     </a>
 
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="margin-left: -200px;">
                                         <a class="dropdown-item" href="~/Login/MyProfile"> <i class="fas fa-user-circle"></i> My Profile</a>
 
                                         <a href="#" class="dropdown-item" onclick="@("window.location.href='" + @Url.Action("Logout", "Login") + "'");"><i class="fa fa-power-off"></i> Sign Out</a>

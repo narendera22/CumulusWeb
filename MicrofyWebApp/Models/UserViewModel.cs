@@ -18,6 +18,9 @@ namespace MicrofyWebApp.Models
         public string responseMessage { get; set; }
         public List<ListUserDetails> usersDetails { get; set; }
         public string DefaultPassword { get; set; }
+        public List<Module> moduleAccess { get; set; }
+        public Menus Menu { get; set; }
+
     }
     public class projects
     {
@@ -38,5 +41,17 @@ namespace MicrofyWebApp.Models
         public bool isActive { get; set; }
         public bool isDeleted { get; set; }
         public List<projects> projects { get; set; }
+        public List<Module> moduleAccess { get; set; }
+    }
+
+    public class Menus
+    {
+        public List<Module> Menu { get; set; }
+
+    }
+    public class Module
+    {
+        public string Name { get; set; }
+        public string Visible { get; set; }
     }
 }

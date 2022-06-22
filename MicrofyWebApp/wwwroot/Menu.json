@@ -1,0 +1,20 @@
+{
+	"Menu" : [
+		{
+			"Name" : "Repository",
+			"Visible" : "True"
+		},
+		{
+			"Name": "Application",
+			"Visible": "True"
+		},
+		{
+			"Name": "Activity",
+			"Visible": "True"
+		},
+		{
+			"Name": "Settings",
+			"Visible": "True"
+		}
+	]
+}

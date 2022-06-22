@@ -122,7 +122,9 @@ namespace MicrofyWebApp.Controllers
 
             userResponse = await GetLoginUserDetails(authKey, userid); ;
             userViewModel = JsonConvert.DeserializeObject<UserViewModel>(userResponse);
-
+            var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"Menu.json"}");
+            var JSON = System.IO.File.ReadAllText(folderDetails);
+            userViewModel.Menu = JsonConvert.DeserializeObject<Menus>(JSON);
             return View(userViewModel);
         }
 
@@ -304,6 +306,9 @@ namespace MicrofyWebApp.Controllers
                 }
 
             }
+            var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"Menu.json"}");
+            var JSON = System.IO.File.ReadAllText(folderDetails);
+            userViewModel.Menu = JsonConvert.DeserializeObject<Menus>(JSON);
             return userViewModel;
         }
         public async Task<bool> ActivateDeactivate(string username)
@@ -383,8 +388,8 @@ namespace MicrofyWebApp.Controllers
             return resp;
         }
 
-       
-        
+
+
 
         public string GetMasterTemplate(string mastertemplate, string foldername = null)
         {

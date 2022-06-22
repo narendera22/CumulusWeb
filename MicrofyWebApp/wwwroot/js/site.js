@@ -520,8 +520,11 @@ $(function () {
         var proj_cus_name = $(this).closest("tr").find('td:eq(4)').text();
         var Status = $(this).closest("tr").find('td:eq(3)').find(".switch .togglecheckbox").is(":checked");
         var pwd = $(this).closest("tr").find('td:eq(5)').find(".pwd").val();
-        var json = $.parseJSON(proj_cus_name)
+        var moduleaccess = $(this).closest("tr").find('td:eq(6)').text();
 
+
+        var json = $.parseJSON(proj_cus_name);
+        var module = $.parseJSON(moduleaccess);
         $('#userid').val(userid);
         $('#first_name').val(first_name);
         $('#role').val(role);
@@ -551,6 +554,22 @@ $(function () {
                 $('#cust_name-' + (key + 1)).val(json[key].customerName);
             }
         }
+        $('.form-check-input').prop("checked", false);
+
+        for (var key = 0; key < module.length; key++) {
+            var $moduleaccess = $('.moduleAccess');
+            $moduleaccess.each(function (i, value) {
+                var modname = $("#chkmodule_" + (i + 1) + ".form-check-input").attr("name");
+                if (modname == module[key].name) {
+                    var visible = false;
+                    if (module[key].visible == "true") {
+                        visible = true;
+                    }
+                    $('#chkmodule_' + (i + 1)).prop("checked", visible);
+                }
+            });
+            
+        }
         if (Status) {
             $(".switch").find("#statusCheck").prop("checked", true);
         }
@@ -569,6 +588,9 @@ $(function () {
         var Status = $(this).closest("tr").find('td:eq(3)').find(".switch .togglecheckbox").is(":checked");
         var pwd = $(this).closest("tr").find('td:eq(5)').find(".pwd").val();
         var Projects = $.parseJSON(proj_cus_name)
+        var moduleaccess = $(this).closest("tr").find('td:eq(6)').text();
+        var module = $.parseJSON(moduleaccess);
+
         //var Projects = [{
         //    "ProjectName": project_name,
         //    "CustomerName": cust_name
@@ -581,7 +603,8 @@ $(function () {
             "userRole": role,
             "isActive": Status,
             "isDeleted": false,
-            "projects": Projects
+            "projects": Projects,
+            "moduleAccess": module
         }
         var ActivityTracker = {
             "UserName": userid,
@@ -610,7 +633,7 @@ $(function () {
                 content: content,
                 type: type,
                 onAction: function () {
-                    window.location.href = 'ListUser';
+                    window.location.href = '/Login/ListUser';
                 }
             });
         })
@@ -653,7 +676,7 @@ $(function () {
                     content: content,
                     type: type,
                     onAction: function () {
-                        window.location.href = 'ListUser';
+                        window.location.href = '/Login/ListUser';
                     }
                 });
             },
@@ -718,7 +741,7 @@ function Viewprj() {
 function funcRedirect() {
     var search = $('#search').val();
     if (search == "") {
-        window.location.href = "Dashboard";
+        window.location.href = "/Home/Dashboard";
     }
 }
 

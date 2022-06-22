@@ -47,10 +47,12 @@
         .justify-content-lg-center {
             justify-content: left !important;
         }
+
         table.dataTable thead th, table.dataTable thead td {
             padding: 10px 10px !important;
             border-bottom: 1px solid #111;
         }
+
         .input-group-addon {
             padding: 6px 20px !important;
         }
@@ -62,9 +64,9 @@
         <!--<div class="imglogo" style="display:flex;">-->
         @*<img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />*@
         <!--<div class=" col-lg-8" style="padding-top:40px">
-            <center><h2><b>User Management</b></h2></center>
-        </div>
-    </div>-->
+                <center><h2><b>User Management</b></h2></center>
+            </div>
+        </div>-->
         <div id="divbreadcrumb" style="padding-bottom:5px;">
             <ol class="breadcrumb breadcrumb-arrow">
                 <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
@@ -86,6 +88,7 @@
                     <th data-orderable="false"></th>
                     <th data-orderable="false"></th>
                     <th data-orderable="false"></th>
+                    <th data-orderable="false"></th>
                     <th data-orderable="false" style="border-bottom:0px;"></th>
                 </tr>
             </thead>
@@ -98,10 +101,10 @@
                         <td>@usr.fullName</td>
                         <td>@usr.userRole</td>
                         @*@foreach (var p in usr.projects)
-                        {
-                            <td>@p.projectName.</td>
-                            <td>@p.customerName</td>
-                        }*@
+                    {
+                    <td>@p.projectName.</td>
+                    <td>@p.customerName</td>
+                    }*@
                         @if (usr.isActive) { status = "checked"; } else { status = ""; }
                         <td>
                             <label class="switch">
@@ -114,6 +117,9 @@
                         </td>
                         <td style="display:none;">
                             <input name="pwd" type="password" class="pwd" value="@usr.password" />
+                        </td>
+                        <td style="display:none;">
+                            @Html.Raw(Json.Serialize(usr.moduleAccess))
                         </td>
                         <td>
                             <a href="" class="edit" title="Edit User">
@@ -135,9 +141,9 @@
             </tbody>
         </table>
         @*<div class="form-group">
-            <div class="col-md-4 control-label" style="padding-bottom:15px;">
-                <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
-            </div>
+        <div class="col-md-4 control-label" style="padding-bottom:15px;">
+        <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
+        </div>
         </div>*@
     </div>
     <div class="modal fade" id="UserEditPopup" role="dialog" tabindex="-1">
@@ -189,31 +195,31 @@
                             </div>
 
                             @*<div class="form-group">
-                                    <label class="col-md-4 control-label"><span style="color:red;">*</span>  Customer Name</label>
-                                    <div class="col-md-6 inputGroupContainer">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                            <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" type="text" required>
-                                        </div>
-                                    </div>
-                                </div>
+                            <label class="col-md-4 control-label"><span style="color:red;">*</span>  Customer Name</label>
+                            <div class="col-md-6 inputGroupContainer">
+                            <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" type="text" required>
+                            </div>
+                            </div>
+                            </div>
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label"><span style="color:red;">*</span>  Project Name</label>
-                                    <div class="col-md-6 inputGroupContainer">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                            <input name="project_name" id="project_name" placeholder="Project Name" class="form-control" type="text" required>
-                                        </div>
-                                    </div>
-                                </div>*@
+                            <div class="form-group">
+                            <label class="col-md-4 control-label"><span style="color:red;">*</span>  Project Name</label>
+                            <div class="col-md-6 inputGroupContainer">
+                            <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input name="project_name" id="project_name" placeholder="Project Name" class="form-control" type="text" required>
+                            </div>
+                            </div>
+                            </div>*@
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label"><span style="color:red;">*</span>  Project & Customer Name</label>
                                 <div class="col-md-8 inputGroupContainer">
                                     <div class="input-group">
                                         @*<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                            <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" type="text" required>*@
+                                        <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" type="text" required>*@
                                         <div id="dynamic-PrjCus-field-1" class=" col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
                                             <span class="input-group-addon col-sm-1"><i class="glyphicon glyphicon-user"></i></span>
                                             <input name="project_name" id="project_name-1" placeholder="Project Name" class="col-md-4 form-control" type="text" onkeydown="addprj($(this))" required>
@@ -230,16 +236,27 @@
                                     </div>
                                 </div>
                             </div>
-                           @* <div class="form-group">
+                            <div class="form-group">
                                 <label class="col-md-4 control-label">Module Access</label>
                                 <div class="col-md-4 inputGroupContainer">
-                                    <div class="input-group">
-                                        <label class="control-label">
-                                            <input type="checkbox" id="statusCheck" class="form-control" value="Repository">
-                                        </label>
-                                    </div>
+                                    @foreach (var mod in Model.Menu.Menu.Select((value, i) => new { i, value }))
+                                    {
+                                        if (mod.value.Name == "Repository")
+                                        {
+                                            <div class="moduleAccess form-check" style="padding-left: 0px;top: 10px;">
+                                                @{
+                                                    var id = "chkmodule_" + (mod.i + 1);
+                                                }
+                                                <input class="form-check-input" type="checkbox" name="@mod.value.Name" value="" id="@id">
+                                                <label class="form-check-label" for="@id" style="font-weight: normal;">
+                                                    @mod.value.Name
+                                                </label>
+                                            </div>
+                                        }
+                                    }
+
                                 </div>
-                            </div>*@
+                            </div>
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">Status</label>
@@ -280,75 +297,90 @@
 
 </html>
 <script type="text/javascript">
-        /* Initialization of datatable */
-        $(document).ready(function () {
-            $('#tableID').DataTable({});
+    /* Initialization of datatable */
+    $(document).ready(function() {
+        $('#tableID').DataTable({});
 
+    });
+
+
+    $('.togglecheckbox').change(function() {
+        $(this).prop('checked');
+        var username = $(this).data('username');
+        $.ajax({
+            type: "GET",
+            url: "/Login/ActivateDeactivate",
+            data: { "username": username },
+            contentType: "application/json; charset=utf-8",
+            //dataType: 'json',
+            success: function(data) {
+
+            },
+            error: function(data) {
+                console.log(JSON.stringify(data));
+            }
+        });
+    });
+
+    $('#UpdateUserList_form').submit(function() {
+        var username = $('#first_name').val();
+        //var custname = $('#cust_name').val();
+        //var projectname = $('#project_name').val();
+        var role = $('#role').val();
+        var userid = $('#userid').val();
+        var status = $(".switch").find("#statusCheck").is(":checked");
+        var password = $('#password').val();
+        var reposAccess = $('#chkrepos.form-check-input').is(":checked");
+        //var Projects = [{
+        //    "ProjectName": projectname,
+        //    "CustomerName": custname
+        //}];
+
+        var $projCus = $('.dynamic-field');
+        var prj = [];
+        $projCus.each(function(key, value) {
+            var Proj = $("#project_name-" + (key + 1)).val();
+            var Cust = $("#cust_name-" + (key + 1)).val();
+            if (Proj != "") {
+                var obj = {};
+                obj = {
+                    "ProjectName": Proj,
+                    "CustomerName": Cust
+                };
+                prj.push(obj);
+            }
         });
 
-
-        $('.togglecheckbox').change(function () {
-            $(this).prop('checked');
-            var username = $(this).data('username');
-            $.ajax({
-                type: "GET",
-                url: "/Login/ActivateDeactivate",
-                data: { "username": username },
-                contentType: "application/json; charset=utf-8",
-                //dataType: 'json',
-                success: function (data) {
-
-                },
-                error: function (data) {
-                    console.log(JSON.stringify(data));
-                }
-            });
+        var $moduleaccess = $('.moduleAccess');
+        var access = [];
+        $moduleaccess.each(function(key, value) {
+            var modvalue = $("#chkmodule_" + (key + 1) + ".form-check-input").is(":checked");
+            var modname = $("#chkmodule_" + (key + 1) + ".form-check-input").attr("name");
+            var obj = {};
+            obj = {
+                "Name": modname,
+                "Visible": modvalue
+            };
+            access.push(obj);
         });
 
-   $('#UpdateUserList_form').submit(function () {
-       var username = $('#first_name').val();
-       //var custname = $('#cust_name').val();
-       //var projectname = $('#project_name').val();
-       var role = $('#role').val();
-       var userid = $('#userid').val();
-       var status = $(".switch").find("#statusCheck").is(":checked");
-       var password = $('#password').val();
-    //var Projects = [{
-    //    "ProjectName": projectname,
-    //    "CustomerName": custname
-    //}];
-
-       var $projCus = $('.dynamic-field');
-       var prj = [];
-       $projCus.each(function (key, value) {
-           var Proj = $("#project_name-" + (key + 1)).val();
-           var Cust = $("#cust_name-" + (key + 1)).val();
-           if (Proj != "") {
-               var obj = {};
-               obj = {
-                   "ProjectName": Proj,
-                   "CustomerName": Cust
-               };
-               prj.push(obj);
-           }
-       });
-
-    var UserDetails = {
-        "username": userid,
-        "password": password,
-        "fullName": username,
-        "userRole": role,
-        "isActive": status,
-        "projects": prj
-       }
-       var ActivityTracker = {
-           "UserName": userid,
-           "ActivityType": "UpdateUser",
-           "ActivityDetails": " has successfully modified user details for " +userid
-       }
+        var UserDetails = {
+            "username": userid,
+            "password": password,
+            "fullName": username,
+            "userRole": role,
+            "isActive": status,
+            "projects": prj,
+            "moduleAccess": access
+        }
+        var ActivityTracker = {
+            "UserName": userid,
+            "ActivityType": "UpdateUser",
+            "ActivityDetails": " has successfully modified user details for " + userid
+        }
 
         var redirecturl = "/Login/UpdateUser";
-       $.post(redirecturl, { "users": UserDetails, "activityTracker": ActivityTracker }, function (data) {
+        $.post(redirecturl, { "users": UserDetails, "activityTracker": ActivityTracker }, function(data) {
             var title = "";
             var type = "";
             if (data.statusCode == true) {
@@ -360,26 +392,26 @@
                 type = "red";
             }
             $.alert({
-                    title: title,
-                    content: data.responseMessage,
-                    type: type,
-                    onAction: function () {
-                        window.location.href = '@Url.Action("ListUser","Login")';
-                    }
-                });
-        })
-        .fail(function (response) {
-           $.alert({
-                title: 'Error!!',
-                content: response,
-                alignMiddle: true,
-                type: 'red'
+                title: title,
+                content: data.responseMessage,
+                type: type,
+                onAction: function() {
+                    window.location.href = '@Url.Action("ListUser","Login")';
+                }
             });
-        });
-    return false;
+        })
+            .fail(function(response) {
+                $.alert({
+                    title: 'Error!!',
+                    content: response,
+                    alignMiddle: true,
+                    type: 'red'
+                });
+            });
+        return false;
 
 
-});
+    });
 </script>
 <script type="text/javascript">
 

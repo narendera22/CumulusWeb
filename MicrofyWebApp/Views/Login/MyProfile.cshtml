@@ -87,31 +87,31 @@
 
 
                 @*<div class="form-group">
-                        <label class="col-md-4 control-label">Customer Name</label>
-                        <div class="col-md-4 inputGroupContainer">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" readonly type="text" value="@d.customerName">
-                            </div>
-                        </div>
-                    </div>
+                <label class="col-md-4 control-label">Customer Name</label>
+                <div class="col-md-4 inputGroupContainer">
+                <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" readonly type="text" value="@d.customerName">
+                </div>
+                </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Project Name</label>
-                        <div class="col-md-4 inputGroupContainer">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input name="project_name" id="project_name" placeholder="Project Name" class="form-control" readonly type="text" value="@d.projectName">
-                            </div>
-                        </div>
-                    </div>*@
+                <div class="form-group">
+                <label class="col-md-4 control-label">Project Name</label>
+                <div class="col-md-4 inputGroupContainer">
+                <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                <input name="project_name" id="project_name" placeholder="Project Name" class="form-control" readonly type="text" value="@d.projectName">
+                </div>
+                </div>
+                </div>*@
 
                 <div class="form-group">
                     <label class="col-md-4 control-label"><span style="color:red;">*</span>  Project & Customer Name</label>
                     <div class="col-md-8 inputGroupContainer">
                         <div class="input-group">
                             @*<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" type="text" required>*@
+                            <input name="cust_name" id="cust_name" placeholder="Customer Name" class="form-control" type="text" required>*@
                             @foreach (var d in Model.projects.Select((value, i) => new { i, value }))
                             {
                                 <div id="dynamic-PrjCus-field-@(d.i + 1)" class=" col-md-12 form-group dynamic-field" style="display:flex;" data-tags="add">
@@ -121,17 +121,45 @@
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                     <input name="cust_name" id="cust_name-@(d.i + 1)" placeholder="Customer Name" class="col-md-3 form-control" type="text" value="@d.value.customerName" readonly>
                                     @*<a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="Viewprj(); return false;">
-                                            <i class="fas fa-plus"></i>
-                                        </a>
-                                        <a href="#" class="delete" title="delete Tags" style="padding:5px; display:none;" onclick="deleteprj($(this)); return false;">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </a>*@
+                                <i class="fas fa-plus"></i>
+                                </a>
+                                <a href="#" class="delete" title="delete Tags" style="padding:5px; display:none;" onclick="deleteprj($(this)); return false;">
+                                <i class="fas fa-trash-alt"></i>
+                                </a>*@
                                 </div>
                             }
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Module Access</label>
+                    <div class="col-md-4 inputGroupContainer">
+                        @foreach (var mod in Model.Menu.Menu.Select((value, i) => new { i, value }))
+                        {
+                            if (mod.value.Name == "Repository")
+                            {
+                                <div class="moduleAccess form-check" style="padding-left: 0px;top: 10px;">
+                                    @{
+                                        var id = "chkmodule_" + (mod.i + 1);
+                                        var check = "";
+                                        foreach(var acc in Model.moduleAccess)
+                                        {
+                                            if (mod.value.Name == acc.Name)
+                                            {
+                                                check = "Checked"; 
+                                            }
+                                        }
+                                    }
+                                    <input class="form-check-input" type="checkbox" name="@mod.value.Name" value="" id="@id" disabled @check >
+                                    <label class="form-check-label" for="@id" style="font-weight: normal;">
+                                        @mod.value.Name
+                                    </label>
+                                </div>
+                            }
+                        }
 
+                    </div>
+                </div>
 
                 <div class="form-group" id="ChangePwd" style="display: block; color: #007bff;">
                     <a href="#" class="col-md-4 control-label" onclick="displayPwd()">Show Change Password</a>
@@ -176,7 +204,7 @@
                 <!-- Button -->
                 <div class="form-group">
                     @*<div class="col-md-4 control-label">
-                        <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
+                    <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
                     </div>*@
                     <div class="col-md-6 control-label" id="updatepwd" style="display:none;">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
@@ -211,7 +239,7 @@
         $('#hidePwd').hide();
 
     }
-    window.onload = function () {
+    window.onload = function() {
         var txtPassword = document.getElementById("user_password");
         var txtConfirmPassword = document.getElementById("confirm_password");
         txtPassword.onchange = ConfirmPassword;
@@ -223,23 +251,23 @@
             }
         }
     }
-    $('#MyProfile_Form').submit(function () {
-    var username = $('#first_name').val();
-    var custname = $('#cust_name').val();
-    var projectname = $('#project_name').val();
-    var role = $('#txtrole').val();
-    var userid = $('#userid').val();
-    var password = $('#user_password').val();
-    var confrmpassword = $('#confirm_password').val();
+    $('#MyProfile_Form').submit(function() {
+        var username = $('#first_name').val();
+        var custname = $('#cust_name').val();
+        var projectname = $('#project_name').val();
+        var role = $('#txtrole').val();
+        var userid = $('#userid').val();
+        var password = $('#user_password').val();
+        var confrmpassword = $('#confirm_password').val();
 
-    //var Projects = [{
-    //    "ProjectName": projectname,
-    //    "CustomerName": custname
-    //}];
+        //var Projects = [{
+        //    "ProjectName": projectname,
+        //    "CustomerName": custname
+        //}];
 
         var $projCus = $('.dynamic-field');
         var prj = [];
-        $projCus.each(function (key, value) {
+        $projCus.each(function(key, value) {
             var Proj = $("#project_name-" + (key + 1)).val();
             var Cust = $("#cust_name-" + (key + 1)).val();
             if (Proj != "") {
@@ -252,22 +280,36 @@
             }
         });
 
-    var UserDetails = {
-        "username": userid,
-        "password": password,
-        "fullName": username,
-        "userRole": role,
-        "isActive": true,
-        "projects": prj
+        var $moduleaccess = $('.moduleAccess');
+        var access = [];
+        $moduleaccess.each(function(key, value) {
+            var modvalue = $("#chkmodule_" + (key + 1) + ".form-check-input").is(":checked");
+            var modname = $("#chkmodule_" + (key + 1) + ".form-check-input").attr("name");
+            var obj = {};
+            obj = {
+                "Name": modname,
+                "Visible": modvalue
+            };
+            access.push(obj);
+        });
+
+        var UserDetails = {
+            "username": userid,
+            "password": password,
+            "fullName": username,
+            "userRole": role,
+            "isActive": true,
+            "projects": prj,
+            "moduleAccess": access
         }
         var ActivityTracker = {
             "UserName": userid,
             "ActivityType": "ChangePassword",
-            "ActivityDetails": "User " + userid+ " has successfully changed password"
+            "ActivityDetails": "User " + userid + " has successfully changed password"
         }
 
         var redirecturl = "/Login/UpdateUser";
-        $.post(redirecturl, { "users": UserDetails, "activityTracker": ActivityTracker}, function (data) {
+        $.post(redirecturl, { "users": UserDetails, "activityTracker": ActivityTracker }, function(data) {
             var title = "";
             var type = "";
             if (data.statusCode == true) {
@@ -279,24 +321,24 @@
                 type = "red";
             }
             $.alert({
-                    title: title,
-                    content: data.responseMessage,
-                    type: type,
-                    onAction: function () {
-                        window.location.href = '@Url.Action("MyProfile","Login")';
-                    }
-                });
-        })
-        .fail(function (response) {
-           $.alert({
-                title: 'Error!!',
-                content: response,
-                alignMiddle: true,
-                type: 'red'
+                title: title,
+                content: data.responseMessage,
+                type: type,
+                onAction: function() {
+                    window.location.href = '@Url.Action("MyProfile","Login")';
+                }
             });
-        });
-    return false;
+        })
+            .fail(function(response) {
+                $.alert({
+                    title: 'Error!!',
+                    content: response,
+                    alignMiddle: true,
+                    type: 'red'
+                });
+            });
+        return false;
 
 
-});
+    });
 </script>
