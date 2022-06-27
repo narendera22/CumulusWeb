@@ -21,17 +21,17 @@ using System.Web;
 
 namespace MicrofyWebApp.Controllers
 {
-    public class HomeController : Controller
+    public class RepositoryController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<RepositoryController> _logger;
         private IMemoryCache _cache;
 
         string Docurl = string.Empty;
         string Asseturl = string.Empty;
-        string Phaseurl = string.Empty;
+        string ConfigUrl = string.Empty;
         string DocCode = string.Empty;
         string AssetCode = string.Empty;
-        string PhaseCode = string.Empty;
+        string ConfigCode = string.Empty;
         string Activityurl = string.Empty;
         string ActivityCode = string.Empty;
         string userid = string.Empty;
@@ -42,7 +42,7 @@ namespace MicrofyWebApp.Controllers
         string Usercode = string.Empty;
 
 
-        public HomeController(ILogger<HomeController> logger, IMemoryCache memoryCache, IConfiguration configuration)
+        public RepositoryController(ILogger<RepositoryController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _logger = logger;
             _cache = memoryCache;
@@ -51,8 +51,8 @@ namespace MicrofyWebApp.Controllers
             DocCode = _configuration.GetValue<string>("Values:DocumentCode");
             Asseturl = _configuration.GetValue<string>("Values:AssetStrgeBaseUrl");
             AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
-            Phaseurl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
-            PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
+            ConfigUrl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
+            ConfigCode = _configuration.GetValue<string>("Values:ConfigCode");
             Activityurl = _configuration.GetValue<string>("Values:ActivityBaseUrl");
             ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
             Searchurl = _configuration.GetValue<string>("Values:SearchBaseUrl");
@@ -70,20 +70,20 @@ namespace MicrofyWebApp.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            PhaseViewModel PhaseModel = new PhaseViewModel();
+            MenuViewModel PhaseModel = new MenuViewModel();
             DocumentViewModel documentModel = new DocumentViewModel();
             string Phase;
-            string Requestapi = $"api/GetPhaseListFunction?{PhaseCode}";
+            string Requestapi = $"api/GetMenuListFunction?{ConfigCode}";
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Phaseurl);
+                client.BaseAddress = new Uri(ConfigUrl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 HttpResponseMessage Res = await client.GetAsync(Requestapi);
                 if (Res.IsSuccessStatusCode)
                 {
                     Phase = Res.Content.ReadAsStringAsync().Result;
-                    PhaseModel = JsonConvert.DeserializeObject<PhaseViewModel>(Phase);
+                    PhaseModel = JsonConvert.DeserializeObject<MenuViewModel>(Phase);
                     documentModel = await GetDocumentListAsync();
                     PhaseModel.documentRepository = documentModel.documentRepository;
                     PhaseModel.UserRole = HttpContext.Session.GetString("_UserRole");
@@ -95,20 +95,20 @@ namespace MicrofyWebApp.Controllers
             return View(PhaseModel);
         }
 
-        public async Task<IActionResult> RepositoryAsync(string Phase, string SubPhase)
+        public async Task<IActionResult> RepositoryAsync(string menulevel1, string menulevel2)
         {
             DocumentViewModel DocModel = new DocumentViewModel();
 
             DocModel = await GetDocumentListAsync();
-            if (SubPhase == "" || SubPhase == string.Empty || SubPhase == null)
+            if (menulevel2 == "" || menulevel2 == string.Empty || menulevel2 == null)
             {
-                SubPhase = string.Empty;
+                menulevel2 = string.Empty;
             }
-            DocModel.selectedPhase = Phase;
-            DocModel.selectedSubPhases = SubPhase;
+            DocModel.selectedPhase = menulevel1;
+            DocModel.selectedSubPhases = menulevel2;
             DocModel.UserRole = HttpContext.Session.GetString("_UserRole");
-            HttpContext.Session.SetString("_selPhase", Phase);
-            HttpContext.Session.SetString("_selSubPhase", SubPhase);
+            HttpContext.Session.SetString("_selPhase", menulevel1);
+            HttpContext.Session.SetString("_selSubPhase", menulevel2);
 
             return View(DocModel);
         }
@@ -327,82 +327,6 @@ namespace MicrofyWebApp.Controllers
         public IActionResult Privacy()
         {
             return View();
-        }
-
-        public async Task<IActionResult> ActivityDetailsAsync(string userid = null)
-        {
-            userid = (userid != null ? userid : HttpContext.Session.GetString("_userId"));
-            if (userid == null)
-            {
-                return RedirectToAction("Login", "Login");
-            }
-            ActivityViewModel docmod = new ActivityViewModel();
-            var activitylist = string.Empty;
-            string Requestapi = $"api/GetActivity?{ActivityCode}";
-            var resp = false;
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Activityurl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync(Requestapi);
-                if (Res.IsSuccessStatusCode)
-                {
-                    activitylist = Res.Content.ReadAsStringAsync().Result;
-                }
-                docmod.activity = JsonConvert.DeserializeObject<List<ActivityTracker>>(value: activitylist);
-            }
-            docmod.currentUser = HttpContext.Session.GetString("_userId");
-
-            docmod.users = await ListAllUsersAsync();
-            docmod.topModel = await ListTopModel();
-            return View(docmod);
-        }
-
-        public async Task<TopModel> ListTopModel()
-        {
-            TopModel topModel = new TopModel();
-            string Requestapi = $"api/GetTopActivity?{ActivityCode}";
-            string resp = string.Empty;
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Activityurl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync(Requestapi);
-                if (Res.IsSuccessStatusCode)
-                {
-                    resp = Res.Content.ReadAsStringAsync().Result;
-                }
-                topModel = JsonConvert.DeserializeObject<TopModel>(value: resp);
-            }
-            return topModel;
-        }
-
-        public async Task<UserViewModel> ListAllUsersAsync()
-        {
-            userid = HttpContext.Session.GetString("_userId");
-            string authKey = HttpContext.Session.GetString("_AuthKey");
-
-            UserViewModel userViewModel = new UserViewModel();
-            string userResponse = string.Empty;
-            string Requestapi = $"api/GetUserList?{Usercode}";
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Userurl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("Authorization", authKey);
-                HttpResponseMessage Res = await client.GetAsync(Requestapi);
-                if (Res.IsSuccessStatusCode)
-                {
-                    userResponse = Res.Content.ReadAsStringAsync().Result;
-                    userViewModel.usersDetails = JsonConvert.DeserializeObject<List<ListUserDetails>>(value: userResponse);
-                }
-
-            }
-            return userViewModel;
         }
 
         public bool ActivityTracker(string ActivityType, string ActivityDetails)

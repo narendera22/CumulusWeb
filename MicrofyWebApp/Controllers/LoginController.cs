@@ -29,8 +29,8 @@ namespace MicrofyWebApp.Controllers
         string Activityurl = string.Empty;
         string ActivityCode = string.Empty;
         string userid = string.Empty;
-        string Phaseurl = string.Empty;
-        string PhaseCode = string.Empty;
+        string ConfigUrl = string.Empty;
+        string ConfigCode = string.Empty;
         string Asseturl = string.Empty;
         string AssetCode = string.Empty;
         string bestpracFolder = string.Empty;
@@ -46,8 +46,8 @@ namespace MicrofyWebApp.Controllers
             DefaultPassword = _configuration.GetValue<string>("Values:DefaultPassword");
             Activityurl = _configuration.GetValue<string>("Values:ActivityBaseUrl");
             ActivityCode = _configuration.GetValue<string>("Values:ActivityCode");
-            Phaseurl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
-            PhaseCode = _configuration.GetValue<string>("Values:ConfigCode");
+            ConfigUrl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
+            ConfigCode = _configuration.GetValue<string>("Values:ConfigCode");
             Asseturl = _configuration.GetValue<string>("Values:AssetStrgeBaseUrl");
             AssetCode = _configuration.GetValue<string>("Values:AssetStrgeCode");
             bestpracFolder = _configuration.GetValue<string>("Values:ServiceFolder");
@@ -177,20 +177,20 @@ namespace MicrofyWebApp.Controllers
                         userViewModel.responseMessage = await Res.Content.ReadAsStringAsync();
                     }
                 }
-                PhaseViewModel PhaseModel = new PhaseViewModel();
+                MenuViewModel PhaseModel = new MenuViewModel();
                 DocumentViewModel documentModel = new DocumentViewModel();
                 string Phase;
-                string phaseRequestapi = $"api/GetPhaseListFunction?{PhaseCode}";
+                string phaseRequestapi = $"api/GetMenuListFunction?{ConfigCode}";
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri(Phaseurl);
+                    client.BaseAddress = new Uri(ConfigUrl);
                     client.DefaultRequestHeaders.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     HttpResponseMessage Res = await client.GetAsync(phaseRequestapi);
                     if (Res.IsSuccessStatusCode)
                     {
                         Phase = Res.Content.ReadAsStringAsync().Result;
-                        PhaseModel = JsonConvert.DeserializeObject<PhaseViewModel>(Phase);
+                        PhaseModel = JsonConvert.DeserializeObject<MenuViewModel>(Phase);
                         //PhaseModel.documentRepository = documentModel.documentRepository;
                         PhaseModel.UserRole = HttpContext.Session.GetString("_UserRole");
                         HttpContext.Session.SetString("_config", Phase);
@@ -271,46 +271,6 @@ namespace MicrofyWebApp.Controllers
             return userViewModel;
         }
 
-        public async Task<IActionResult> ListUserAsync()
-        {
-            //string username = (string)_cache.Get("_UserId");
-            userid = HttpContext.Session.GetString("_userId");
-            if (userid == null)
-            {
-                return RedirectToAction("Login");
-            }
-            UserViewModel userViewModel = new UserViewModel();
-            userViewModel = await ListAllUsersAsync();
-            return View(userViewModel);
-        }
-        public async Task<UserViewModel> ListAllUsersAsync()
-        {
-            userid = HttpContext.Session.GetString("_userId");
-            string authKey = HttpContext.Session.GetString("_AuthKey");
-
-            UserViewModel userViewModel = new UserViewModel();
-            string userResponse = string.Empty;
-            string Requestapi = $"api/GetUserList?{Usercode}";
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Userurl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("Authorization", authKey);
-                HttpResponseMessage Res = await client.GetAsync(Requestapi);
-                if (Res.IsSuccessStatusCode)
-                {
-                    userResponse = Res.Content.ReadAsStringAsync().Result;
-                    userViewModel.usersDetails = JsonConvert.DeserializeObject<List<ListUserDetails>>(value: userResponse);
-                }
-
-            }
-            var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\{"Menu.json"}");
-            var JSON = System.IO.File.ReadAllText(folderDetails);
-            userViewModel.Menu = JsonConvert.DeserializeObject<Menus>(JSON);
-            return userViewModel;
-        }
         public async Task<bool> ActivateDeactivate(string username)
         {
             string authKey = HttpContext.Session.GetString("_AuthKey");

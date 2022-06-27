@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace MicrofyWebApp.Controllers
 {
-    public class ChecklistController : Controller
+    public class ApplicationController : Controller
     {
-        private readonly ILogger<ChecklistController> _logger;
+        private readonly ILogger<ApplicationController> _logger;
 
         string Asseturl = string.Empty;
         string AssetCode = string.Empty;
@@ -32,7 +32,7 @@ namespace MicrofyWebApp.Controllers
         string ChecklistconfigCode = string.Empty;
         string ChecklistDeliverablesfile = string.Empty;
 
-        public ChecklistController(ILogger<ChecklistController> logger, IConfiguration configuration)
+        public ApplicationController(ILogger<ApplicationController> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
@@ -324,7 +324,7 @@ namespace MicrofyWebApp.Controllers
 
             return View(audit);
         }
-        public async Task<IActionResult> ProjectAsync()
+        public async Task<IActionResult> ApplicationAsync()
         {
             ProjectView projRespon = new ProjectView();
             UserViewModel userViewModel = new UserViewModel();

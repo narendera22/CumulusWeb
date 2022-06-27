@@ -19,7 +19,7 @@
         <div class="col-md-12" style="padding-left: 15px;">
             <div id="divbreadcrumb">
                 <ol class="breadcrumb breadcrumb-arrow">
-                    <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                    <li class="homelink"><a href="~/Repository/Dashboard">Home</a></li>
                     <li class=""><a href="~/Checklist/Project">Application</a></li>
                     <li class="active"><span>@Model.projectname</span></li>
 
@@ -359,7 +359,7 @@
                                     <fieldset>
                                         <div class="form-card" id="Summary" name="Summary" data-projectname="@Model.project.ProjectName">
                                         </div>
-                                        <input type="button" name="next" onclick="@("window.location.href='" + @Url.Action("Project", "Checklist") + "'");" class="goback action-button btn btn-primary" value="Go To Application" />
+                                        <input type="button" name="next" onclick="@("window.location.href='" + @Url.Action("Application", "Application") + "'");" class="goback action-button btn btn-primary" value="Go To Application" />
                                     </fieldset>
                                 </form>
                             </div>

@@ -77,12 +77,12 @@
 
         <div id="divbreadcrumb" style="padding-bottom:5px;">
             <ol class="breadcrumb breadcrumb-arrow">
-                <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                <li class="homelink"><a href="~/Repository/Dashboard">Home</a></li>
                 <li class="active"><span>Application</span></li>
             </ol>
         </div>
         <div style="margin-bottom:5px;">
-            <button type="submit" class="btn btn-primary" id="btncreateprj" onclick="@("window.location.href='" + @Url.Action("EditProject", "Checklist", null) + "' ");"><i class="fa fa-plus"></i> Create Application</button>
+            <button type="submit" class="btn btn-primary" id="btncreateprj" onclick="@("window.location.href='" + @Url.Action("EditProject", "Application", null) + "' ");"><i class="fa fa-plus"></i> Create Application</button>
         </div>
 
         <!--HTML table with student data-->
@@ -110,12 +110,12 @@
                             <td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>
                             <td>@(p.Status!="" ? p.Status : "New")</td>
                             <td>
-                                <a href="#" class="btn btn-warning" title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("Audit", "Checklist", new { projectname=p.ProjectName }) + "' ");">
+                                <a href="#" class="btn btn-warning" title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("Audit", "Application", new { projectname=p.ProjectName }) + "' ");">
                                     <span class="glyphicon glyphicon-eye-open" style="font-size:15px;"></span>
                                 </a>
                             </td>
                             <td>
-                                <a href="#" class="prjedit btn btn-warning" title="Edit Application" onclick="@("window.location.href='" + @Url.Action("EditProject", "Checklist", new { projectname=p.ProjectName }) + "' ");">
+                                <a href="#" class="prjedit btn btn-warning" title="Edit Application" onclick="@("window.location.href='" + @Url.Action("EditProject", "Application", new { projectname=p.ProjectName }) + "' ");">
                                     <span class="glyphicon glyphicon-edit" style="font-size:15px;"></span>
                                 </a>
                                 <a href="#" class="prjdelete btn btn-warning" title="Delete Application" >
@@ -129,7 +129,7 @@
         </table>
         @*<div class="form-group">
             <div class="col-md-4 control-label" style="padding-bottom:15px;">
-            <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
+            <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Repository") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
             </div>
             </div>*@
     </div>
@@ -278,7 +278,7 @@
         //                    content: "Project Modified successfully",
         //                    type: type,
         //                    onAction: function () {
-        //                        window.location.href = '@Url.Action("Project","Checklist")';
+        //                        window.location.href = '@Url.Action("Application","Application")';
         //                    }
         //                });
         //        })

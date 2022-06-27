@@ -62,14 +62,14 @@
 <body>
     <div class="container-fluid" style="margin-left:15px;">
         <!--<div class="imglogo" style="display:flex;">-->
-        @*<img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />*@
+        @*<img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Repository") + "'");" />*@
         <!--<div class=" col-lg-8" style="padding-top:40px">
                 <center><h2><b>User Management</b></h2></center>
             </div>
         </div>-->
         <div id="divbreadcrumb" style="padding-bottom:5px;">
             <ol class="breadcrumb breadcrumb-arrow">
-                <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                <li class="homelink"><a href="~/Repository/Dashboard">Home</a></li>
                 <li class=""><a href="#">Settings</a></li>
                 <li class="active"><span>Users</span></li>
             </ol>
@@ -142,7 +142,7 @@
         </table>
         @*<div class="form-group">
         <div class="col-md-4 control-label" style="padding-bottom:15px;">
-        <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
+        <button type="button" id="btnBack" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Repository") + "'");" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-left"></span> BACK</button>
         </div>
         </div>*@
     </div>
@@ -239,7 +239,7 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">Module Access</label>
                                 <div class="col-md-4 inputGroupContainer">
-                                    @foreach (var mod in Model.Menu.Menu.Select((value, i) => new { i, value }))
+                                    @foreach (var mod in Model.moduleAccess.Select((value, i) => new { i, value }))
                                     {
                                         if (mod.value.Name == "Repository")
                                         {
@@ -396,7 +396,7 @@
                 content: data.responseMessage,
                 type: type,
                 onAction: function() {
-                    window.location.href = '@Url.Action("ListUser","Login")';
+                    window.location.href = '@Url.Action("Users","Login")';
                 }
             });
         })

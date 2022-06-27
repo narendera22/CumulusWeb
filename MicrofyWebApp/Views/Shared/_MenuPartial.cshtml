@@ -3,7 +3,7 @@
 @using Newtonsoft.Json
 @using MicrofyWebApp.Models;
 @{
-    PhaseViewModel config = new PhaseViewModel();
+    MenuViewModel config = new MenuViewModel();
     var selectedphase = HttpContextAccessor.HttpContext.Session.GetString("_selPhase");
     var selectedsubphase = HttpContextAccessor.HttpContext.Session.GetString("_selSubPhase");
     var actstatus = string.Empty;
@@ -26,7 +26,7 @@
     @if (HttpContextAccessor.HttpContext.Session.GetString("_config") != null)
     {
         var json = HttpContextAccessor.HttpContext.Session.GetString("_config");
-        config = JsonConvert.DeserializeObject<PhaseViewModel>(json);
+        config = JsonConvert.DeserializeObject<MenuViewModel>(json);
     }
 
     <section class="app">
@@ -35,82 +35,83 @@
             <nav class="sidebar-nav">
                 <div class="sidebar-header">
                     <div class="imglogo">
-                        <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");" />
+                        <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Repository") + "'");" />
                     </div>
                 </div>
-               
+
 
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">  <img id="logo" alt="Logo" src="~/Image/MenuIcon/Repos.png" style="width:50px;" />  <span>Repository</span><i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i></a>
-                        <ul class="submenu dropdown-menu" style="display:none;">
-                            <li><a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Home") + "'");">Dashboard </a></li>
-                            @for (int j = 0; j < config.phases.Count; j++)
+                    @*<li><a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Repository") + "'");">Dashboard </a></li>*@
+
+                    @foreach (var menu in config.Menu)
+                    {
+                        <li class="nav-item">
+                            @if (menu.MenuLevel1 != null)
                             {
-                                actstatus = string.Empty;
-                                if (selectedphase == config.phases[j].name)
-                                {
-                                    actstatus = "active";
-                                }
-
-                                <li>
-                                    <div class="anchor-link @actstatus">
-                                        @if (config.phases[j].subPhase != null)
-                                        {
-                                            <a class="nav-link dropdown-toggle menu" href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=config.phases[j].subPhase.FirstOrDefault() }) + "'");" data-toggle="collapse" aria-expanded="false">@config.phases[j].name</a>
-                                        }
-                                        else
-                                        {
-                                            <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=string.Empty }) + "'");">@config.phases[j].name</a>
-                                        }
-                                    </div>
-                                    @if (config.phases[j].subPhase != null)
-                                    {
-                                        var subphase = config.phases[j].subPhase;
-                                        <ul class="collapse list-unstyled show" id="@config.phases[j].name">
-                                            @for (int i = 0; i < subphase.Count; i++)
-                                            {
-                                                actstatus = string.Empty;
-                                                if (selectedphase == config.phases[j].name && selectedsubphase == subphase[i])
-                                                {
-                                                    actstatus = "active";
-                                                }
-                                                <li class="subanchor-link @actstatus">
-                                                    <a class="nav-link" href="#" onclick="@(" window.location.href='" + @Url.Action("Repository", "Home", new { Phase=config.phases[j].name,SubPhase=subphase[i] }) + "' ");">@subphase[i]</a>
-                                                </li>
-                                            }
-                                        </ul>
-
-                                    }
-
-                                </li>
+                                <a class="nav-link" href="#">  <img id="logo" alt="Logo" src="~/Image/MenuIcon/@menu.icon" style="width:50px;" />  <span>@menu.Name</span><i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i></a>
                             }
-                        </ul>
-                    </li>
+                            else
+                            {
+                                <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name) + "'");">  <img id="logo" alt="Logo" src="~/Image/MenuIcon/@menu.icon" style="width:50px;" />  <span>@menu.Name</span><i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i></a>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("Project", "Checklist") + "'");"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Checklist.jpg" style="width:45px;"  />  <span class="">Application</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
-                       
-                    </li>
-                   
-                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/activity.png" style="width:50px;"  />  <span class="">Activity</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
-                      
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> <img id="logo" alt="Logo" src="~/Image/MenuIcon/Settings.jpg" style="width:50px;" />  <span class="">Settings</span> <i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i> </a>
-                        <ul class="submenu dropdown-menu" style="display:none;">
-                            @*<li>
-                                <a class="dropdown-item" href="~/Login/MyProfile"> My Profile</a>
-                            </li>*@
-                            <li>
-                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ListUser", "Login") + "'");"> Users</a>
-                            </li>
-                            @*<li>
-                                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("ActivityDetails", "Home") + "'");"> Activity</a>
-                            </li>*@
-                        </ul>
-                    </li>
+                            }
+                            @if (menu.MenuLevel1 != null)
+                            {
+                                <ul class="submenu dropdown-menu" style="display:none;">
+
+                                    @for (int j = 0; j < menu.MenuLevel1.Count; j++)
+                                    {
+                                        if (menu.MenuLevel1[j].Visible == "True")
+                                        {
+                                            actstatus = string.Empty;
+                                            if (selectedphase == menu.MenuLevel1[j].Name)
+                                            {
+                                                actstatus = "active";
+                                            }
+
+                                            <li>
+                                                <div class="anchor-link @actstatus">
+                                                    @if (menu.MenuLevel1[j].MenuLevel2 != null)
+                                                    {
+                                                        <a class="nav-link dropdown-toggle menu" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name, new { menulevel1=menu.MenuLevel1[j].Name,menulevel2=menu.MenuLevel1[j].MenuLevel2.FirstOrDefault().Name }) + "'");" href="#" data-toggle="collapse" aria-expanded="false">@menu.MenuLevel1[j].Name</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name, new { menulevel1=menu.MenuLevel1[j].Name,menulevel2=string.Empty }) + "'");">@menu.MenuLevel1[j].Name</a>
+                                                    }
+                                                </div>
+                                                @if (menu.MenuLevel1[j].MenuLevel2 != null)
+                                                {
+                                                    var childmenu = menu.MenuLevel1[j].MenuLevel2;
+                                                    <ul class="collapse list-unstyled show" id="@menu.MenuLevel1[j].Name">
+                                                        @for (int i = 0; i < childmenu.Count; i++)
+                                                        {
+                                                            if (childmenu[i].Visible == "True")
+                                                            {
+                                                                actstatus = string.Empty;
+                                                                if (selectedphase == menu.MenuLevel1[j].Name && selectedsubphase == childmenu[i].Name)
+                                                                {
+                                                                    actstatus = "active";
+                                                                }
+                                                                <li class="subanchor-link @actstatus">
+                                                                    <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name, new { menulevel1=menu.MenuLevel1[j].Name,menulevel2=childmenu[i].Name }) + "'");">@childmenu[i].Name</a>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    </ul>
+
+                                                }
+
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+
+                            }
+                        </li>
+                    }
+
+
                 </ul>
             </nav>
         </aside>
@@ -119,36 +120,9 @@
 
 </nav>
 <script type="text/javascript">
-    //document.addEventListener("DOMContentLoaded", function () {
-    //    // make it as accordion for smaller screens
-    //    //if (window.innerWidth < 992) {
 
-    //    document.querySelectorAll('.sidebar .nav-link').forEach(function (element) {
-    //        element.addEventListener('click', function (e) {
-    //            debugger;
-    //            let nextEl = element.nextElementSibling;
-    //            let parentEl = element.parentElement;
-    //            let allSubmenus_array = parentEl.querySelectorAll('.submenu');
-    //            parentEl.querySelectorAll('.nav-link a').forEach(function (ele) {
-    //                element.className = ".nav-link";
-    //            });
-    //            if (nextEl && nextEl.classList.contains('submenu')) {
-    //                e.preventDefault();
-    //                if (nextEl.style.display == 'block') {
-    //                    element.className = ".nav-link";
-    //                    nextEl.style.display = 'none';
-    //                } else {
-    //                    element.className = "active";
-    //                    nextEl.style.display = 'block';
-    //                }
-    //            }
-    //        });
-    //    })
-    //    //}
-    //    // end if innerWidth
-    //});
-    $(document).ready(function () {
-        $(".nav-link").on("click", function (e) {
+    $(document).ready(function() {
+        $(".nav-link").on("click", function(e) {
             debugger;
             e.preventDefault();
 

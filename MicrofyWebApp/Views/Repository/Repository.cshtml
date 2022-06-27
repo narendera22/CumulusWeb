@@ -35,15 +35,15 @@
 <div class="col-md-12" style="padding-left: 15px;">
     <div id="divbreadcrumb">
         <ol class="breadcrumb breadcrumb-arrow">
-            <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
-            <li class="homelink"><a href="~/Home/Dashboard">Repository</a></li>
+            <li class="homelink"><a href="~/Repository/Dashboard">Home</a></li>
+            <li class="homelink"><a href="~/Repository/Dashboard">Repository</a></li>
             @if (Model.selectedSubPhases == null || Model.selectedSubPhases == string.Empty)
             {
                 <li class="active"><span>@Model.selectedPhase</span></li>
             }
             else
             {
-                <li class="homelink"><a href="~/Home/Dashboard">@Model.selectedPhase</a></li>
+                <li class="homelink"><a href="~/Repository/Dashboard">@Model.selectedPhase</a></li>
                 <li class="active"><span>@Model.selectedSubPhases</span></li>
             }
 
@@ -246,7 +246,7 @@
                                                 <div class="float-right" style="display:flex;">
                                                     <div>
 
-                                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = doc.Decodedurl, phase=p.phase,subphase=string.Empty }) + "'");">
+                                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = doc.Decodedurl, phase=p.phase,subphase=string.Empty }) + "'");">
                                                             <i class="fa fa-download" aria-hidden="true"></i>  Download
                                                         </button>
                                                     </div>
@@ -444,7 +444,7 @@
                                                         <div class="float-right" style="display:flex;">
                                                             <div>
 
-                                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = subdoc.Decodedurl, phase=p.phase,subphase=sub.name}) + "'");">
+                                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = subdoc.Decodedurl, phase=p.phase,subphase=sub.name}) + "'");">
                                                                     <i class="fa fa-download" aria-hidden="true"></i>  Download
                                                                 </button>
                                                             </div>

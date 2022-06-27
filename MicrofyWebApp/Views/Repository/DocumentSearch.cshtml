@@ -39,12 +39,12 @@
 
                                     @if (p.subPhase != "")
                                     {
-                                        <li><a href="#" title="Phase" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=p.phase,SubPhase=p.subPhase }) + "'");">@p.phase</a></li>
-                                        <li><a href="#" title="Sub Phase" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=p.phase,SubPhase=p.subPhase }) + "'");">@p.subPhase</a></li>
+                                        <li><a href="#" title="Phase" onclick="@("window.location.href='" + @Url.Action("Repository","Repository", new { Phase=p.phase,SubPhase=p.subPhase }) + "'");">@p.phase</a></li>
+                                        <li><a href="#" title="Sub Phase" onclick="@("window.location.href='" + @Url.Action("Repository", "Repository", new { Phase=p.phase,SubPhase=p.subPhase }) + "'");">@p.subPhase</a></li>
                                     }
                                     else
                                     {
-                                        <li><a href="#" title="Phase" onclick="@("window.location.href='" + @Url.Action("Repository", "Home", new { Phase=p.phase,SubPhase=string.Empty }) + "'");">@p.phase</a></li>
+                                        <li><a href="#" title="Phase" onclick="@("window.location.href='" + @Url.Action("Repository", "Repository", new { Phase=p.phase,SubPhase=string.Empty }) + "'");">@p.phase</a></li>
                                     }
                                 </ul>
                             </div>
@@ -115,7 +115,7 @@
                                         }
                                     }
 
-                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Home", new { url = p.documentUrl, phase=p.phase,subphase=p.subPhase }) + "'");">
+                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = p.documentUrl, phase=p.phase,subphase=p.subPhase }) + "'");">
                                         <i class="fa fa-download" aria-hidden="true"></i>  Download
                                     </button>
                                 </div>

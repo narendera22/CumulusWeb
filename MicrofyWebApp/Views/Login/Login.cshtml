@@ -27,7 +27,7 @@
             </div>
         </div>*@
 
-    @*@using (Html.BeginForm("Dashboard", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) *@
+    @*@using (Html.BeginForm("Dashboard", "Repository", FormMethod.Post, new { enctype = "multipart/form-data" })) *@
     @*<input type="text" id="txtuname" placeholder="Enter Username" name="uname" required><br>
         <input type="password" id="txtpwd" placeholder="Enter Password" name="psw" required><br>*@
 
@@ -95,7 +95,7 @@
                 $.post(redirecturl, loginDetails, function (data) {
                     if (data.statusCode == true) {
                         $('#ResponseMessage').html("");
-                        window.location.href = '@Url.Action("Dashboard", "Home")';
+                        window.location.href = '@Url.Action("Dashboard", "Repository")';
                     }
                     else {
                         $('#ResponseMessage').html(data.responseMessage);

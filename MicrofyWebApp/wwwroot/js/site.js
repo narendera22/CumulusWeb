@@ -99,7 +99,7 @@ function GetActivePhase() {
 function Getdocuments(phase, subphase) {
     $.ajax({
         type: "GET",
-        url: "/Home/GetDocumentRepository",
+        url: "/Repository/GetDocumentRepository",
         data: { "Phase": phase, "SubPhase": subphase },
         contentType: "application/json; charset=utf-8",
         //dataType: 'json',
@@ -186,7 +186,7 @@ function DocumentSave(url, description) {
         "URL": url,
         "Tags": tag
     }
-    var redirecturl = "/Home/CreateDocument";
+    var redirecturl = "/Repository/CreateDocument";
     $.post(redirecturl, documentDet, function (data) {
         //AlertMessage("success", "Document uploaded successfully");
         $.alert({
@@ -231,7 +231,7 @@ function UploadDocument(Documentname) {
 
     $.ajax({
         type: "GET",
-        url: "/Home/GetUploadPartial",
+        url: "/Repository/GetUploadPartial",
         data: { "phase": phase, "subphase": subphase, "documentname": Documentname },
         contentType: "application/json; charset=utf-8",
         //dataType: 'json',
@@ -255,7 +255,7 @@ function UploadNewDocument() {
 
     $.ajax({
         type: "GET",
-        url: "/Home/GetNewUploadPartial",
+        url: "/Repository/GetNewUploadPartial",
         data: {},
         contentType: "application/json; charset=utf-8",
         //dataType: 'json',
@@ -282,11 +282,11 @@ function SearchDocument() {
     htmltemplate = "";
     //$('#divbreadcrumb').find('ol.breadcrumb').append(htmltemplate);
     var search = $('#search').val();
-    window.location.href = "/Home/DocumentSearch?Search=" + search;
+    window.location.href = "/Repository/DocumentSearch?Search=" + search;
 
     //$.ajax({
     //    type: "GET",
-    //    url: "/Home/SearchDocumentPartial",
+    //    url: "/Repository/SearchDocumentPartial",
     //    data: { "Search": search },
     //    contentType: "application/json; charset=utf-8",
     //    //dataType: 'json',
@@ -457,7 +457,7 @@ function UpdateMetadata(displaytags, usertags, filename) {
         "subphase": subphase
     };
 
-    var redirecturl = "/Home/UpdateMetadata";
+    var redirecturl = "/Repository/UpdateMetadata";
     $.post(redirecturl, metadata, function (data) {
 
     });
@@ -483,7 +483,7 @@ function DeleteDocument(filename, documentname) {
                     "subphase": subphase
                 };
 
-                var redirecturl = "/Home/DeleteDocument";
+                var redirecturl = "/Repository/DeleteDocument";
                 $.post(redirecturl, deletedoc, function (data) {
                     $.alert({
                         title: 'Success!!',
@@ -633,7 +633,7 @@ $(function () {
                 content: content,
                 type: type,
                 onAction: function () {
-                    window.location.href = '/Login/ListUser';
+                    window.location.href = '/Settings/Users';
                 }
             });
         })
@@ -676,7 +676,7 @@ $(function () {
                     content: content,
                     type: type,
                     onAction: function () {
-                        window.location.href = '/Login/ListUser';
+                        window.location.href = '/Settings/Users';
                     }
                 });
             },
@@ -741,7 +741,7 @@ function Viewprj() {
 function funcRedirect() {
     var search = $('#search').val();
     if (search == "") {
-        window.location.href = "/Home/Dashboard";
+        window.location.href = "/Repository/Dashboard";
     }
 }
 
@@ -764,7 +764,7 @@ function GetAllValues() {
                 content: Message,
                 type: type,
                 onAction: function () {
-                    window.location.href = '/Checklist/ChecklistBestPractices?projectname=' + projectname;
+                    window.location.href = '/Application/ChecklistBestPractices?projectname=' + projectname;
                 }
             });
         }
@@ -970,7 +970,7 @@ function buildFileInput(file, folder) {
     var fileurl = "";
     if (file != null) {
         $.ajax({
-            url: "/Home/Upload",
+            url: "/Repository/Upload",
             type: "POST",
             data: function () {
                 var data = new FormData();
@@ -1045,14 +1045,14 @@ function LoadService(NavParam) {
         "ProductCategory": json.prevProdCat,
         "Service": json.prevService
     };
-    var redirecturl = "/Checklist/InsertBestPractices";
+    var redirecturl = "/Application/InsertBestPractices";
     $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
 
     });
     $.ajax({
         async: false,
         type: "GET",
-        url: "/Checklist/LoadService",
+        url: "/Application/LoadService",
         data: { "productcat": json.currentProdCat, "service": json.currentService, "projectname": json.projectName },
         contentType: "application/json; charset=utf-8",
         success: function (data) {

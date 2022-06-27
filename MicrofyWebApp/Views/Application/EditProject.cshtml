@@ -16,6 +16,11 @@
         flag = "Update";
     }
 }
+<style type="text/css">
+.dropdown-menu.show {
+    margin-left: -250px;
+}    
+</style>
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,7 +76,7 @@
 
         <div id="divbreadcrumb" style="padding-bottom:5px;">
             <ol class="breadcrumb breadcrumb-arrow">
-                <li class="homelink"><a href="~/Home/Dashboard">Home</a></li>
+                <li class="homelink"><a href="~/Repository/Dashboard">Home</a></li>
                 <li class="active"><span>Application</span></li>
             </ol>
         </div>
@@ -218,7 +223,7 @@
                    "Users": users,
                    "flag":$(this).data("flag")
                    }
-                   var redirecturl = "/Checklist/UpdateProject";
+                   var redirecturl = "/Application/UpdateProject";
                $.post(redirecturl, { "project": ProjectDetails }, function (data) {
                    var title = "";
                    var type = "";
@@ -238,7 +243,7 @@
                            content: content,
                            type: type,
                            onAction: function () {
-                               window.location.href = '@Url.Action("Project","Checklist")';
+                               window.location.href = '@Url.Action("Application","Application")';
                            }
                        });
                })
