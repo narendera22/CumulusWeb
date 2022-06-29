@@ -9,7 +9,7 @@
 
 @foreach (var inp in Model.BestPractices)
 {
-    foreach (var ipsection in inp.Section.Select((value, i) => new { i, value }))
+    foreach (var ipsection in inp.BestPractices.Select((value, i) => new { i, value }))
     {
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
@@ -22,7 +22,7 @@
                 </div>
                 <div id="@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                     <div class="panel-body">
-                        @foreach (var ipsec in inp.Section)
+                        @foreach (var ipsec in inp.BestPractices)
                         {
                             if (ipsec.ImpactArea == ipsection.value.ImpactArea)
                             {

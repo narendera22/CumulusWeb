@@ -4,7 +4,11 @@
 <link rel="stylesheet" href="~/css/audit.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-
+<style type="text/css">
+    .dropdown-menu.show {
+        margin-left: -250px;
+    }
+</style>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -77,7 +81,7 @@
                                                         </label>
                                                         <div class="col-md-9" style="padding-left: 0px;">
                                                             <textarea class="summernote" required name="CustomerOverview" rows="4" cols="50" placeholder="Enter Customer Overview">
-                                                                                                                                                                                                                                </textarea>
+                                                                                                                                                                                                                                        </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-12 row">
@@ -86,7 +90,7 @@
                                                         </label>
                                                         <div class="col-md-9" style="padding-left: 0px;">
                                                             <textarea class="summernote" required name="ProjectOverview" rows="4" cols="50" placeholder="Enter Project Overview">
-                                                                                                                                                                                                                                </textarea>
+                                                                                                                                                                                                                                        </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-6 row">
@@ -141,7 +145,7 @@
                                                         </label>
                                                         <div class="col-md-9" style="padding-left: 0px;">
                                                             <textarea class="summernote" required name="TechnologiesInUse" rows="4" cols="50" placeholder="Enter Technologies in Use">
-                                                                                                                                                                                                                                </textarea>
+                                                                                                                                                                                                                                        </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-12 row">
@@ -214,8 +218,8 @@
                                                     <textarea class="summernote" placeholder="Enter Observation" id="observation" name="Observation" type="text"></textarea>
                                                 </div>
                                                 @* <a href="#" class="add" title="Add Service" style="padding:5px; display:block;" onclick="addobservation(); return false;">
-                                                    <i class="fas fa-plus"></i>
-                                                    </a>*@
+                                                <i class="fas fa-plus"></i>
+                                                </a>*@
                                             </div>
                                             <div class="col-md-12 row" style="padding-bottom: 5px;">
                                                 <div class="col-md-6"></div>
@@ -297,16 +301,16 @@
                                                 </div>
                                             </div>
                                             @*<div class="form-group col-md-12 row">
-                                                <div class="col-md-5 ml-4">
-                                                <input class="form-control obserdet" placeholder="Enter Concern" id="concern" name="Concern" type="text">
-                                                </div>
-                                                <div class="col-md-5 ml-4">
-                                                <input class="form-control obserdet" placeholder="Enter Recommended Mitigation" id="RecommendedMitigation" name="RecommendedMitigation" type="text">
-                                                </div>
-                                                <a href="#" class="add" title="Add Action Item" style="padding:5px; display:block;" onclick="addActionItem(); return false;">
-                                                <i class="fas fa-plus"></i>
-                                                </a>
-                                                </div>*@
+                                            <div class="col-md-5 ml-4">
+                                            <input class="form-control obserdet" placeholder="Enter Concern" id="concern" name="Concern" type="text">
+                                            </div>
+                                            <div class="col-md-5 ml-4">
+                                            <input class="form-control obserdet" placeholder="Enter Recommended Mitigation" id="RecommendedMitigation" name="RecommendedMitigation" type="text">
+                                            </div>
+                                            <a href="#" class="add" title="Add Action Item" style="padding:5px; display:block;" onclick="addActionItem(); return false;">
+                                            <i class="fas fa-plus"></i>
+                                            </a>
+                                            </div>*@
                                             <div class="col-md-12 row" style="padding-bottom: 5px;">
                                                 <div class="col-md-6"></div>
                                                 <div class="col-md-6">
@@ -370,46 +374,56 @@
         </div>
         @*<div class="lds-dual-ring" id=loader></div>*@
         @* <div id='loader' style='display: none;'>
-            <img src="~/Image/loading.gif" width='32px' height='32px'>
-            </div>*@
+        <img src="~/Image/loading.gif" width='32px' height='32px'>
+        </div>*@
         <div class="loading" style="display:none;">Loading&#8230;</div>
     </div>
 
 </body>
 </html>
 @section scripts{
-<script type="text/javascript">
-     var service = @Html.Raw(Json.Serialize(Model.Configuration));
-    $(document).ready(function(){
-       $("#prodcat").change(function () {
-            var end = this.value;
-            var val = $('#prodcat').val();
-            var config=service;
-            $('#ddlserv').empty()
-            if(val=="Select"){
-                $('#divserv').hide();
-            }
-            for (var i=0;i<config.length;i++){
-                if(val==config[i].productCategory){
-                    for(var j=0;j<config[i].services.length;j++){
-                        if(config[i].services[j].fileName!=""){
-                        jQuery('#ddlserv').append(jQuery("<option></option>").val(config[i].services[j].name).text(config[i].services[j].name));
-                        }
+    <script type="text/javascript">
+        //var service = @Html.Raw(Json.Serialize(Model.Configuration));
+        $(document).ready(function() {
+            $("#prodcat").change(function() {
+                var end = this.value;
+                var val = $('#prodcat').val();
+                var config;
+                $.ajax({
+                    async: false,
+                    type: "GET",
+                    url: "/Application/GetServiceByProductCategory",
+                    data: { "prodcat": val },
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data) {
+                        config = data;
+                    },
+                    error: function(data) {
+                        console.log(JSON.stringify(data));
                     }
-                    $("#ddlserv.multiselect").multiselect('destroy');
-                    $("#ddlserv.multiselect").multiselect({
-                        includeSelectAllOption: true
-                    });
-                    $('#divserv').show();
+                });
+                $('#ddlserv').empty()
+                if (val == "Select") {
+                    $('#divserv').hide();
                 }
-             }
+                var serviceslist = $.parseJSON(config);
+                for (var i = 0; i < serviceslist.services.length; i++) {
+                    jQuery('#ddlserv').append(jQuery("<option></option>").val(serviceslist.services[i].serviceName).text(serviceslist.services[i].serviceName));
+                }
+                $("#ddlserv.multiselect").multiselect('destroy');
+                $("#ddlserv.multiselect").multiselect({
+                    includeSelectAllOption: true
+                });
+                $('#divserv').show();
+            });
         });
-    });
-     function addservices(){
-        var pdcat=$('#prodcat').val();
-        var ser=$('#ddlserv').val();
-         var rowctr = $("#tbservice").rowCount();
-         var lasttr = 0;
+
+
+        function addservices() {
+            var pdcat = $('#prodcat').val();
+            var ser = $('#ddlserv').val();
+            var rowctr = $("#tbservice").rowCount();
+            var lasttr = 0;
             if (rowctr <= 0) {
                 lasttr = 1;
             }
@@ -417,7 +431,7 @@
                 lasttr = $("#tbservice").find("tr").last().data('row');
                 lasttr = lasttr + 1;
             }
-          var tablevalues = "<tr data-row='" + lasttr + "'>";
+            var tablevalues = "<tr data-row='" + lasttr + "'>";
             tablevalues += "<td name='ProductCategory'>" + pdcat + "</td>";
             tablevalues += "<td name='Services'>" + ser + "</td>";
             tablevalues += '<td><a href="" class="delete"  onclick="fndelete(this);return false;"><i class="fa fa-trash" style="font-size:18px"></i></a></td>';
@@ -426,13 +440,13 @@
             $("#tbservice").find('tbody').append(tablevalues);
             $('#prodcat').val("Select");
             $('#divserv').hide();
-     }
+        }
 
-     function addobservation(){
-        var impactarea=$('#impactarea').val();
-        var observation=$('#observation').val();
-         var rowctr = $("#tbobserv").rowCount();
-         var lasttr = 0;
+        function addobservation() {
+            var impactarea = $('#impactarea').val();
+            var observation = $('#observation').val();
+            var rowctr = $("#tbobserv").rowCount();
+            var lasttr = 0;
             if (rowctr <= 0) {
                 lasttr = 1;
             }
@@ -440,7 +454,7 @@
                 lasttr = $("#tbobserv").find("tr").last().data('row');
                 lasttr = lasttr + 1;
             }
-          var tablevalues = "<tr data-row='" + lasttr + "'>";
+            var tablevalues = "<tr data-row='" + lasttr + "'>";
             tablevalues += "<td name='ImpactArea'>" + impactarea + "</td>";
             tablevalues += "<td name='Observation'>" + observation + "</td>";
             tablevalues += '<td><a href="" class="delete"  onclick="fndelete(this);return false;"><i class="fa fa-trash" style="font-size:18px"></i></a></td>';
@@ -449,14 +463,14 @@
             $("#tbobserv").find('tbody').append(tablevalues);
             $('#impactarea').val("");
             $('#observation').summernote('code', '');
-     }
-      function addActionItem(){
-        var impactarea=$('#ImpactArea').val();
-        var Severity=$('#Severity').val();
-        var concern=$('#concern').val();
-        var RecommendedMitigation=$('#RecommendedMitigation').val();
-         var rowctr = $("#tbactionitems").rowCount();
-         var lasttr = 0;
+        }
+        function addActionItem() {
+            var impactarea = $('#ImpactArea').val();
+            var Severity = $('#Severity').val();
+            var concern = $('#concern').val();
+            var RecommendedMitigation = $('#RecommendedMitigation').val();
+            var rowctr = $("#tbactionitems").rowCount();
+            var lasttr = 0;
             if (rowctr <= 0) {
                 lasttr = 1;
             }
@@ -464,7 +478,7 @@
                 lasttr = $("#tbactionitems").find("tr").last().data('row');
                 lasttr = lasttr + 1;
             }
-          var tablevalues = "<tr data-row='" + lasttr + "'>";
+            var tablevalues = "<tr data-row='" + lasttr + "'>";
             tablevalues += "<td name='ImpactArea'>" + impactarea + "</td>";
             tablevalues += "<td name='Severity'>" + Severity + "</td>";
             tablevalues += "<td name='Concern'>" + concern + "</td>";
@@ -478,251 +492,251 @@
             $('#concern').summernote('code', '')
             $('#RecommendedMitigation').summernote('code', '')
 
-     }
+        }
 
         function fndelete(e) {
             $(e).closest("tr").remove();
             return false;
         }
-</script>
+    </script>
 }
-<script type="text/javascript">
-    function Loadchecklist(projectname){
+    <script type="text/javascript">
+        function Loadchecklist(projectname) {
 
-         $.ajax({
-            async: false,
-            type: "GET",
-            url: "/Checklist/LoadChecklist",
-            data: { "projectname": projectname },
-            contentType: "application/json; charset=utf-8",
-            beforeSend: function(){
-                   // Show image container
-              $("div.loading").show();
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: "/Application/LoadChecklist",
+                data: { "projectname": projectname },
+                contentType: "application/json; charset=utf-8",
+                beforeSend: function() {
+                    // Show image container
+                    $("div.loading").show();
 
-               },
-            success: function (data) {
-                $("#ChecklistServices").html(data);
-            },
-            error: function (data) {
-                console.log(JSON.stringify(data));
-            },
-            complete:function(data){
-            // Hide image container
-            $("div.loading").hide();
+                },
+                success: function(data) {
+                    $("#ChecklistServices").html(data);
+                },
+                error: function(data) {
+                    console.log(JSON.stringify(data));
+                },
+                complete: function(data) {
+                    // Hide image container
+                    $("div.loading").hide();
 
-           }
-        });
-        return false;
-    }
-
-     function LoadSummary(projectname){
-
-         $.ajax({
-            async: false,
-            type: "GET",
-            url: "/Checklist/LoadSummary",
-            data: { "projectname": projectname },
-            contentType: "application/json; charset=utf-8",
-             beforeSend: function(){
-                   // Show image container
-             $("div.loading").show();
-
-               },
-            success: function (data) {
-                $("#Summary").html(data);
-            },
-            error: function (data) {
-                console.log(JSON.stringify(data));
-            },
-            complete:function(data){
-            // Hide image container
-            $("div.loading").hide();
-
-           }
-        });
-        return false;
-    }
-
-</script>
-<script type="text/javascript">
-
-    $(document).ready(function(){
-
-       var current_fs, next_fs, previous_fs; //fieldsets
-       var opacity;
-      $(".submit").click(function(){
-              $("div.loading").show();
-            current_fs = $(this).parent();
-            next_fs = $(this).parent().next();
-           var next_divname=$(next_fs).children().attr('name');
-
-           var inputdiv=$(this).parent().children().attr('id');
-           var divname=$(this).parent().children().attr('name');
-           var projectname=$('#'+inputdiv).data('projectname');
-
-            var actionitem=buildProjectjson($('#'+inputdiv));
-            var dataele = {
-            "ActionItems":actionitem.ActionItems,
-            "projectname":projectname,
-            "Status":"Completed"
-            }
-            var redirecturl =  "/Checklist/InsertChecklist";
-            $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
-                   LoadSummary(projectname);
-                });
-           $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
-
-           //show the next fieldset
-           next_fs.show();
-           //hide the current fieldset with style
-           current_fs.animate({opacity: 0}, {
-               step: function(now) {
-                   // for making fielset appear animation
-                   opacity = 1 - now;
-
-                   current_fs.css({
-                       'display': 'none',
-                       'position': 'relative'
-                   });
-                   next_fs.css({'opacity': opacity});
-               },
-               duration: 600
-           });
-
-            return false;
-        });
-
-
-       $(".next").click(function(){
-           current_fs = $(this).parent();
-           next_fs = $(this).parent().next();
-           var next_divname=$(next_fs).children().attr('name');
-
-           var inputdiv=$(this).parent().children().attr('id');
-           var divname=$(this).parent().children().attr('name');
-           var projectname=$('#'+inputdiv).data('projectname');
-
-           if(divname=="Project Details"){
-              $("div.loading").show();
-
-               var projdet=buildProjectjson($('#'+inputdiv));
-               var dataele = {
-                "ProjectDetails":projdet,
-                "projectname":projdet.ProjectName,
-                "Status":"InProgress"
                 }
-               var redirecturl =  "/Checklist/InsertChecklist";
-                $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
-                        if(next_divname=="Checklist Services"){
+            });
+            return false;
+        }
+
+        function LoadSummary(projectname) {
+
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: "/Application/LoadSummary",
+                data: { "projectname": projectname },
+                contentType: "application/json; charset=utf-8",
+                beforeSend: function() {
+                    // Show image container
+                    $("div.loading").show();
+
+                },
+                success: function(data) {
+                    $("#Summary").html(data);
+                },
+                error: function(data) {
+                    console.log(JSON.stringify(data));
+                },
+                complete: function(data) {
+                    // Hide image container
+                    $("div.loading").hide();
+
+                }
+            });
+            return false;
+        }
+
+    </script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            var current_fs, next_fs, previous_fs; //fieldsets
+            var opacity;
+            $(".submit").click(function() {
+                $("div.loading").show();
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
+                var next_divname = $(next_fs).children().attr('name');
+
+                var inputdiv = $(this).parent().children().attr('id');
+                var divname = $(this).parent().children().attr('name');
+                var projectname = $('#' + inputdiv).data('projectname');
+
+                var actionitem = buildProjectjson($('#' + inputdiv));
+                var dataele = {
+                    "ActionItems": actionitem.ActionItems,
+                    "projectname": projectname,
+                    "Status": "Completed"
+                }
+                var redirecturl = "/Application/InsertChecklist";
+                $.post(redirecturl, { "data": JSON.stringify(dataele) }, function(data) {
+                    LoadSummary(projectname);
+                });
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+                //show the next fieldset
+                next_fs.show();
+                //hide the current fieldset with style
+                current_fs.animate({ opacity: 0 }, {
+                    step: function(now) {
+                        // for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        next_fs.css({ 'opacity': opacity });
+                    },
+                    duration: 600
+                });
+
+                return false;
+            });
+
+
+            $(".next").click(function() {
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
+                var next_divname = $(next_fs).children().attr('name');
+
+                var inputdiv = $(this).parent().children().attr('id');
+                var divname = $(this).parent().children().attr('name');
+                var projectname = $('#' + inputdiv).data('projectname');
+
+                if (divname == "Project Details") {
+                    $("div.loading").show();
+
+                    var projdet = buildProjectjson($('#' + inputdiv));
+                    var dataele = {
+                        "ProjectDetails": projdet,
+                        "projectname": projdet.ProjectName,
+                        "Status": "InProgress"
+                    }
+                    var redirecturl = "/Application/InsertChecklist";
+                    $.post(redirecturl, { "data": JSON.stringify(dataele) }, function(data) {
+                        if (next_divname == "Checklist Services") {
                             Loadchecklist(projdet.ProjectName);
                         }
-                   });
-           }
-           else if(divname=="Checklist Services"){
-               var checklist=$('#bestPracDiv').children(".active");
-               var divid=$(checklist).attr('id');
-               var prodcat=$(checklist).data('prodcat');
-               var services=$(checklist).data('services');
-
-               var dataele = {
-                    "Checklist": buildJsonInputData($('#' + divid)),
-                    "ProjectName": projectname,
-                    "ProductCategory": prodcat,
-                    "Service": services,
-                    "Status":"InProgress"
-                };
-                var redirecturl = "/Checklist/InsertBestPractices";
-
-                $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
-
-                });
-           }
-           else if(divname=="Observation"){
-               var observation=buildProjectjson($('#'+inputdiv));
-               var dataele = {
-                "observation":observation.Observation,
-                "projectname":projectname,
-                "Status":"InProgress"
+                    });
                 }
-               var redirecturl =  "/Checklist/InsertChecklist";
-                $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
+                else if (divname == "Checklist Services") {
+                    var checklist = $('#bestPracDiv').children(".active");
+                    var divid = $(checklist).attr('id');
+                    var prodcat = $(checklist).data('prodcat');
+                    var services = $(checklist).data('services');
 
+                    var dataele = {
+                        "Checklist": buildJsonInputData($('#' + divid)),
+                        "ProjectName": projectname,
+                        "ProductCategory": prodcat,
+                        "Service": services,
+                        "Status": "InProgress"
+                    };
+                    var redirecturl = "/Application/InsertBestPractices";
+
+                    $.post(redirecturl, { "data": JSON.stringify(dataele) }, function(data) {
+
+                    });
+                }
+                else if (divname == "Observation") {
+                    var observation = buildProjectjson($('#' + inputdiv));
+                    var dataele = {
+                        "observation": observation.Observation,
+                        "projectname": projectname,
+                        "Status": "InProgress"
+                    }
+                    var redirecturl = "/Application/InsertChecklist";
+                    $.post(redirecturl, { "data": JSON.stringify(dataele) }, function(data) {
+
+                    });
+
+                }
+                //Add Class Active
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+                //show the next fieldset
+                next_fs.show();
+                //hide the current fieldset with style
+                current_fs.animate({ opacity: 0 }, {
+                    step: function(now) {
+                        // for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        next_fs.css({ 'opacity': opacity });
+                    },
+                    duration: 600
                 });
+                return false;
+            });
 
-           }
-           //Add Class Active
-           $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+            $(".previous").click(function() {
 
-           //show the next fieldset
-           next_fs.show();
-           //hide the current fieldset with style
-          current_fs.animate({opacity: 0}, {
-               step: function(now) {
-                   // for making fielset appear animation
-                   opacity = 1 - now;
+                current_fs = $(this).parent();
+                previous_fs = $(this).parent().prev();
 
-                   current_fs.css({
-                       'display': 'none',
-                       'position': 'relative'
-                   });
-                   next_fs.css({'opacity': opacity});
-               },
-               duration: 600
-           });
-            return false;
-       });
+                //Remove class active
+                $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
 
-       $(".previous").click(function(){
+                //show the previous fieldset
+                previous_fs.show();
 
-           current_fs = $(this).parent();
-           previous_fs = $(this).parent().prev();
+                //hide the current fieldset with style
+                current_fs.animate({ opacity: 0 }, {
+                    step: function(now) {
+                        // for making fielset appear animation
+                        opacity = 1 - now;
 
-           //Remove class active
-           $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
-
-           //show the previous fieldset
-           previous_fs.show();
-
-           //hide the current fieldset with style
-           current_fs.animate({opacity: 0}, {
-               step: function(now) {
-                   // for making fielset appear animation
-                   opacity = 1 - now;
-
-                   current_fs.css({
-                       'display': 'none',
-                       'position': 'relative'
-                   });
-                   previous_fs.css({'opacity': opacity});
-               },
-               duration: 600
-           });
-       });
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        previous_fs.css({ 'opacity': opacity });
+                    },
+                    duration: 600
+                });
+            });
 
 
 
-        $('.multiselect').multiselect({
-                   includeSelectAllOption: true,maxwidth: '200px',buttonWidth: '180px'
-               });
-         $('textarea').summernote({
-           //placeholder: 'Enter Description',
-           tabsize: 2,
-           height: 100,
-           toolbar: [
-               /*['style', ['style']],*/
-               ['font', ['bold', 'italic', 'underline', 'clear']],
-               //// ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
-               ////['fontname', ['fontname']],
-               //// ['fontsize', ['fontsize']],
-               ['color', ['color']],
-               ['para', ['ul', 'ol', 'paragraph']],
-               //['height', ['height']],
-               //['table', ['table']],
-               //['insert', ['link', 'picture', 'hr']],
-               ////['view', ['fullscreen', 'codeview']],
-               ['help', ['help']]
-           ],
-       });
-       });
+            $('.multiselect').multiselect({
+                includeSelectAllOption: true, maxwidth: '200px', buttonWidth: '180px'
+            });
+            $('textarea').summernote({
+                //placeholder: 'Enter Description',
+                tabsize: 2,
+                height: 100,
+                toolbar: [
+                    /*['style', ['style']],*/
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    //// ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                    ////['fontname', ['fontname']],
+                    //// ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    //['height', ['height']],
+                    //['table', ['table']],
+                    //['insert', ['link', 'picture', 'hr']],
+                    ////['view', ['fullscreen', 'codeview']],
+                    ['help', ['help']]
+                ],
+            });
+        });
 
-</script>
+    </script>

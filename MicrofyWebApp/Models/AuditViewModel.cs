@@ -10,7 +10,7 @@ namespace MicrofyWebApp.Models
         public List<string> ListAuditor { get; set; }
         public List<ChecklistConfig> Configuration { get; set; }
         public ProjectDetails ProjectDetails { get; set; }
-        public List<BestPractices> BestPractices { get; set; }
+        public List<BestPractice> BestPractices { get; set; }
         public List<Azuretech> AzureServicesUsed { get; set; }
         public List<Observations> Observations { get; set; }
         public List<ActionItems> ActionItems { get; set; }
@@ -26,7 +26,7 @@ namespace MicrofyWebApp.Models
         public string projectname { get; set; }
         public List<Observations> observation { get; set; }
         public List<ActionItems> ActionItems { get; set; }
-        public List<BestPractices> Checklist { get; set; }
+        public List<BestPractice> Checklist { get; set; }
         public string Status { get; set; }
         public string ProductCategory { get; set; }
         public string Service { get; set; }
@@ -65,16 +65,16 @@ namespace MicrofyWebApp.Models
     public class AuditChecklistModel
     {
         public ProjectDetails ProjectDetails { get; set; }
-        public List<BestPractices> Checklist { get; set; }
+        public List<BestPractice> Checklist { get; set; }
         public List<Observations> Observations { get; set; }
         public List<ActionItems> ActionItems { get; set; }
         public string UserId { get; set; }
         public string Status { get; set; }
     }
-    public class BestPractices
+    public class BestPractice
     {
         public string Service { get; set; }
-        public List<Section> Section { get; set; }
+        public List<Section> BestPractices { get; set; }
     }
     public class Section
     {
@@ -119,5 +119,19 @@ namespace MicrofyWebApp.Models
         public string NotImplementedCount { get; set; }
         public string ObservationCount { get; set; }
         public string ActionItemsCount { get; set; }
+    }
+    public class Deliverables
+    {
+        public string Name { get; set; }
+    }
+    public class DeliverablesList
+    {
+        public List<Deliverables> Deliverables { get; set; }
+    }
+    public class ServiceResponse
+    {
+        public bool isSuccess { get; set; }
+        public string data { get; set; }
+        public string exception { get; set; }
     }
 }

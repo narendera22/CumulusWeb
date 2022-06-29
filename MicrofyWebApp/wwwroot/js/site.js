@@ -752,7 +752,7 @@ function GetAllValues() {
         "ProjectName": projectname
     };
 
-    var redirecturl = "/Checklist/InsertBestPractices";
+    var redirecturl = "/Application/InsertBestPractices";
     $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
         var title, Message, type;
         if (data.isSuccess) {
@@ -1004,7 +1004,7 @@ function removeFile(e) {
 function redirect() {
     console.log($('#projectname').val());
     var projectname = $('#projectname').val();
-    window.location.href = "/Checklist/ChecklistBestPractices?projectname=" + projectname;
+    window.location.href = "/Application/ChecklistBestPractices?projectname=" + projectname;
 
 }
 

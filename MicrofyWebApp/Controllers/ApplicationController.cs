@@ -28,8 +28,8 @@ namespace MicrofyWebApp.Controllers
         string Usercode = string.Empty;
         string userid = string.Empty;
         string bestpracFolder = string.Empty;
-        string ChecklistconfigUrl = string.Empty;
-        string ChecklistconfigCode = string.Empty;
+        string configUrl = string.Empty;
+        string configCode = string.Empty;
         string ChecklistDeliverablesfile = string.Empty;
 
         public ApplicationController(ILogger<ApplicationController> logger, IConfiguration configuration)
@@ -43,8 +43,8 @@ namespace MicrofyWebApp.Controllers
             Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
             Usercode = _configuration.GetValue<string>("Values:UsersCode");
             bestpracFolder = _configuration.GetValue<string>("Values:ServiceFolder");
-            ChecklistconfigUrl = _configuration.GetValue<string>("Values:ChecklistconfigUrl");
-            ChecklistconfigCode = _configuration.GetValue<string>("Values:ChecklistconfigCode");
+            configUrl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
+            configCode = _configuration.GetValue<string>("Values:ConfigCode");
             ChecklistDeliverablesfile = _configuration.GetValue<string>("Values:ChecklistDeliverables");
 
 
@@ -77,23 +77,22 @@ namespace MicrofyWebApp.Controllers
 
 
 
-        public string GetMasterTemplate(string mastertemplate, string foldername = null)
+        public string GetDeliverables()
         {
-            string folder = $"folder={foldername}";
-            string template = string.Empty;
-            string Requestapi = $"api/GetTemplate/{mastertemplate}?{AssetCode}&{folder}";
+            string deliverables;
+            string Requestapi = $"api/GetDeliverableListFunction?{configCode}";
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Asseturl);
+                client.BaseAddress = new Uri(configUrl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
                 HttpResponseMessage file = new HttpResponseMessage();
                 file = response.Result;
-                template = file.Content.ReadAsStringAsync().Result;
+                deliverables = file.Content.ReadAsStringAsync().Result;
             }
 
-            return template;
+            return deliverables;
         }
 
         public string GetSolutionObsDetailsAsync(string ProjectName)
@@ -155,13 +154,51 @@ namespace MicrofyWebApp.Controllers
 
             return projDet;
         }
-        public string GetChecklistConfig()
+        public string GetAzureProductsAndServicesList()
         {
             string config = string.Empty;
-            string Requestapi = $"api/GetChecklistConfig?{ChecklistconfigCode}";
+            string Requestapi = $"api/GetAzureProductsAndServicesListFunction?{configCode}";
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(ChecklistconfigUrl);
+                client.BaseAddress = new Uri(configUrl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
+                HttpResponseMessage resp = new HttpResponseMessage();
+                resp = response.Result;
+                if (resp.IsSuccessStatusCode)
+                    config = resp.Content.ReadAsStringAsync().Result;
+            }
+
+            return config;
+        }
+
+        public string GetBestPractices(string service)
+        {
+            string config = string.Empty;
+            string Requestapi = $"api/GetBestPracticesByServiceFunction/{service}?{configCode}";
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(configUrl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
+                HttpResponseMessage resp = new HttpResponseMessage();
+                resp = response.Result;
+                if (resp.IsSuccessStatusCode)
+                    config = resp.Content.ReadAsStringAsync().Result;
+            }
+
+            return config;
+        }
+
+        public string GetServiceByProductCategory(string prodcat)
+        {
+            string config = string.Empty;
+            string Requestapi = $"api/GetServiceByProductCategory/{prodcat}?{configCode}";
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(configUrl);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
@@ -176,9 +213,6 @@ namespace MicrofyWebApp.Controllers
 
 
 
-
-
-
         [HttpPost]
         public async Task<ServiceResponse> InsertBestPractices(string data)
         {
@@ -187,27 +221,14 @@ namespace MicrofyWebApp.Controllers
             ServiceResponse resp = new ServiceResponse();
             AuditViewModel audit = new AuditViewModel();
             Configurations configurations = new Configurations();
-            List<BestPractices> bplist = new List<BestPractices>();
+            List<BestPractice> bplist = new List<BestPractice>();
 
 
-            configurations = JsonConvert.DeserializeObject<Configurations>(GetChecklistConfig());
-            var configfile = string.Empty;
-            foreach (var con in configurations.Configuration)
-            {
-                if (con.ProductCategory == dataele.ProductCategory)
-                {
-                    foreach (var ser in con.Services)
-                    {
-                        if (ser.Name == dataele.Service)
-                        {
-                            configfile = ser.FileName;
-                        }
-                    }
-                }
-            }
-            BestPractices bp = new BestPractices();
-            var bestPrac = GetMasterTemplate(configfile, bestpracFolder);
-            bp = JsonConvert.DeserializeObject<BestPractices>(bestPrac);
+            configurations = JsonConvert.DeserializeObject<Configurations>(GetAzureProductsAndServicesList());
+            
+            BestPractice bp = new BestPractice();
+            var bestPrac = GetBestPractices(dataele.Service);
+            bp = JsonConvert.DeserializeObject<BestPractice>(bestPrac);
             bplist.Add(bp);
 
             string checklist = GetSolutionObsDetailsAsync(dataele.ProjectName);
@@ -221,7 +242,7 @@ namespace MicrofyWebApp.Controllers
 
             foreach (var BestPrac in bplist)
             {
-                foreach (var sec in BestPrac.Section.Where(x => x.Checklist != null).ToList())
+                foreach (var sec in BestPrac.BestPractices.Where(x => x.Checklist != null).ToList())
                 {
                     var section = from x in sec.Checklist
                                   join y in dataele.Checklist
@@ -243,7 +264,7 @@ namespace MicrofyWebApp.Controllers
 
                     if (!ser.Service.Equals(dataele.Service))
                     {
-                        BestPractices bestPractices = new BestPractices();
+                        BestPractice bestPractices = new BestPractice();
                         bestPractices = ser;
                         bplist.Add(bestPractices);
                     }
@@ -254,7 +275,7 @@ namespace MicrofyWebApp.Controllers
             auditChecklist.SolutionObservations.FirstOrDefault().Checklist = audit.BestPractices;
 
             auditChecklist.CreatedUserId = HttpContext.Session.GetString("_userId");
-            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null)
+            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null || auditChecklist.Status == "New")
                 auditChecklist.Status = dataele.Status;
             string json = JsonConvert.SerializeObject(auditChecklist);
 
@@ -278,7 +299,7 @@ namespace MicrofyWebApp.Controllers
         {
             AuditViewModel audit = new AuditViewModel();
             Configurations configurations = new Configurations();
-            configurations = JsonConvert.DeserializeObject<Configurations>(GetChecklistConfig());
+            configurations = JsonConvert.DeserializeObject<Configurations>(GetAzureProductsAndServicesList());
             audit.projectname = projectname;
             //var projdet = GetProjectDetails(projectname);
             //audit.project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
@@ -307,12 +328,11 @@ namespace MicrofyWebApp.Controllers
                     auditor.Add(usr.fullName.ToString());
                 }
             }
-            ChecklistPlanViewModel checklistPlanView = new ChecklistPlanViewModel();
-            checklistPlanView = JsonConvert.DeserializeObject<ChecklistPlanViewModel>(GetMasterTemplate(ChecklistDeliverablesfile));
 
+            var deliverables = JsonConvert.DeserializeObject<DeliverablesList>(GetDeliverables());
+            audit.Deliverables = deliverables.Deliverables;
             audit.ListUsers = users;
             audit.ListAuditor = auditor;
-            audit.Deliverables = checklistPlanView.Deliverables;
             audit.Configuration = configurations.Configuration;
             audit.project = auditChecklist;
             foreach (var solobs in auditChecklist.SolutionObservations)
@@ -479,7 +499,7 @@ namespace MicrofyWebApp.Controllers
                 }
             }
             auditChecklist.CreatedUserId = HttpContext.Session.GetString("_userId");
-            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null)
+            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null || auditChecklist.Status=="New")
                 auditChecklist.Status = dataele.Status;
             string json = JsonConvert.SerializeObject(auditChecklist);
 
@@ -519,29 +539,16 @@ namespace MicrofyWebApp.Controllers
             }
             audit.AzureServicesUsed = services;
             Configurations configurations = new Configurations();
-            List<BestPractices> bplist = new List<BestPractices>();
+            List<BestPractice> bplist = new List<BestPractice>();
 
-            configurations = JsonConvert.DeserializeObject<Configurations>(GetChecklistConfig());
+            configurations = JsonConvert.DeserializeObject<Configurations>(GetAzureProductsAndServicesList());
 
             var firstservice = audit.AzureServicesUsed.FirstOrDefault();
-            var configfile = string.Empty;
-            foreach (var con in configurations.Configuration)
-            {
-                if (con.ProductCategory == firstservice.ProductCategory)
-                {
-                    foreach (var ser in con.Services)
-                    {
-                        if (ser.Name == firstservice.Services)
-                        {
-                            configfile = ser.FileName;
-                        }
-                    }
-                }
-            }
 
-            BestPractices bp = new BestPractices();
-            var bestPrac = GetMasterTemplate(configfile, bestpracFolder);
-            bp = JsonConvert.DeserializeObject<BestPractices>(bestPrac);
+
+            BestPractice bp = new BestPractice();
+            var bestPrac = GetBestPractices(firstservice.Services);
+            bp = JsonConvert.DeserializeObject<BestPractice>(bestPrac);
             bplist.Add(bp);
             audit.BestPractices = bplist;
 
@@ -552,11 +559,11 @@ namespace MicrofyWebApp.Controllers
                 {
                     if (auditchk.Service.Equals(firstservice.Services))
                     {
-                        foreach (var auditchksec in auditchk.Section.Where(x => x.Checklist != null).ToList())
+                        foreach (var auditchksec in auditchk.BestPractices.Where(x => x.Checklist != null).ToList())
                         {
                             foreach (var BestPrac in audit.BestPractices)
                             {
-                                foreach (var sec in BestPrac.Section.Where(x => x.Checklist != null).ToList())
+                                foreach (var sec in BestPrac.BestPractices.Where(x => x.Checklist != null).ToList())
                                 {
                                     var section = from x in sec.Checklist
                                                   join y in auditchksec.Checklist
@@ -576,7 +583,7 @@ namespace MicrofyWebApp.Controllers
 
             }
 
-
+            audit.projectname = auditChecklist.ProjectName;
 
             return PartialView("VW_CHECKLIST", audit);
 
@@ -587,31 +594,17 @@ namespace MicrofyWebApp.Controllers
             ProjectViewModel auditChecklist = new ProjectViewModel();
 
             Configurations configurations = new Configurations();
-            List<BestPractices> bplist = new List<BestPractices>();
+            List<BestPractice> bplist = new List<BestPractice>();
 
             string checklist = GetSolutionObsDetailsAsync(projectname);
-            configurations = JsonConvert.DeserializeObject<Configurations>(GetChecklistConfig());
+            configurations = JsonConvert.DeserializeObject<Configurations>(GetAzureProductsAndServicesList());
             auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
 
             audit.ProjectDetails = auditChecklist.SolutionObservations.FirstOrDefault().ProjectDetails;
-            var configfile = string.Empty;
-            foreach (var con in configurations.Configuration)
-            {
-                if (con.ProductCategory == productcat)
-                {
-                    foreach (var ser in con.Services)
-                    {
-                        if (ser.Name == service)
-                        {
-                            configfile = ser.FileName;
-                        }
-                    }
-                }
-            }
-
-            BestPractices bp = new BestPractices();
-            var bestPrac = GetMasterTemplate(configfile, bestpracFolder);
-            bp = JsonConvert.DeserializeObject<BestPractices>(bestPrac);
+            
+            BestPractice bp = new BestPractice();
+            var bestPrac = GetBestPractices(service);
+            bp = JsonConvert.DeserializeObject<BestPractice>(bestPrac);
             bplist.Add(bp);
             audit.BestPractices = bplist;
 
@@ -621,11 +614,11 @@ namespace MicrofyWebApp.Controllers
                 {
                     if (auditchk.Service.Equals(service))
                     {
-                        foreach (var auditchksec in auditchk.Section.Where(x => x.Checklist != null).ToList())
+                        foreach (var auditchksec in auditchk.BestPractices.Where(x => x.Checklist != null).ToList())
                         {
                             foreach (var BestPrac in audit.BestPractices)
                             {
-                                foreach (var sec in BestPrac.Section.Where(x => x.Checklist != null).ToList())
+                                foreach (var sec in BestPrac.BestPractices.Where(x => x.Checklist != null).ToList())
                                 {
                                     var section = from x in sec.Checklist
                                                   join y in auditchksec.Checklist
@@ -663,7 +656,7 @@ namespace MicrofyWebApp.Controllers
             foreach (var sol in auditChecklist.SolutionObservations) {
                 foreach (var check in sol.Checklist)
                 {
-                    foreach (var ser in check.Section)
+                    foreach (var ser in check.BestPractices)
                     {
                         foreach (var chk in ser.Checklist.Where(q => (q.Input.Value == "Required – Implemented" || q.Input.Value == "Required – Alternative Implemented")))
                         {
@@ -673,7 +666,7 @@ namespace MicrofyWebApp.Controllers
                 }
                 foreach (var check in sol.Checklist)
                 {
-                    foreach (var ser in check.Section)
+                    foreach (var ser in check.BestPractices)
                     {
                         foreach (var chk in ser.Checklist.Where(q => q.Input.Value == "Required – Not Implemented"))
                         {

@@ -9,7 +9,7 @@ namespace MicrofyWebApp.Models
     {
         public List<projects> projects { get; set; }
         public ProjectViewModel projectServices { get; set; }
-        public List<BestPractices> BestPractices { get; set; }
+        public List<BestPractice> BestPractices { get; set; }
         public string selectedProjectname { get; set; }
         public string userRole { get; set; }
     }
@@ -19,7 +19,6 @@ namespace MicrofyWebApp.Models
     public class BestPracticesInsertModel
     {
         public ProjectViewModel Project { get; set; }
-        public List<Plan> Plans { get; set; }
         public List<Deliverables> Deliverables { get; set; }
         public string UserId { get; set; }
     }
