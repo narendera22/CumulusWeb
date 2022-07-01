@@ -139,7 +139,9 @@ namespace MicrofyWebApp.Controllers
         public string GetAllProjectDetails()
         {
             string projDet = string.Empty;
-            string Requestapi = $"api/GetAllProjects?{SolutionObserCode}";
+            string UserId = "UserId=" + HttpContext.Session.GetString("_username");
+            string UserRole = "UserRole=" + HttpContext.Session.GetString("_UserRole");
+            string Requestapi = $"api/GetAllProjects?{SolutionObserCode}&{UserId}&{UserRole}";
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(SolutionObserBaseUrl);
@@ -225,7 +227,7 @@ namespace MicrofyWebApp.Controllers
 
 
             configurations = JsonConvert.DeserializeObject<Configurations>(GetAzureProductsAndServicesList());
-            
+
             BestPractice bp = new BestPractice();
             var bestPrac = GetBestPractices(dataele.Service);
             bp = JsonConvert.DeserializeObject<BestPractice>(bestPrac);
@@ -295,6 +297,57 @@ namespace MicrofyWebApp.Controllers
             }
             return resp;
         }
+        public async Task<IActionResult> ViewAuditAsync(string projectname = null)
+        {
+            AuditViewModel audit = new AuditViewModel();
+            Configurations configurations = new Configurations();
+            configurations = JsonConvert.DeserializeObject<Configurations>(GetAzureProductsAndServicesList());
+            audit.projectname = projectname;
+            //var projdet = GetProjectDetails(projectname);
+            //audit.project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
+            ProjectViewModel auditChecklist = new ProjectViewModel();
+            string checklist = GetSolutionObsDetailsAsync(projectname);
+            if (checklist != "")
+            {
+                auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
+            }
+            else
+            {
+                auditChecklist = new ProjectViewModel();
+            }
+            UserViewModel userViewModel = new UserViewModel();
+            userViewModel = await ListAllUsersAsync();
+            List<string> users = new List<string>();
+            List<string> auditor = new List<string>();
+            if (userViewModel.usersDetails != null)
+            {
+                if (userViewModel.usersDetails.Count > 0)
+                {
+                    foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "User"))
+                    {
+                        users.Add(usr.fullName.ToString());
+                    }
+                    foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
+                    {
+                        auditor.Add(usr.fullName.ToString());
+                    }
+                }
+            }
+            var deliverables = JsonConvert.DeserializeObject<DeliverablesList>(GetDeliverables());
+            audit.Deliverables = deliverables.Deliverables;
+            audit.ListUsers = users;
+            audit.ListAuditor = auditor;
+            audit.Configuration = configurations.Configuration;
+            audit.project = auditChecklist;
+            foreach (var solobs in auditChecklist.SolutionObservations)
+            {
+                audit.ProjectDetails = solobs.ProjectDetails;
+                audit.Observations = solobs.Observations;
+                audit.ActionItems = solobs.ActionItems;
+            }
+
+            return View(audit);
+        }
         public async Task<IActionResult> AuditAsync(string projectname = null)
         {
             AuditViewModel audit = new AuditViewModel();
@@ -317,18 +370,20 @@ namespace MicrofyWebApp.Controllers
             userViewModel = await ListAllUsersAsync();
             List<string> users = new List<string>();
             List<string> auditor = new List<string>();
-            if (userViewModel.usersDetails.Count > 0)
+            if (userViewModel.usersDetails != null)
             {
-                foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "User"))
+                if (userViewModel.usersDetails.Count > 0)
                 {
-                    users.Add(usr.fullName.ToString());
-                }
-                foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
-                {
-                    auditor.Add(usr.fullName.ToString());
+                    foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "User"))
+                    {
+                        users.Add(usr.fullName.ToString());
+                    }
+                    foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
+                    {
+                        auditor.Add(usr.fullName.ToString());
+                    }
                 }
             }
-
             var deliverables = JsonConvert.DeserializeObject<DeliverablesList>(GetDeliverables());
             audit.Deliverables = deliverables.Deliverables;
             audit.ListUsers = users;
@@ -353,21 +408,25 @@ namespace MicrofyWebApp.Controllers
             userViewModel = await ListAllUsersAsync();
             List<string> users = new List<string>();
             List<string> auditor = new List<string>();
-            if (userViewModel.usersDetails.Count > 0)
+            if (userViewModel.usersDetails != null)
             {
-                foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "User"))
+                if (userViewModel.usersDetails.Count > 0)
                 {
-                    users.Add(usr.fullName.ToString());
-                }
-                foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
-                {
-                    auditor.Add(usr.fullName.ToString());
+                    foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "User"))
+                    {
+                        users.Add(usr.fullName.ToString());
+                    }
+                    foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
+                    {
+                        auditor.Add(usr.fullName.ToString());
+                    }
                 }
             }
-
             string projectResponse = string.Empty;
             string Requestapi = string.Empty;
-            Requestapi = $"api/GetAllProjects?{SolutionObserCode}";
+            string UserId = "UserId=" + HttpContext.Session.GetString("_username");
+            string UserRole = "UserRole=" + HttpContext.Session.GetString("_UserRole");
+            Requestapi = $"api/GetAllProjects?{SolutionObserCode}&{UserId}&{UserRole}";
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(SolutionObserBaseUrl);
@@ -420,7 +479,7 @@ namespace MicrofyWebApp.Controllers
                 projectViewModel.ProjectName = project.ProjectName;
                 projectViewModel.Status = "New";
             }
-            
+
             projectViewModel.CustomerName = project.CustomerName;
             projectViewModel.Auditor = project.Auditor;
             projectViewModel.Users = project.Users;
@@ -499,7 +558,7 @@ namespace MicrofyWebApp.Controllers
                 }
             }
             auditChecklist.CreatedUserId = HttpContext.Session.GetString("_userId");
-            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null || auditChecklist.Status=="New")
+            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null || auditChecklist.Status == "New")
                 auditChecklist.Status = dataele.Status;
             string json = JsonConvert.SerializeObject(auditChecklist);
 
@@ -584,6 +643,7 @@ namespace MicrofyWebApp.Controllers
             }
 
             audit.projectname = auditChecklist.ProjectName;
+            audit.Status = auditChecklist.Status;
 
             return PartialView("VW_CHECKLIST", audit);
 
@@ -601,7 +661,7 @@ namespace MicrofyWebApp.Controllers
             auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
 
             audit.ProjectDetails = auditChecklist.SolutionObservations.FirstOrDefault().ProjectDetails;
-            
+
             BestPractice bp = new BestPractice();
             var bestPrac = GetBestPractices(service);
             bp = JsonConvert.DeserializeObject<BestPractice>(bestPrac);
@@ -638,7 +698,8 @@ namespace MicrofyWebApp.Controllers
 
             }
 
-
+            audit.projectname = auditChecklist.ProjectName;
+            audit.Status = auditChecklist.Status;
 
             return PartialView("VW_SERVICES", audit);
 
@@ -653,7 +714,8 @@ namespace MicrofyWebApp.Controllers
             var countnotimp = 0;
             var obsCount = 0;
             var actionCount = 0;
-            foreach (var sol in auditChecklist.SolutionObservations) {
+            foreach (var sol in auditChecklist.SolutionObservations)
+            {
                 foreach (var check in sol.Checklist)
                 {
                     foreach (var ser in check.BestPractices)
@@ -677,7 +739,7 @@ namespace MicrofyWebApp.Controllers
                 obsCount = sol.Observations.Count();
                 actionCount = sol.ActionItems.Count();
             }
-            
+
 
             summary.projectname = auditChecklist.ProjectName;
             summary.RequiredCount = countimp.ToString();

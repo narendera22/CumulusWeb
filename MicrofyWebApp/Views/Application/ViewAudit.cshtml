@@ -1,0 +1,655 @@
+﻿@model MicrofyWebApp.Models.AuditViewModel
+
+<title>@ViewData["Title"] - Welcome to Cumulus</title>
+<link rel="stylesheet" href="~/css/audit.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<style type="text/css">
+    .dropdown-menu.show {
+        margin-left: -250px;
+    }
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="col-md-12" style="padding-left: 15px;">
+            <div id="divbreadcrumb">
+                <ol class="breadcrumb breadcrumb-arrow">
+                    <li class="homelink"><a href="~/Repository/Dashboard">Home</a></li>
+                    <li class=""><a href="~/Checklist/Project">Application</a></li>
+                    <li class="active"><span>@Model.projectname</span></li>
+
+                </ol>
+            </div>
+
+        </div>
+        <!-- MultiStep Form -->
+        <div class="container-fluid" id="grad1">
+            <div class="row justify-content-center mt-0">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-md-12 mx-0">
+                                <form id="msform">
+                                    <!-- progressbar -->
+                                    <ul id="progressbar">
+                                        <li class="active" id="project"><strong>Application Overview</strong></li>
+                                        <li id="checklist"><strong>Checklist</strong></li>
+                                        <li id="observations"><strong>Observation</strong></li>
+                                        <li id="action"><strong>Action Items</strong></li>
+                                        <li id="summary"><strong>Summary</strong></li>
+                                    </ul>
+                                    <!-- fieldsets -->
+                                    <fieldset>
+                                        <div class="form-card" id="ProjectDetails" name="Project Details" data-projectname="@Model.project.ProjectName">
+                                            <div class="row col-md-12">
+                                                <div class="form-group col-md-6 row ">
+                                                    <label class="control-label col-md-5">
+                                                        @*<span style="color:red;">*</span>*@
+                                                        Application Name
+                                                    </label>
+                                                    <div class="col-md-6 ml-4">
+                                                        <input name="ProjectName" value="@Model.project.ProjectName" class="form-control ProjectDet" type="text" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-md-6 row">
+                                                    <label class="control-label col-md-5">
+                                                        @*<span style="color:red;">*</span>*@
+                                                        Customer Name
+                                                    </label>
+                                                    <div class="col-md-6 ml-4">
+                                                        <input name="CustomerName" value="@Model.project.CustomerName" class="form-control ProjectDet" type="text" readonly>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            @if (Model.ProjectDetails == null)
+                                            {
+                                                <div class="row col-md-12">
+                                                    <div class="form-group col-md-12 row ">
+                                                        <label class="control-label col-md-3">
+                                                            @*<span style="color:red;">*</span>*@
+                                                            Customer Overview
+                                                        </label>
+                                                        <div class="col-md-9" style="padding-left: 0px;">
+                                                            <textarea class="summernote" required name="CustomerOverview" rows="4" cols="50" disabled placeholder="Enter Customer Overview">
+                                                                                                                                                                                                                                                </textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-12 row">
+                                                        <label class="control-label col-md-3">
+                                                            Application Overview
+                                                        </label>
+                                                        <div class="col-md-9" style="padding-left: 0px;">
+                                                            <textarea class="summernote" required name="ProjectOverview" rows="4" cols="50" disabled placeholder="Enter Project Overview">
+                                                                                                                                                                                                                                                </textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-6 row">
+                                                        <label class="control-label col-md-5">
+                                                            @*<span style="color:red;">*</span>*@
+                                                            Start Date
+                                                        </label>
+                                                        <div class="col-md-6 ml-4">
+                                                            <input class="form-control ProjectDet" placeholder="dd/mm/yyyy" id="startdate" readonly name="ProjectStartDate" type="date" min="1997-01-01" max="2030-12-31">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-6 row">
+                                                        <label class="control-label col-md-5">
+                                                            @*<span style="color:red;">*</span>*@
+                                                            Tentative End Date
+                                                        </label>
+                                                        <div class="col-md-6 ml-4">
+                                                            <input class="form-control ProjectDet" placeholder="dd/mm/yyyy" id="startdate" readonly name="TentativeEndDate" type="date" min="1997-01-01" max="2030-12-31">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-6 row">
+                                                        <label class="control-label col-md-5">
+                                                            @*<span style="color:red;">*</span>*@
+                                                            Deliverables
+                                                        </label>
+                                                        <div class="col-md-6 ml-4">
+                                                            <select multiple="multiple" id="users" name="ProjectDeliverables" disabled class="form-control ProjectDet selectpicker  multiselect" data-live-search="true" data-field="multiselect" style="width: 10em;">
+                                                                @foreach (var item in Model.Deliverables)
+                                                                {
+
+                                                                    <option value="@item.Name">@item.Name</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-6 row">
+                                                        <label class="control-label col-md-5">
+                                                            @*<span style="color:red;">*</span>*@
+                                                            Application Architecture
+                                                        </label>
+                                                        <div class="col-md-6 ml-4">
+                                                            <input type="file" class="form-control ProjectDet" data-link="" id="fileToUpload" disabled data-projectname="@Model.projectname" name="ApplicationArchitecture" required />
+                                                            <span style="display:none;" class="tag badge rounded-pill bg-info">
+                                                                <span></span>
+                                                                <a href="#" onclick="removeFile(this);"><i class="remove fa fa-times-circle glyphicon-white"></i></a>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-12 row">
+                                                        <label class="control-label col-md-3">
+                                                            Technologies in Use
+                                                        </label>
+                                                        <div class="col-md-9" style="padding-left: 0px;">
+                                                            <textarea class="summernote" required name="TechnologiesInUse" rows="4" cols="50" disabled placeholder="Enter Technologies in Use">
+                                                                                                                                                                                                                                                </textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-12 row">
+                                                        <label class="control-label col-md-3">
+                                                            Azure Services Used
+                                                        </label>
+                                                        <div class=" row col-md-9 ">
+                                                            <div id="dynamic-Serv-field-1" class=" col-md-12 form-group dynamic-field" style="display:flex;padding-left: 0px;" data-tags="add">
+                                                                <select id="prodcat" name="ProductCategory" class=" col-md-6 form-control selectpicker mr-2" disabled>
+                                                                    <option value="Select">Select</option>
+                                                                    @foreach (var item in Model.Configuration)
+                                                                    {
+                                                                        <option value="@item.ProductCategory">@item.ProductCategory</option>
+                                                                    }
+                                                                </select>
+                                                                <div id="divserv" style="display:none;">
+                                                                    <select multiple="multiple" name="Services" id="ddlserv" class=" col-md-5 form-control selectpicker  multiselect" data-live-search="true" data-field="multiselect">
+                                                                    </select>
+                                                                </div>
+
+                                                                <a href="#" class="add" title="Add Service" style="padding:5px; display:none;" onclick="addservices(); return false;">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-12 row">
+                                                        <table style="margin-left:15px;" id="tbservice" class="table table-bordered table-hover" name="AzureServicesUsed">
+                                                            <thead class="thead-light">
+                                                                <tr>
+                                                                    <th>Product Category</th>
+                                                                    <th>Services</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @await Html.PartialAsync("VW_VIEW_AUDIT", Model)
+                                            }
+                                        </div>
+                                        <input type="button" name="next" class="next action-button btn btn-primary" value="Next Step" />
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="form-card" id="ChecklistServices" name="Checklist Services" data-projectname="@Model.project.ProjectName">
+                                        </div>
+                                        <input type="button" name="previous" class="previous action-button-previous btn btn-primary" value="Previous" />
+                                        <input type="button" name="next" class="next action-button btn btn-primary" value="Next Step" />
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="form-card" id="Observation" name="Observation" data-projectname="@Model.project.ProjectName">
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    Impact Area
+                                                </label>
+                                                <div class="col-md-6 ml-4">
+                                                    <input class="form-control obserdet" placeholder="Enter Impact Area" id="impactarea" name="Impactarea" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    Observations
+                                                </label>
+                                                <div class="col-md-8 ml-4">
+                                                    <textarea class="summernote" placeholder="Enter Observation" id="observation" name="Observation" type="text"></textarea>
+                                                </div>
+                                                @* <a href="#" class="add" title="Add Service" style="padding:5px; display:block;" onclick="addobservation(); return false;">
+                                                <i class="fas fa-plus"></i>
+                                                </a>*@
+                                            </div>
+                                            <div class="col-md-12 row" style="padding-bottom: 5px;">
+                                                <div class="col-md-6"></div>
+                                                <div class="col-md-6">
+                                                    <input type="button" name="Add" style="display:none;" class="btn btn-primary" value="Add" onclick="addobservation(); return false;">
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-12 row">
+                                                <table style="margin-left:15px;" id="tbobserv" class="table table-bordered table-hover" name="Observation">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Impact Area</th>
+                                                            <th>Observation</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (Model.Observations != null)
+                                                        {
+                                                            foreach (var obs in Model.Observations.Select((value, i) => new { i, value }))
+                                                            {
+                                                                <tr data-row="@obs.i+1">
+                                                                    <td name="ImpactArea">
+                                                                        @obs.value.ImpactArea
+                                                                    </td>
+                                                                    <td name="Observation">
+                                                                        @obs.value.Observation
+                                                                    </td>
+
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <input type="button" name="previous" class="previous action-button-previous btn btn-primary" value="Previous" />
+                                        <input type="button" name="next" class="next action-button btn btn-primary" value="Next Step" />
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="form-card" id="ActionItems" name="Action Items" data-projectname="@Model.project.ProjectName">
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    Impact Area
+                                                </label>
+                                                <div class="col-md-6 ml-4">
+                                                    <input class="form-control obserdet" placeholder="Enter Impact Area" id="ImpactArea" name="Impactarea" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    Severity
+                                                </label>
+                                                <div class="col-md-6 ml-4">
+                                                    <select id="Severity" name="Severity" class="form-control selectpicker mr-2">
+                                                        <option value="Select">Select</option>
+                                                        <option value="Critical Issue">Critical Issue</option>
+                                                        <option value="Single Point of Failure">Single Point of Failure</option>
+                                                        <option value="Important Issue">Important Issue</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    Concern
+                                                </label>
+                                                <div class="col-md-8 ml-4">
+                                                    <textarea class="summernote" placeholder="Enter Concern" id="concern" name="Concern" type="text"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    Recommended Mitigation
+                                                </label>
+                                                <div class="col-md-8 ml-4">
+                                                    <textarea class="summernote" placeholder="Enter Recommended Mitigation" id="RecommendedMitigation" name="RecommendedMitigation" type="text"></textarea>
+                                                </div>
+                                            </div>
+                                            @*<div class="form-group col-md-12 row">
+                                            <div class="col-md-5 ml-4">
+                                            <input class="form-control obserdet" placeholder="Enter Concern" id="concern" name="Concern" type="text">
+                                            </div>
+                                            <div class="col-md-5 ml-4">
+                                            <input class="form-control obserdet" placeholder="Enter Recommended Mitigation" id="RecommendedMitigation" name="RecommendedMitigation" type="text">
+                                            </div>
+                                            <a href="#" class="add" title="Add Action Item" style="padding:5px; display:block;" onclick="addActionItem(); return false;">
+                                            <i class="fas fa-plus"></i>
+                                            </a>
+                                            </div>*@
+                                            <div class="col-md-12 row" style="padding-bottom: 5px;">
+                                                <div class="col-md-6"></div>
+                                                <div class="col-md-6">
+                                                    <input type="button" name="Add" class="btn btn-primary" style="display:none;" value="Add" onclick="addActionItem(); return false;">
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-12 row">
+                                                <table style="margin-left:15px;" id="tbactionitems" class="table table-bordered table-hover" name="ActionItems">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Impact Area</th>
+                                                            <th>Severity</th>
+                                                            <th>Concern</th>
+                                                            <th>Recommended Mitigation</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (Model.ActionItems != null)
+                                                        {
+                                                            foreach (var obs in Model.ActionItems.Select((value, i) => new { i, value }))
+                                                            {
+                                                                <tr data-row="@obs.i+1">
+                                                                    <td name="ImpactArea">
+                                                                        @obs.value.ImpactArea
+                                                                    </td>
+                                                                    <td name="Severity">
+                                                                        @obs.value.Severity
+                                                                    </td>
+                                                                    <td name="Concern">
+                                                                        @obs.value.Concern
+                                                                    </td>
+                                                                    <td name="RecommendedMitigation">
+                                                                        @obs.value.RecommendedMitigation
+                                                                    </td>
+
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <input type="button" name="previous" class="previous action-button-previous btn btn-primary" value="Previous" />
+                                        <input type="button" name="next" class="next action-button btn btn-primary" value="Next Step" />
+
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="form-card" id="Summary" name="Summary" data-projectname="@Model.project.ProjectName">
+                                        </div>
+                                        <input type="button" name="next" onclick="@("window.location.href='" + @Url.Action("Application", "Application") + "'");" class="goback action-button btn btn-primary" value="Go To Application" />
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="lds-dual-ring" id=loader></div>*@
+        @* <div id='loader' style='display: none;'>
+        <img src="~/Image/loading.gif" width='32px' height='32px'>
+        </div>*@
+        <div class="loading" style="display:none;">Loading&#8230;</div>
+    </div>
+
+</body>
+</html>
+@section scripts{
+    <script type="text/javascript">
+        //var service = @Html.Raw(Json.Serialize(Model.Configuration));
+        $(document).ready(function() {
+            $("#prodcat").change(function() {
+                var end = this.value;
+                var val = $('#prodcat').val();
+                var config;
+                $.ajax({
+                    async: false,
+                    type: "GET",
+                    url: "/Application/GetServiceByProductCategory",
+                    data: { "prodcat": val },
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data) {
+                        config = data;
+                    },
+                    error: function(data) {
+                        console.log(JSON.stringify(data));
+                    }
+                });
+                $('#ddlserv').empty()
+                if (val == "Select") {
+                    $('#divserv').hide();
+                }
+                var serviceslist = $.parseJSON(config);
+                for (var i = 0; i < serviceslist.services.length; i++) {
+                    jQuery('#ddlserv').append(jQuery("<option></option>").val(serviceslist.services[i].serviceName).text(serviceslist.services[i].serviceName));
+                }
+                $("#ddlserv.multiselect").multiselect('destroy');
+                $("#ddlserv.multiselect").multiselect({
+                    includeSelectAllOption: true
+                });
+                $('#divserv').show();
+            });
+        });
+
+
+        function addservices() {
+            var pdcat = $('#prodcat').val();
+            var ser = $('#ddlserv').val();
+            var rowctr = $("#tbservice").rowCount();
+            var lasttr = 0;
+            if (rowctr <= 0) {
+                lasttr = 1;
+            }
+            else {
+                lasttr = $("#tbservice").find("tr").last().data('row');
+                lasttr = lasttr + 1;
+            }
+            var tablevalues = "<tr data-row='" + lasttr + "'>";
+            tablevalues += "<td name='ProductCategory'>" + pdcat + "</td>";
+            tablevalues += "<td name='Services'>" + ser + "</td>";
+            tablevalues += '<td><a href="" class="delete"  onclick="fndelete(this);return false;"><i class="fa fa-trash" style="font-size:18px"></i></a></td>';
+            tablevalues += "</tr>";
+
+            $("#tbservice").find('tbody').append(tablevalues);
+            $('#prodcat').val("Select");
+            $('#divserv').hide();
+        }
+
+        function addobservation() {
+            var impactarea = $('#impactarea').val();
+            var observation = $('#observation').val();
+            var rowctr = $("#tbobserv").rowCount();
+            var lasttr = 0;
+            if (rowctr <= 0) {
+                lasttr = 1;
+            }
+            else {
+                lasttr = $("#tbobserv").find("tr").last().data('row');
+                lasttr = lasttr + 1;
+            }
+            var tablevalues = "<tr data-row='" + lasttr + "'>";
+            tablevalues += "<td name='ImpactArea'>" + impactarea + "</td>";
+            tablevalues += "<td name='Observation'>" + observation + "</td>";
+            tablevalues += '<td><a href="" class="delete"  onclick="fndelete(this);return false;"><i class="fa fa-trash" style="font-size:18px"></i></a></td>';
+            tablevalues += "</tr>";
+
+            $("#tbobserv").find('tbody').append(tablevalues);
+            $('#impactarea').val("");
+            $('#observation').summernote('code', '');
+        }
+        function addActionItem() {
+            var impactarea = $('#ImpactArea').val();
+            var Severity = $('#Severity').val();
+            var concern = $('#concern').val();
+            var RecommendedMitigation = $('#RecommendedMitigation').val();
+            var rowctr = $("#tbactionitems").rowCount();
+            var lasttr = 0;
+            if (rowctr <= 0) {
+                lasttr = 1;
+            }
+            else {
+                lasttr = $("#tbactionitems").find("tr").last().data('row');
+                lasttr = lasttr + 1;
+            }
+            var tablevalues = "<tr data-row='" + lasttr + "'>";
+            tablevalues += "<td name='ImpactArea'>" + impactarea + "</td>";
+            tablevalues += "<td name='Severity'>" + Severity + "</td>";
+            tablevalues += "<td name='Concern'>" + concern + "</td>";
+            tablevalues += "<td name='RecommendedMitigation'>" + RecommendedMitigation + "</td>";
+            tablevalues += '<td><a href="" class="delete"  onclick="fndelete(this);return false;"><i class="fa fa-trash" style="font-size:18px"></i></a></td>';
+            tablevalues += "</tr>";
+
+            $("#tbactionitems").find('tbody').append(tablevalues);
+            $('#ImpactArea').val("");
+            $('#Severity').val("Select");
+            $('#concern').summernote('code', '')
+            $('#RecommendedMitigation').summernote('code', '')
+
+        }
+
+        function fndelete(e) {
+            $(e).closest("tr").remove();
+            return false;
+        }
+    </script>
+}
+    <script type="text/javascript">
+        function Loadchecklist(projectname) {
+
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: "/Application/LoadChecklist",
+                data: { "projectname": projectname },
+                contentType: "application/json; charset=utf-8",
+                beforeSend: function() {
+                    // Show image container
+                    $("div.loading").show();
+
+                },
+                success: function(data) {
+                    $("#ChecklistServices").html(data);
+                },
+                error: function(data) {
+                    console.log(JSON.stringify(data));
+                },
+                complete: function(data) {
+                    // Hide image container
+                    $("div.loading").hide();
+
+                }
+            });
+            return false;
+        }
+
+        function LoadSummary(projectname) {
+
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: "/Application/LoadSummary",
+                data: { "projectname": projectname },
+                contentType: "application/json; charset=utf-8",
+                beforeSend: function() {
+                    // Show image container
+                    $("div.loading").show();
+
+                },
+                success: function(data) {
+                    $("#Summary").html(data);
+                },
+                error: function(data) {
+                    console.log(JSON.stringify(data));
+                },
+                complete: function(data) {
+                    // Hide image container
+                    $("div.loading").hide();
+
+                }
+            });
+            return false;
+        }
+
+    </script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            var current_fs, next_fs, previous_fs; //fieldsets
+            var opacity;
+
+            $(".next").click(function() {
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
+                var next_divname = $(next_fs).children().attr('name');
+
+                var inputdiv = $(this).parent().children().attr('id');
+                var divname = $(this).parent().children().attr('name');
+                var projectname = $('#' + inputdiv).data('projectname');
+
+                if (divname == "Project Details") {
+                    $("div.loading").show();
+                    if (next_divname == "Checklist Services") {
+                        Loadchecklist(projectname);
+                    }
+                }
+                if (next_divname == "Summary") {
+                    LoadSummary(projectname);
+                }
+
+                //Add Class Active
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+                //show the next fieldset
+                next_fs.show();
+                //hide the current fieldset with style
+                current_fs.animate({ opacity: 0 }, {
+                    step: function(now) {
+                        // for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        next_fs.css({ 'opacity': opacity });
+                    },
+                    duration: 600
+                });
+                return false;
+            });
+
+            $(".previous").click(function() {
+
+                current_fs = $(this).parent();
+                previous_fs = $(this).parent().prev();
+
+                //Remove class active
+                $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+                //show the previous fieldset
+                previous_fs.show();
+
+                //hide the current fieldset with style
+                current_fs.animate({ opacity: 0 }, {
+                    step: function(now) {
+                        // for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        previous_fs.css({ 'opacity': opacity });
+                    },
+                    duration: 600
+                });
+            });
+
+
+
+            $('.multiselect').multiselect({
+                includeSelectAllOption: true, maxwidth: '200px', buttonWidth: '180px'
+            });
+            $('textarea').summernote({
+                //placeholder: 'Enter Description',
+                tabsize: 2,
+                height: 100,
+                toolbar: [
+                    /*['style', ['style']],*/
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    //// ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                    ////['fontname', ['fontname']],
+                    //// ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    //['height', ['height']],
+                    //['table', ['table']],
+                    //['insert', ['link', 'picture', 'hr']],
+                    ////['view', ['fullscreen', 'codeview']],
+                    ['help', ['help']]
+                ],
+            });
+        });
+
+    </script>

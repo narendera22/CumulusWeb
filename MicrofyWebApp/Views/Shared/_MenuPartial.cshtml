@@ -4,15 +4,12 @@
 @using MicrofyWebApp.Models;
 @{
     MenuViewModel config = new MenuViewModel();
+    UserViewModel userdet = new UserViewModel();
     var selectedphase = HttpContextAccessor.HttpContext.Session.GetString("_selPhase");
     var selectedsubphase = HttpContextAccessor.HttpContext.Session.GetString("_selSubPhase");
     var actstatus = string.Empty;
     var role = HttpContextAccessor.HttpContext.Session.GetString("_UserRole");
-    //string display = "block";
-    //if (role == "Administrator")
-    //{
-    //    display = "none";
-    //}
+
 }
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <style type="text/css">
@@ -28,7 +25,27 @@
         var json = HttpContextAccessor.HttpContext.Session.GetString("_config");
         config = JsonConvert.DeserializeObject<MenuViewModel>(json);
     }
+    @if (HttpContextAccessor.HttpContext.Session.GetString("_UserDet") != null)
+    {
+        var json = HttpContextAccessor.HttpContext.Session.GetString("_UserDet");
+        userdet = JsonConvert.DeserializeObject<UserViewModel>(json);
+    }
 
+    @foreach (var con in config.Menu)
+    {
+        foreach (var useracc in userdet.moduleAccess)
+        {
+            if (con.Name == useracc.Name)
+            {
+                con.Visible = useracc.Visible;
+            }
+            if (role != "Administrator")
+            {
+                if (con.Name == "Settings" || con.Name == "Activity")
+                    con.Visible = "False";
+            }
+        }
+    }
     <section class="app">
         <aside class="sidebar">
 
@@ -45,70 +62,73 @@
 
                     @foreach (var menu in config.Menu)
                     {
-                        <li class="nav-item">
-                            @if (menu.MenuLevel1 != null)
-                            {
-                                <a class="nav-link" href="#">  <img id="logo" alt="Logo" src="~/Image/MenuIcon/@menu.icon" style="width:50px;" />  <span>@menu.Name</span><i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i></a>
-                            }
-                            else
-                            {
-                                <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name) + "'");">  <img id="logo" alt="Logo" src="~/Image/MenuIcon/@menu.icon" style="width:50px;" />  <span>@menu.Name</span><i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i></a>
+                        if (menu.Visible.ToLower() == "true")
+                        {
+                            <li class="nav-item">
+                                @if (menu.MenuLevel1 != null)
+                                {
+                                    <a class="nav-link" href="#">  <img id="logo" alt="Logo" src="~/Image/MenuIcon/@menu.icon" style="width:50px;" />  <span>@menu.Name</span><i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i></a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name) + "'");">  <img id="logo" alt="Logo" src="~/Image/MenuIcon/@menu.icon" style="width:50px;" />  <span>@menu.Name</span><i style="display:none;" class="fa fa-angle-double-right float-right pt-3" aria-hidden="true"></i></a>
 
-                            }
-                            @if (menu.MenuLevel1 != null)
-                            {
-                                <ul class="submenu dropdown-menu" style="display:none;">
+                                }
+                                @if (menu.MenuLevel1 != null)
+                                {
+                                    <ul class="submenu dropdown-menu" style="display:none;">
 
-                                    @for (int j = 0; j < menu.MenuLevel1.Count; j++)
-                                    {
-                                        if (menu.MenuLevel1[j].Visible == "True")
+                                        @for (int j = 0; j < menu.MenuLevel1.Count; j++)
                                         {
-                                            actstatus = string.Empty;
-                                            if (selectedphase == menu.MenuLevel1[j].Name)
+                                            if (menu.MenuLevel1[j].Visible.ToLower() == "true")
                                             {
-                                                actstatus = "active";
-                                            }
-
-                                            <li>
-                                                <div class="anchor-link @actstatus">
-                                                    @if (menu.MenuLevel1[j].MenuLevel2 != null)
-                                                    {
-                                                        <a class="nav-link dropdown-toggle menu" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name, new { menulevel1=menu.MenuLevel1[j].Name,menulevel2=menu.MenuLevel1[j].MenuLevel2.FirstOrDefault().Name }) + "'");" href="#" data-toggle="collapse" aria-expanded="false">@menu.MenuLevel1[j].Name</a>
-                                                    }
-                                                    else
-                                                    {
-                                                        <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name, new { menulevel1=menu.MenuLevel1[j].Name,menulevel2=string.Empty }) + "'");">@menu.MenuLevel1[j].Name</a>
-                                                    }
-                                                </div>
-                                                @if (menu.MenuLevel1[j].MenuLevel2 != null)
+                                                actstatus = string.Empty;
+                                                if (selectedphase == menu.MenuLevel1[j].Name)
                                                 {
-                                                    var childmenu = menu.MenuLevel1[j].MenuLevel2;
-                                                    <ul class="collapse list-unstyled show" id="@menu.MenuLevel1[j].Name">
-                                                        @for (int i = 0; i < childmenu.Count; i++)
-                                                        {
-                                                            if (childmenu[i].Visible == "True")
-                                                            {
-                                                                actstatus = string.Empty;
-                                                                if (selectedphase == menu.MenuLevel1[j].Name && selectedsubphase == childmenu[i].Name)
-                                                                {
-                                                                    actstatus = "active";
-                                                                }
-                                                                <li class="subanchor-link @actstatus">
-                                                                    <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name, new { menulevel1=menu.MenuLevel1[j].Name,menulevel2=childmenu[i].Name }) + "'");">@childmenu[i].Name</a>
-                                                                </li>
-                                                            }
-                                                        }
-                                                    </ul>
-
+                                                    actstatus = "active";
                                                 }
 
-                                            </li>
-                                        }
-                                    }
-                                </ul>
+                                                <li>
+                                                    <div class="anchor-link @actstatus">
+                                                        @if (menu.MenuLevel1[j].MenuLevel2 != null)
+                                                        {
+                                                            <a class="nav-link dropdown-toggle menu" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name, new { menulevel1=menu.MenuLevel1[j].Name,menulevel2=menu.MenuLevel1[j].MenuLevel2.FirstOrDefault().Name }) + "'");" href="#" data-toggle="collapse" aria-expanded="false">@menu.MenuLevel1[j].Name</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name, new { menulevel1=menu.MenuLevel1[j].Name,menulevel2=string.Empty }) + "'");">@menu.MenuLevel1[j].Name</a>
+                                                        }
+                                                    </div>
+                                                    @if (menu.MenuLevel1[j].MenuLevel2 != null)
+                                                    {
+                                                        var childmenu = menu.MenuLevel1[j].MenuLevel2;
+                                                        <ul class="collapse list-unstyled show" id="@menu.MenuLevel1[j].Name">
+                                                            @for (int i = 0; i < childmenu.Count; i++)
+                                                            {
+                                                                if (childmenu[i].Visible.ToLower() == "true")
+                                                                {
+                                                                    actstatus = string.Empty;
+                                                                    if (selectedphase == menu.MenuLevel1[j].Name && selectedsubphase == childmenu[i].Name)
+                                                                    {
+                                                                        actstatus = "active";
+                                                                    }
+                                                                    <li class="subanchor-link @actstatus">
+                                                                        <a class="nav-link" href="#" style="text-indent: 1em;" onclick="@("window.location.href='" + @Url.Action(menu.Name, menu.Name, new { menulevel1=menu.MenuLevel1[j].Name,menulevel2=childmenu[i].Name }) + "'");">@childmenu[i].Name</a>
+                                                                    </li>
+                                                                }
+                                                            }
+                                                        </ul>
 
-                            }
-                        </li>
+                                                    }
+
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+
+                                }
+                            </li>
+                        }
                     }
 
 

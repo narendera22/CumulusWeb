@@ -144,7 +144,7 @@
                                         var check = "";
                                         foreach(var acc in Model.moduleAccess)
                                         {
-                                            if (mod.value.Name == acc.Name)
+                                            if (mod.value.Name == acc.Name && acc.Visible.ToLower()=="true")
                                             {
                                                 check = "Checked"; 
                                             }

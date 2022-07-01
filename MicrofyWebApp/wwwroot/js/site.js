@@ -633,7 +633,7 @@ $(function () {
                 content: content,
                 type: type,
                 onAction: function () {
-                    window.location.href = '/Settings/Users';
+                    window.location.href = '/Settings/ListUsers';
                 }
             });
         })
@@ -676,7 +676,7 @@ $(function () {
                     content: content,
                     type: type,
                     onAction: function () {
-                        window.location.href = '/Settings/Users';
+                        window.location.href = '/Settings/ListUsers';
                     }
                 });
             },
@@ -1035,24 +1035,25 @@ function YearformatDate(date) {
 
     return [year, month, day].join('-');
 }
-function LoadService(NavParam) {
+function LoadService(NavParam,displaymode) {
     debugger;
     $("div.loading").show();
     var json = $.parseJSON(NavParam);
     var prodcat = $('.nav-link.border-0.text-uppercase.font-weight-bold.active').data('prodcat');
     var service = $('.nav-link.border-0.text-uppercase.font-weight-bold.active').data('service');
     var divid = $('.nav-link.border-0.text-uppercase.font-weight-bold.active').data('div');
-    
-    var dataele = {
-        "Checklist": buildJsonInputData($('#' + divid)),
-        "ProjectName": json.projectName,
-        "ProductCategory": prodcat,
-        "Service": service
-    };
-    var redirecturl = "/Application/InsertBestPractices";
-    $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
+    if (displaymode != "readonly") {
+        var dataele = {
+            "Checklist": buildJsonInputData($('#' + divid)),
+            "ProjectName": json.projectName,
+            "ProductCategory": prodcat,
+            "Service": service
+        };
+        var redirecturl = "/Application/InsertBestPractices";
+        $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {
 
-    });
+        });
+    }
     $.ajax({
         async: false,
         type: "GET",

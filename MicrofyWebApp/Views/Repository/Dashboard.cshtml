@@ -63,7 +63,7 @@
     <div id="divbreadcrumb">
         <ol class="breadcrumb breadcrumb-arrow">
             <li class="homelink"><a href="~/Repository/Dashboard">Home</a></li>
-            <li class="homelink"><a href="~/Repository/Dashboard">Repository</a></li>
+            @*<li class="homelink"><a href="~/Repository/Dashboard">Repository</a></li>*@
             <li class="active"><span>Dashboard</span></li>
         </ol>
     </div>
@@ -95,7 +95,7 @@
                                     </div>
                                    
                                     <div class="circle-tile ">@p.dashboardTag</div>
-                                    <a class="circle-tile-footer" onclick="@("window.location.href='" + @Url.Action("Repository", "Repository", new { Phase=@p.phase,SubPhase=string.Empty }) + "'");">View Documents<i class="fa fa-chevron-circle-right"></i></a>
+                                    <a class="circle-tile-footer" onclick="@("window.location.href='" + @Url.Action("Repository", "Repository", new { menulevel1=@p.phase,menulevel2=string.Empty }) + "'");">View Documents<i class="fa fa-chevron-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                                         @p.phase &ensp;@p.subphase.Sum(q => q.documents.Count)
                                     </div>
                                     <div class="circle-tile ">@p.dashboardTag</div>
-                                    <a class="circle-tile-footer"    onclick="@("window.location.href='" + @Url.Action("Repository", "Repository", new { Phase=@p.phase,SubPhase=@p.subphase.FirstOrDefault().name }) + "'");">View Documents<i class="fa fa-chevron-circle-right"></i></a>
+                                    <a class="circle-tile-footer"    onclick="@("window.location.href='" + @Url.Action("Repository", "Repository", new { menulevel1=@p.phase,menulevel2=@p.subphase.FirstOrDefault().name }) + "'");">View Documents<i class="fa fa-chevron-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>

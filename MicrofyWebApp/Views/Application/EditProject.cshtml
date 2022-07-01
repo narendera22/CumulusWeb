@@ -1,4 +1,7 @@
 ﻿@model MicrofyWebApp.Models.AuditViewModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
     var status = "";
     ViewData["Title"] = "Application";
@@ -14,6 +17,15 @@
         auditor = Model.project.Auditor;
         multiuserVal = Model.project.Users;
         flag = "Update";
+    }
+    var role = HttpContextAccessor.HttpContext.Session.GetString("_UserRole");
+
+    var displaymode = "readonly";
+    var disable = "disabled";
+    if (role != "Auditor")
+    {
+        displaymode = "";
+        disable = "";
     }
 }
 <style type="text/css">
@@ -88,7 +100,7 @@
                             <label class="col-md-4 control-label"><span style="color:red;">*</span> Application Name</label>
                             <div class="col-md-4 inputGroupContainer">
                                 <div class="input-group">
-                                    <input name="projectname" id="projectname" placeholder="Application Name" class="form-control" value="@applname">
+                                    <input name="projectname" id="projectname" placeholder="Application Name" class="form-control" value="@applname" @displaymode>
                                 </div>
                             </div>
                         </div>
@@ -96,7 +108,7 @@
                             <label class="col-md-4 control-label"><span style="color:red;">*</span> Customer Name</label>
                             <div class="col-md-4 inputGroupContainer">
                                 <div class="input-group">
-                                    <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required value="@custname">
+                                    <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required value="@custname" @displaymode>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +143,7 @@
                             <label class="col-md-4 control-label"><span style="color:red;">*</span>  Solution Collaborator</label>
                             <div class="col-md-4 inputGroupContainer">
                                 <div class="input-group">
-                                    <select id="auditor" class="col-md-12 form-control selectpicker ">
+                                    <select id="auditor" class="col-md-12 form-control selectpicker " @disable>
                                         <option value="">Select</option>
                                         @foreach (var item in Model.ListAuditor)
                                         {

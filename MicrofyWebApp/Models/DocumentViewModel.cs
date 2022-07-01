@@ -30,7 +30,7 @@ namespace MicrofyWebApp.Models
             get
             {
                 string icons = string.Empty;
-                if (phase == "Pre - Plan")
+                if (phase == "Strategy")
                 {
                     //icons = "fa fa-list";
                     icons = "strategy.png";
@@ -62,7 +62,7 @@ namespace MicrofyWebApp.Models
             get
             {
                 string tag = string.Empty;
-                if (phase == "Pre - Plan")
+                if (phase == "Strategy")
                 {
                     tag = "SoW Template,  Roles & Responsibilities, Risk Register, High Level Plan, RACI Matrix etc.";
                 }
