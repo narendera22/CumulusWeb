@@ -1,5 +1,8 @@
 ﻿@model MicrofyWebApp.Models.UserViewModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
+    var userid = HttpContextAccessor.HttpContext.Session.GetString("_userId");
     var status = "";
     ViewData["Title"] = "Users";
 
@@ -95,48 +98,47 @@
             <tbody>
                 @foreach (var usr in Model.usersDetails.Where(u => u.isDeleted == false))
                 {
-                    <tr>
-
-                        <td>@usr.username</td>
-                        <td>@usr.fullName</td>
-                        <td>@usr.userRole</td>
-                        @*@foreach (var p in usr.projects)
+                    if (usr.username != userid)
                     {
-                    <td>@p.projectName.</td>
-                    <td>@p.customerName</td>
-                    }*@
-                        @if (usr.isActive) { status = "checked"; } else { status = ""; }
-                        <td>
-                            <label class="switch">
-                                <input type="checkbox" @status class="togglecheckbox" data-username="@usr.username">
-                                <span class="slider round"></span>
-                            </label>
-                        </td>
-                        <td style="display:none;">
-                            @Html.Raw(Json.Serialize(usr.projects))
-                        </td>
-                        <td style="display:none;">
-                            <input name="pwd" type="password" class="pwd" value="@usr.password" />
-                        </td>
-                        <td style="display:none;">
-                            @Html.Raw(Json.Serialize(usr.moduleAccess))
-                        </td>
-                        <td>
-                            <a href="" class="edit" title="Edit User">
-                                <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="" class="deleteusr" title="Delete User">
-                                <span class="glyphicon glyphicon-trash" style="font-size:25px;"></span>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="" class="resetpwd" title="Reset Password">
-                                <span class="glyphicon glyphicon-lock" style="font-size:25px;"></span>
-                            </a>
-                        </td>
-                    </tr>
+                        <tr>
+
+                            <td>@usr.username</td>
+                            <td>@usr.fullName</td>
+                            <td>@usr.userRole</td>
+
+                            @if (usr.isActive) { status = "checked"; } else { status = ""; }
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" @status class="togglecheckbox" data-username="@usr.username">
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td style="display:none;">
+                                @Html.Raw(Json.Serialize(usr.projects))
+                            </td>
+                            <td style="display:none;">
+                                <input name="pwd" type="password" class="pwd" value="@usr.password" />
+                            </td>
+                            <td style="display:none;">
+                                @Html.Raw(Json.Serialize(usr.moduleAccess))
+                            </td>
+                            <td>
+                                <a href="" class="edit" title="Edit User">
+                                    <span class="glyphicon glyphicon-edit" style="font-size:25px;"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="" class="deleteusr" title="Delete User">
+                                    <span class="glyphicon glyphicon-trash" style="font-size:25px;"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="" class="resetpwd" title="Reset Password">
+                                    <span class="glyphicon glyphicon-lock" style="font-size:25px;"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>

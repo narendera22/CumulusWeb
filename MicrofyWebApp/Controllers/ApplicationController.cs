@@ -95,9 +95,12 @@ namespace MicrofyWebApp.Controllers
             return deliverables;
         }
 
-        public string GetSolutionObsDetailsAsync(string ProjectName)
+        public string GetSolutionObsDetailsAsync(string projectname, string customername)
         {
-            string Requestapi = $"api/GetProjectDetails/{ProjectName}?{SolutionObserCode}";
+            string ProjectName = "ProjectName=" + projectname;
+            string CustomerName = "CustomerName=" + customername;
+            string Requestapi = $"api/GetProjectDetails?{SolutionObserCode}&{ProjectName}&{CustomerName}";
+
             string SolObs = string.Empty;
             using (var client = new HttpClient())
             {
@@ -117,10 +120,12 @@ namespace MicrofyWebApp.Controllers
 
 
 
-        public string GetProjectDetails(string Projectname)
+        public string GetProjectDetails(string Projectname, string customername)
         {
+            string ProjectName = "ProjectName=" + Projectname;
+            string CustomerName = "CustomerName=" + customername;
             string projDet = string.Empty;
-            string Requestapi = $"api/GetProjectDetails/{Projectname}?{SolutionObserCode}";
+            string Requestapi = $"api/GetProjectDetails?{SolutionObserCode}&{ProjectName}&{customername}";
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(SolutionObserBaseUrl);
@@ -194,10 +199,11 @@ namespace MicrofyWebApp.Controllers
             return config;
         }
 
-        public string GetServiceByProductCategory(string prodcat)
+        public string GetServiceByProductCategory(string prodcat, string flag = null)
         {
+            string Flag = "Flag=" + flag;
             string config = string.Empty;
-            string Requestapi = $"api/GetServiceByProductCategory/{prodcat}?{configCode}";
+            string Requestapi = $"api/GetServiceByProductCategory/{prodcat}?{configCode}&{Flag}";
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(configUrl);
@@ -233,14 +239,27 @@ namespace MicrofyWebApp.Controllers
             bp = JsonConvert.DeserializeObject<BestPractice>(bestPrac);
             bplist.Add(bp);
 
-            string checklist = GetSolutionObsDetailsAsync(dataele.ProjectName);
+            string checklist = GetSolutionObsDetailsAsync(dataele.ProjectName, dataele.customername);
 
             string Requestapi = $"api/UpdateProject?{SolutionObserCode}";
 
             if (checklist != "")
             {
                 auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
+                if (auditChecklist.SolutionObservations.FirstOrDefault().Checklist != null)
+                {
+                    foreach (var ser in auditChecklist.SolutionObservations.FirstOrDefault().Checklist)
+                    {
+                        if (ser.Service.Equals(dataele.Service))
+                        {
+                            bplist.Clear();
+                            bp = ser;
+                            bplist.Add(bp);
+                        }
+                    }
+                }
             }
+
 
             foreach (var BestPrac in bplist)
             {
@@ -277,7 +296,7 @@ namespace MicrofyWebApp.Controllers
             auditChecklist.SolutionObservations.FirstOrDefault().Checklist = audit.BestPractices;
 
             auditChecklist.CreatedUserId = HttpContext.Session.GetString("_userId");
-            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null || auditChecklist.Status == "New")
+            if (auditChecklist.Status == "In Progress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null || auditChecklist.Status == "New")
                 auditChecklist.Status = dataele.Status;
             string json = JsonConvert.SerializeObject(auditChecklist);
 
@@ -297,7 +316,7 @@ namespace MicrofyWebApp.Controllers
             }
             return resp;
         }
-        public async Task<IActionResult> ViewAuditAsync(string projectname = null)
+        public async Task<IActionResult> ViewAuditAsync(string projectname = null, string customername = null)
         {
             AuditViewModel audit = new AuditViewModel();
             Configurations configurations = new Configurations();
@@ -306,7 +325,7 @@ namespace MicrofyWebApp.Controllers
             //var projdet = GetProjectDetails(projectname);
             //audit.project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
             ProjectViewModel auditChecklist = new ProjectViewModel();
-            string checklist = GetSolutionObsDetailsAsync(projectname);
+            string checklist = GetSolutionObsDetailsAsync(projectname, customername);
             if (checklist != "")
             {
                 auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
@@ -348,7 +367,7 @@ namespace MicrofyWebApp.Controllers
 
             return View(audit);
         }
-        public async Task<IActionResult> AuditAsync(string projectname = null)
+        public async Task<IActionResult> AuditAsync(string projectname = null, string customername = null)
         {
             AuditViewModel audit = new AuditViewModel();
             Configurations configurations = new Configurations();
@@ -357,7 +376,7 @@ namespace MicrofyWebApp.Controllers
             //var projdet = GetProjectDetails(projectname);
             //audit.project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
             ProjectViewModel auditChecklist = new ProjectViewModel();
-            string checklist = GetSolutionObsDetailsAsync(projectname);
+            string checklist = GetSolutionObsDetailsAsync(projectname, customername);
             if (checklist != "")
             {
                 auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
@@ -456,7 +475,7 @@ namespace MicrofyWebApp.Controllers
             var createDoc = JsonConvert.SerializeObject(project);
             ProjectViewModel projectViewModel = new ProjectViewModel();
             string Requestapi = $"api/CreateProject?{SolutionObserCode}";
-            string checklist = GetSolutionObsDetailsAsync(project.ProjectName);
+            string checklist = GetSolutionObsDetailsAsync(project.ProjectName, project.CustomerName);
 
             if (project.flag == "Update")
             {
@@ -466,6 +485,7 @@ namespace MicrofyWebApp.Controllers
                     projectViewModel = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
                 }
                 projectViewModel.ProjectName = projectViewModel.ProjectName;
+                projectViewModel.CustomerName = projectViewModel.CustomerName;
                 projectViewModel.Status = projectViewModel.Status;
             }
             else
@@ -477,30 +497,51 @@ namespace MicrofyWebApp.Controllers
                     return projectViewModel;
                 }
                 projectViewModel.ProjectName = project.ProjectName;
+                projectViewModel.CustomerName = project.CustomerName;
                 projectViewModel.Status = "New";
             }
 
-            projectViewModel.CustomerName = project.CustomerName;
             projectViewModel.Auditor = project.Auditor;
             projectViewModel.Users = project.Users;
 
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(SolutionObserBaseUrl);
-                var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(projectViewModel), Encoding.UTF8, "application/json")).Result;
 
-                if (result.IsSuccessStatusCode)
+                if (project.flag == "Update")
                 {
-                    projectViewModel.StatusCode = result.IsSuccessStatusCode;
-                    projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+                    var result = client.PutAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(projectViewModel), Encoding.UTF8, "application/json")).Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        projectViewModel.StatusCode = result.IsSuccessStatusCode;
+                        projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
 
+                    }
+                    else
+                    {
+                        projectViewModel.StatusCode = result.IsSuccessStatusCode;
+                        projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+
+                    }
                 }
                 else
                 {
-                    projectViewModel.StatusCode = result.IsSuccessStatusCode;
-                    projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+                    var result = client.PostAsync(Requestapi, new StringContent(JsonConvert.SerializeObject(projectViewModel), Encoding.UTF8, "application/json")).Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        projectViewModel.StatusCode = result.IsSuccessStatusCode;
+                        projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
 
+                    }
+                    else
+                    {
+                        projectViewModel.StatusCode = result.IsSuccessStatusCode;
+                        projectViewModel.responseMessage = await result.Content.ReadAsStringAsync();
+
+                    }
                 }
+
+
             }
             return projectViewModel;
         }
@@ -512,7 +553,7 @@ namespace MicrofyWebApp.Controllers
             SolutionObservationFormInputData dataele = JsonConvert.DeserializeObject<SolutionObservationFormInputData>(data);
             ServiceResponse resp = new ServiceResponse();
             ProjectViewModel auditChecklist = new ProjectViewModel();
-            string checklist = GetSolutionObsDetailsAsync(dataele.projectname);
+            string checklist = GetSolutionObsDetailsAsync(dataele.projectname, dataele.customername);
 
             string Requestapi = $"api/UpdateProject?{SolutionObserCode}";
 
@@ -558,7 +599,7 @@ namespace MicrofyWebApp.Controllers
                 }
             }
             auditChecklist.CreatedUserId = HttpContext.Session.GetString("_userId");
-            if (auditChecklist.Status == "InProgress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null || auditChecklist.Status == "New")
+            if (auditChecklist.Status == "In Progress" || auditChecklist.Status == string.Empty || auditChecklist.Status == null || auditChecklist.Status == "New")
                 auditChecklist.Status = dataele.Status;
             string json = JsonConvert.SerializeObject(auditChecklist);
 
@@ -576,24 +617,32 @@ namespace MicrofyWebApp.Controllers
             return resp;
 
         }
-        public async Task<ActionResult> LoadChecklist(string projectname)
+        public async Task<ActionResult> LoadChecklist(string projectname, string customername)
         {
             AuditViewModel audit = new AuditViewModel();
             ProjectViewModel auditChecklist = new ProjectViewModel();
-            string checklist = GetSolutionObsDetailsAsync(projectname);
+            string checklist = GetSolutionObsDetailsAsync(projectname, customername);
             auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
 
             audit.ProjectDetails = auditChecklist.SolutionObservations.FirstOrDefault().ProjectDetails;
             List<Azuretech> services = new List<Azuretech>();
             foreach (var pro in audit.ProjectDetails.AzureServicesUsed)
             {
+                var configserv = GetServiceByProductCategory(pro.ProductCategory, "");
+                var servicelist = JsonConvert.DeserializeObject<Servicelist>(configserv);
                 var ser = pro.Services.Split(",");
                 foreach (var item in ser)
                 {
-                    Azuretech azuretech = new Azuretech();
-                    azuretech.Services = item;
-                    azuretech.ProductCategory = pro.ProductCategory;
-                    services.Add(azuretech);
+                    foreach (var s in servicelist.services)
+                    {
+                        if (item == s.ServiceName)
+                        {
+                            Azuretech azuretech = new Azuretech();
+                            azuretech.Services = item;
+                            azuretech.ProductCategory = pro.ProductCategory;
+                            services.Add(azuretech);
+                        }
+                    }
                 }
             }
             audit.AzureServicesUsed = services;
@@ -618,37 +667,41 @@ namespace MicrofyWebApp.Controllers
                 {
                     if (auditchk.Service.Equals(firstservice.Services))
                     {
-                        foreach (var auditchksec in auditchk.BestPractices.Where(x => x.Checklist != null).ToList())
-                        {
-                            foreach (var BestPrac in audit.BestPractices)
-                            {
-                                foreach (var sec in BestPrac.BestPractices.Where(x => x.Checklist != null).ToList())
-                                {
-                                    var section = from x in sec.Checklist
-                                                  join y in auditchksec.Checklist
-                                                      on new { a = BestPrac.Service, b = sec.ImpactArea, c = x.Title } equals new { a = auditchk.Service, b = auditchksec.ImpactArea, c = y.Title }
-                                                  select new { x, y };
+                        //foreach (var auditchksec in auditchk.BestPractices.Where(x => x.Checklist != null).ToList())
+                        //{
+                        //    foreach (var BestPrac in audit.BestPractices)
+                        //    {
+                        //        foreach (var sec in BestPrac.BestPractices.Where(x => x.Checklist != null).ToList())
+                        //        {
+                        //            var section = from x in sec.Checklist
+                        //                          join y in auditchksec.Checklist
+                        //                              on new { a = BestPrac.Service, b = sec.ImpactArea, c = x.Title } equals new { a = auditchk.Service, b = auditchksec.ImpactArea, c = y.Title }
+                        //                          select new { x, y };
 
-                                    foreach (var match in section)
-                                    {
-                                        match.x.Input.Value = match.y.Input.Value;
-                                        match.x.Input.Remarks = match.y.Input.Remarks;
-                                    }
-                                }
-                            }
-                        }
+                        //            foreach (var match in section)
+                        //            {
+                        //                match.x.Input.Value = match.y.Input.Value;
+                        //                match.x.Input.Remarks = match.y.Input.Remarks;
+                        //            }
+                        //        }
+                        //    }
+                        //}
+                        audit.BestPractices.Clear();
+                        bplist.Add(auditchk);
+                        audit.BestPractices = bplist;
                     }
                 }
 
             }
 
             audit.projectname = auditChecklist.ProjectName;
+            audit.customername = auditChecklist.CustomerName;
             audit.Status = auditChecklist.Status;
 
             return PartialView("VW_CHECKLIST", audit);
 
         }
-        public async Task<ActionResult> LoadService(string productcat, string service, string projectname)
+        public async Task<ActionResult> LoadService(string productcat, string service, string projectname, string customername)
         {
             AuditViewModel audit = new AuditViewModel();
             ProjectViewModel auditChecklist = new ProjectViewModel();
@@ -656,7 +709,7 @@ namespace MicrofyWebApp.Controllers
             Configurations configurations = new Configurations();
             List<BestPractice> bplist = new List<BestPractice>();
 
-            string checklist = GetSolutionObsDetailsAsync(projectname);
+            string checklist = GetSolutionObsDetailsAsync(projectname, customername);
             configurations = JsonConvert.DeserializeObject<Configurations>(GetAzureProductsAndServicesList());
             auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
 
@@ -674,25 +727,28 @@ namespace MicrofyWebApp.Controllers
                 {
                     if (auditchk.Service.Equals(service))
                     {
-                        foreach (var auditchksec in auditchk.BestPractices.Where(x => x.Checklist != null).ToList())
-                        {
-                            foreach (var BestPrac in audit.BestPractices)
-                            {
-                                foreach (var sec in BestPrac.BestPractices.Where(x => x.Checklist != null).ToList())
-                                {
-                                    var section = from x in sec.Checklist
-                                                  join y in auditchksec.Checklist
-                                                      on new { a = BestPrac.Service, b = sec.ImpactArea, c = x.Title } equals new { a = auditchk.Service, b = auditchksec.ImpactArea, c = y.Title }
-                                                  select new { x, y };
+                        //foreach (var auditchksec in auditchk.BestPractices.Where(x => x.Checklist != null).ToList())
+                        //{
+                        //    foreach (var BestPrac in audit.BestPractices)
+                        //    {
+                        //        foreach (var sec in BestPrac.BestPractices.Where(x => x.Checklist != null).ToList())
+                        //        {
+                        //            var section = from x in sec.Checklist
+                        //                          join y in auditchksec.Checklist
+                        //                              on new { a = BestPrac.Service, b = sec.ImpactArea, c = x.Title } equals new { a = auditchk.Service, b = auditchksec.ImpactArea, c = y.Title }
+                        //                          select new { x, y };
 
-                                    foreach (var match in section)
-                                    {
-                                        match.x.Input.Value = match.y.Input.Value;
-                                        match.x.Input.Remarks = match.y.Input.Remarks;
-                                    }
-                                }
-                            }
-                        }
+                        //            foreach (var match in section)
+                        //            {
+                        //                match.x.Input.Value = match.y.Input.Value;
+                        //                match.x.Input.Remarks = match.y.Input.Remarks;
+                        //            }
+                        //        }
+                        //    }
+                        //}
+                        audit.BestPractices.Clear();
+                        bplist.Add(auditchk);
+                        audit.BestPractices = bplist;
                     }
                 }
 
@@ -704,11 +760,11 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_SERVICES", audit);
 
         }
-        public async Task<ActionResult> LoadSummary(string projectname)
+        public async Task<ActionResult> LoadSummary(string projectname, string customername)
         {
             ProjectViewModel auditChecklist = new ProjectViewModel();
             Summary summary = new Summary();
-            string checklist = GetSolutionObsDetailsAsync(projectname);
+            string checklist = GetSolutionObsDetailsAsync(projectname, customername);
             auditChecklist = JsonConvert.DeserializeObject<ProjectViewModel>(checklist);
             var countimp = 0;
             var countnotimp = 0;
@@ -750,10 +806,10 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_CHECKLIST_SUMMARY", summary);
 
         }
-        public async Task<IActionResult> EditProject(string projectname = null)
+        public async Task<IActionResult> EditProject(string projectname = null, string customername = null)
         {
             AuditViewModel audit = new AuditViewModel();
-            var projdet = GetProjectDetails(projectname);
+            var projdet = GetSolutionObsDetailsAsync(projectname, customername);
             audit.project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
             UserViewModel userViewModel = new UserViewModel();
             userViewModel = await ListAllUsersAsync();
@@ -775,10 +831,13 @@ namespace MicrofyWebApp.Controllers
             audit.ListAuditor = auditor;
             return View(audit);
         }
-        public async Task<bool> DeleteProject(string ApplicationName)
+        public async Task<bool> DeleteProject(string ApplicationName, string CustomerName)
         {
             bool projectresp = false;
-            string Requestapi = $"api/DeleteProject/{ApplicationName}?{SolutionObserCode}";
+            string ProjectName = "ProjectName=" + ApplicationName;
+            string customerName = "CustomerName=" + CustomerName;
+
+            string Requestapi = $"api/DeleteProject?{SolutionObserCode}&{ProjectName}&{customerName}";
             //string JWTResponse = (string)_cache.Get("_UserLoginResponse");
 
             using (var client = new HttpClient())
@@ -797,6 +856,10 @@ namespace MicrofyWebApp.Controllers
 
             }
             return projectresp;
+        }
+        public async Task<IActionResult> Dashboard()
+        {
+            return View();
         }
     }
 }

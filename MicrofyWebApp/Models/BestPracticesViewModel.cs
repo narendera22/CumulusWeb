@@ -41,6 +41,8 @@ namespace MicrofyWebApp.Models
     {
         public List<Computation> Checklist { get; set; }
         public string ProjectName { get; set; }
+        public string customername { get; set; }
+
         public string ProductCategory { get; set; }
         public string Service { get; set; }
         public string Status { get; set; }

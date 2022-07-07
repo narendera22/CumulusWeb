@@ -1046,6 +1046,7 @@ function LoadService(NavParam,displaymode) {
         var dataele = {
             "Checklist": buildJsonInputData($('#' + divid)),
             "ProjectName": json.projectName,
+            "customername": json.customerName,
             "ProductCategory": prodcat,
             "Service": service
         };
@@ -1058,7 +1059,7 @@ function LoadService(NavParam,displaymode) {
         async: false,
         type: "GET",
         url: "/Application/LoadService",
-        data: { "productcat": json.currentProdCat, "service": json.currentService, "projectname": json.projectName },
+        data: { "productcat": json.currentProdCat, "service": json.currentService, "projectname": json.projectName, "customerName": json.customerName },
         contentType: "application/json; charset=utf-8",
         success: function (data) {
             $("#" + json.currentDivid).html(data);

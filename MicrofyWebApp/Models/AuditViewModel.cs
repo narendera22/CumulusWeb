@@ -5,6 +5,7 @@ namespace MicrofyWebApp.Models
     public class AuditViewModel
     {
         public string projectname { get; set; }
+        public string customername { get; set; }
         public ProjectViewModel project { get; set; }
         public List<string> ListUsers { get; set; }
         public List<string> ListAuditor { get; set; }
@@ -24,6 +25,8 @@ namespace MicrofyWebApp.Models
         public ProjectDetails ProjectDetails { get; set; }
         public string UserId { get; set; }
         public string projectname { get; set; }
+        public string customername { get; set; }
+
         public List<Observations> observation { get; set; }
         public List<ActionItems> ActionItems { get; set; }
         public List<BestPractice> Checklist { get; set; }
@@ -105,6 +108,8 @@ namespace MicrofyWebApp.Models
     public class NavtabParam
     {
         public string projectName { get; set; }
+        public string customerName { get; set; }
+
         public string prevProdCat { get; set; }
         public string prevService { get; set; }
         public string prevDivid { get; set; }

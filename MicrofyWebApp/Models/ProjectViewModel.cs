@@ -31,6 +31,10 @@ namespace MicrofyWebApp.Models
         public string ServiceName { get; set; }
 
     }
+    public class Servicelist
+    {
+        public List<AzureTech> services { get; set; }
+    }
     public class ProjectView
     {
         public List<ProjectViewModel> ProjectsList { get; set; }

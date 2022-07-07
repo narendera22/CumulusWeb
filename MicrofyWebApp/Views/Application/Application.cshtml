@@ -125,20 +125,20 @@
                             <td>
                                 @if (role == "User")
                                 {
-                                    <a href="#" class="btn btn-warning" title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("ViewAudit", "Application", new { projectname=p.ProjectName }) + "' ");">
+                                    <a href="#" class="btn btn-warning" title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("ViewAudit", "Application", new { projectname=p.ProjectName,customername=p.CustomerName  }) + "' ");">
                                         <span class="glyphicon glyphicon-eye-open" style="font-size:15px;"></span>
                                     </a>
                                 }
                                 else
                                 {
-                                    <a href="#" class="btn btn-warning" title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("Audit", "Application", new { projectname=p.ProjectName }) + "' ");">
+                                    <a href="#" class="btn btn-warning" title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("Audit", "Application", new { projectname=p.ProjectName,customername=p.CustomerName }) + "' ");">
                                         <span class="glyphicon glyphicon-eye-open" style="font-size:15px;"></span>
                                     </a>
                                 }
 
                             </td>
                             <td style="display:@displaymode">
-                                <a href="#" class="prjedit btn btn-warning" title="Edit Application" onclick="@("window.location.href='" + @Url.Action("EditProject", "Application", new { projectname=p.ProjectName }) + "' ");">
+                                <a href="#" class="prjedit btn btn-warning" title="Edit Application" onclick="@("window.location.href='" + @Url.Action("EditProject", "Application", new { projectname=p.ProjectName,customername=p.CustomerName }) + "' ");">
                                     <span class="glyphicon glyphicon-edit" style="font-size:15px;"></span>
                                 </a>
                                 @if (role == "Administrator")
@@ -331,10 +331,12 @@
         });
         $(".prjdelete").click(function() {
             var Applname = $(this).closest("tr").find('td:eq(0)').text();
+            var customername = $(this).closest("tr").find('td:eq(1)').text();
+
             $.ajax({
                 type: "GET",
                 url: "/Application/DeleteProject",
-                data: { "ApplicationName": Applname },
+                data: { "ApplicationName": Applname, "CustomerName": customername },
                 contentType: "application/json; charset=utf-8",
                 //dataType: 'json',
                 success: function(data) {
@@ -357,7 +359,7 @@
                         content: content,
                         type: type,
                         onAction: function() {
-                            window.location.href = 'Project';
+                            window.location.href = 'Application';
                         }
                     });
                 },
