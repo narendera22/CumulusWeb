@@ -454,7 +454,8 @@ function UpdateMetadata(displaytags, usertags, filename) {
         "displaytags": displaytags,
         "usertags": usertags,
         "phase": phase,
-        "subphase": subphase
+        "subphase": subphase,
+        "flag":"Document"
     };
 
     var redirecturl = "/Repository/UpdateMetadata";
@@ -480,7 +481,8 @@ function DeleteDocument(filename, documentname) {
                     "filename": filename,
                     "documentname": documentname,
                     "phase": phase,
-                    "subphase": subphase
+                    "subphase": subphase,
+                    "flag":"Document"
                 };
 
                 var redirecturl = "/Repository/DeleteDocument";
@@ -906,7 +908,7 @@ function buildProjectjson(form) {
             var file = jQuery($(input[i])).get(0).files[0];
             var fileurl;
             if (file != null) {
-                fileurl = buildFileInput(file, $(input[i]).data('projectname'));
+                fileurl = buildFileInput(file, $(input[i]).data('customername'), $(input[i]).data('projectname'));
                 var fname = file.name;
                 $(input[i]).attr('data-link', fileurl);
                 $(input[i]).parent().find('span').find('span').text(fname);
@@ -966,7 +968,7 @@ $.fn.columnCount = function () {
     return $('th', $(this).find('thead')).length;
 };
 
-function buildFileInput(file, folder) {
+function buildFileInput(file, folder,subfolder) {
     var fileurl = "";
     if (file != null) {
         $.ajax({
@@ -974,8 +976,9 @@ function buildFileInput(file, folder) {
             type: "POST",
             data: function () {
                 var data = new FormData();
-                data.append("phase", "Checklist");
-                data.append("subphase", folder);
+                data.append("flag", "Application");
+                data.append("phase", folder);
+                data.append("subphase", subfolder);
                 data.append("file", jQuery("#fileToUpload").get(0).files[0]);
                 data.append("tags", "");
                 data.append("displaytags", "");

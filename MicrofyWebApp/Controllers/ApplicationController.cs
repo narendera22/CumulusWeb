@@ -31,6 +31,7 @@ namespace MicrofyWebApp.Controllers
         string configUrl = string.Empty;
         string configCode = string.Empty;
         string ChecklistDeliverablesfile = string.Empty;
+        string ApplicationContainer = string.Empty;
 
         public ApplicationController(ILogger<ApplicationController> logger, IConfiguration configuration)
         {
@@ -46,6 +47,7 @@ namespace MicrofyWebApp.Controllers
             configUrl = _configuration.GetValue<string>("Values:ConfigBaseUrl");
             configCode = _configuration.GetValue<string>("Values:ConfigCode");
             ChecklistDeliverablesfile = _configuration.GetValue<string>("Values:ChecklistDeliverables");
+            ApplicationContainer = _configuration.GetValue<string>("Values:ApplicationContainer");
 
 
         }
@@ -833,10 +835,14 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<bool> DeleteProject(string ApplicationName, string CustomerName)
         {
+            string Container ="containername=" + ApplicationContainer;
+            string Phase = "Phase=" + CustomerName;
+            string SubPhase = "SubPhase=" + ApplicationName;
+
             bool projectresp = false;
             string ProjectName = "ProjectName=" + ApplicationName;
             string customerName = "CustomerName=" + CustomerName;
-
+            
             string Requestapi = $"api/DeleteProject?{SolutionObserCode}&{ProjectName}&{customerName}";
             //string JWTResponse = (string)_cache.Get("_UserLoginResponse");
 

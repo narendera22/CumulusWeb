@@ -115,7 +115,7 @@
                                         }
                                     }
 
-                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = p.documentUrl, phase=p.phase,subphase=p.subPhase }) + "'");">
+                                    <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = p.documentUrl, phase=p.phase,subphase=p.subPhase,flag="Document" }) + "'");">
                                         <i class="fa fa-download" aria-hidden="true"></i>  Download
                                     </button>
                                 </div>

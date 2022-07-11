@@ -269,6 +269,7 @@ namespace MicrofyWebApp.Models
         public string phase { get; set; }
         public string subphase { get; set; }
         public string Description { get; set; }
+        public string flag { get; set; }
     }
     public class DeleteDoc
     {
@@ -276,6 +277,7 @@ namespace MicrofyWebApp.Models
         public string documentname { get; set; }
         public string phase { get; set; }
         public string subphase { get; set; }
+        public string flag { get; set; }
 
     }
 

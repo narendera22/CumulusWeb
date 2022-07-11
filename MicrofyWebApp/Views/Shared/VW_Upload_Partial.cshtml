@@ -284,7 +284,7 @@
             <div class="col-md-6">
                 <div class="mt-3 mb-3" style="display:flex;">
                     <i class="fas @filetype fa-3x"></i>
-                    <a href="#" id="fileurl" style="padding-top: 15px; padding-left:5px;" data-url="@url" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = url, phase = Model.selectedPhase, subphase = Model.selectedSubPhases }) + "'");"> @filename</a>
+                    <a href="#" id="fileurl" style="padding-top: 15px; padding-left:5px;" data-url="@url" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = url, phase = Model.selectedPhase, subphase = Model.selectedSubPhases,flag="Document" }) + "'");"> @filename</a>
                 </div>
             </div>
             <div class="col-md-6">
@@ -443,6 +443,7 @@
                 type: "POST",
                 data: function () {
                     var data = new FormData();
+                    data.append("flag", "Document");
                     data.append("phase", phase);
                     data.append("subphase", subphase);
                     data.append("file", jQuery("#fileToUpload").get(0).files[0]);

@@ -93,7 +93,7 @@
             {
                 <span class="tag badge rounded-pill bg-info">
                     <span>@Html.Raw(System.IO.Path.GetFileName(url))</span>
-                    <a href="#" style="padding-left:3px;" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = url, phase="Application",subphase=Model.project.ProjectName }) + "'");"><i class="fa fa-download" title="Download" aria-hidden="true"></i></a>
+                    <a href="#" style="padding-left:3px;" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = url, phase="Application",subphase=Model.project.ProjectName,flag="Application" }) + "'");"><i class="fa fa-download" title="Download" aria-hidden="true"></i></a>
                 </span>
             }
         </div>

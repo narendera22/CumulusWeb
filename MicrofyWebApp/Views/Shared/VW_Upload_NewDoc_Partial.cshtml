@@ -28,7 +28,7 @@
                     <textarea id="txtdescp" class="form-control" required name="txtdescp" rows="4" cols="50" placeholder="Enter Description"></textarea>
                     @*<input name="htmlcode" id="inp_htmlcode" type="hidden" />*@
                     @*<div id="div_editor1" class="richtexteditor" style="width: 960px;margin:0 auto;">
-                        </div>*@
+                    </div>*@
                 </div>
             </div>
 
@@ -42,7 +42,7 @@
                             <option value="TechnologyRelated">Technology</option>
                         </select>
                         @*<input type="text" class="col-md-4 form-control" id="txtkey-1" placeholder="key" onkeydown="addtags($(this))">
-                            <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
+                        <label style="padding-top:5px;">&emsp;:&emsp;</label>*@
                         <input type="text" class="col-md-4 form-control" id="txtvalue-1" placeholder="value" onkeydown="addtags($(this))">
                         <a href="#" class="add" title="Add Tags" style="padding:5px; display:block;" onclick="ViewTag(); return false;">
                             <i class="fas fa-plus"></i>
@@ -103,7 +103,7 @@
     $('.dropdown-toggle').dropdown();
 </script>
 <script type="text/javascript">
-    $(function () {
+    $(function() {
         //var editor1 = new RichTextEditor(document.getElementById("div_editor1"));
         //editor1.attachEvent("change", function () {
         //    document.getElementById("inp_htmlcode").value = editor1.getHTMLCode();
@@ -112,7 +112,7 @@
         //    selector: '#txtdescp'
         //});
 
-        $("#upload").submit(function (e) {
+        $("#upload").submit(function(e) {
             debugger;
             e.preventDefault();
 
@@ -166,7 +166,7 @@
             }
 
             var tag = [];
-            $tags.each(function (key, value) {
+            $tags.each(function(key, value) {
                 var tagkey = $("#tagsddl-" + (key + 1)).val();
                 var tagval = $("#txtvalue-" + (key + 1)).val();
                 if (tagval != "") {
@@ -199,8 +199,9 @@
             $.ajax({
                 url: "/Repository/Upload",
                 type: "POST",
-                data: function () {
+                data: function() {
                     var data = new FormData();
+                    data.append("flag", "Document");
                     data.append("phase", phase);
                     data.append("subphase", subphase);
                     data.append("file", jQuery("#fileToUpload").get(0).files[0]);
@@ -210,14 +211,14 @@
                 }(),
                 contentType: false,
                 processData: false,
-                success: function (response) {
+                success: function(response) {
                     //debugger;
                     //console.log(response);
                     //var description = htmlEncode(editor1.getHTMLCode());
 
                     DocumentSave(response.encodedurl, description);
                 },
-                error: function (jqXHR, textStatus, errorMessage) {
+                error: function(jqXHR, textStatus, errorMessage) {
                     console.log(errorMessage);
                     $.alert({
                         title: 'Error!!',

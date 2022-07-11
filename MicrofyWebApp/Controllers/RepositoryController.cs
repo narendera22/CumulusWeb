@@ -40,7 +40,8 @@ namespace MicrofyWebApp.Controllers
         private IConfiguration _configuration;
         string Userurl = string.Empty;
         string Usercode = string.Empty;
-
+        string ApplicationContainer = string.Empty;
+        string DocumentContainer = string.Empty;
 
         public RepositoryController(ILogger<RepositoryController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
@@ -59,6 +60,8 @@ namespace MicrofyWebApp.Controllers
             SearchCode = _configuration.GetValue<string>("Values:SearchCode");
             Userurl = _configuration.GetValue<string>("Values:UsersBaseUrl");
             Usercode = _configuration.GetValue<string>("Values:UsersCode");
+            DocumentContainer = _configuration.GetValue<string>("Values:DocumentContainer");
+            ApplicationContainer = _configuration.GetValue<string>("Values:ApplicationContainer");
 
         }
         public async Task<IActionResult> DashboardAsync()
@@ -114,14 +117,23 @@ namespace MicrofyWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<FileUploadResponse> UploadAsync(string phase, string subphase, IFormFile file, string tags, string displaytags)
+        public async Task<FileUploadResponse> UploadAsync(string flag,string phase, string subphase, IFormFile file, string tags, string displaytags)
         {
+            string Container = string.Empty;
+            if (flag== "Document")
+            {
+                Container = "containername=" + DocumentContainer;
+            }
+            else if(flag== "Application")
+            {
+                Container = "containername=" + ApplicationContainer;
+            }
             using (var client = new HttpClient())
             {
                 byte[] data;
                 string Phase = "Phase=" + Encoder(phase);
                 string SubPhase = "SubPhase=" + Encoder(subphase);
-                string Requestapi = $"api/Upload?{AssetCode}&{Phase}&{SubPhase}";
+                string Requestapi = $"api/Upload?{AssetCode}&{Phase}&{SubPhase}&{Container}";
                 FileUploadResponse FileUploadReponseValue = new FileUploadResponse();
 
                 using (var br = new BinaryReader(file.OpenReadStream()))
@@ -304,12 +316,21 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_Upload_NewDoc_Partial");
         }
 
-        public FileResult DownloadDocument(string url, string phase, string subphase)
+        public FileResult DownloadDocument(string url, string phase, string subphase,string flag)
         {
+            string Container = string.Empty;
+            if (flag == "Document")
+            {
+                Container = "containername=" + DocumentContainer;
+            }
+            else if (flag == "Application")
+            {
+                Container = "containername=" + ApplicationContainer;
+            }
             string filename = Path.GetFileName(url);
             string Phase = "Phase=" + Encoder(phase);
             string SubPhase = "SubPhase=" + Encoder(subphase);
-            string Requestapi = $"api/Download/{filename}?{AssetCode}&{Phase}&{SubPhase}";
+            string Requestapi = $"api/Download/{filename}?{AssetCode}&{Phase}&{SubPhase}&{Container}";
             bool Activity;
             using (var client = new HttpClient())
             {
@@ -357,10 +378,19 @@ namespace MicrofyWebApp.Controllers
         [HttpPost]
         public bool UpdateMetadata(UpdateMetadata metadata)
         {
+            string Container = string.Empty;
+            if (metadata.flag == "Document")
+            {
+                Container = "containername=" + DocumentContainer;
+            }
+            else if (metadata.flag == "Application")
+            {
+                Container = "containername=" + ApplicationContainer;
+            }
             string Phase = "Phase=" + Encoder(metadata.phase);
             string SubPhase = "SubPhase=" + Encoder(metadata.subphase);
             string file = Path.GetFileName(metadata.filename);
-            string Requestapi = $"api/UpdateMetaData/{file}?{AssetCode}&{Phase}&{SubPhase}";
+            string Requestapi = $"api/UpdateMetaData/{file}?{AssetCode}&{Phase}&{SubPhase}&{Container}";
             var resp = false;
             using (var client = new HttpClient())
             {
@@ -380,10 +410,19 @@ namespace MicrofyWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> DeleteDocumentAsync(DeleteDoc deletedoc)
         {
+            string Container = string.Empty;
+            if (deletedoc.flag == "Document")
+            {
+                Container = "containername=" + DocumentContainer;
+            }
+            else if (deletedoc.flag == "Application")
+            {
+                Container = "containername=" + ApplicationContainer;
+            }
             string Phase = "Phase=" + Encoder(deletedoc.phase);
             string SubPhase = "SubPhase=" + Encoder(deletedoc.subphase);
             string file = Path.GetFileName(deletedoc.filename);
-            string RequestAssertapi = $"api/Delete/{file}?{AssetCode}&{Phase}&{SubPhase}";
+            string RequestAssertapi = $"api/Delete/{file}?{AssetCode}&{Phase}&{SubPhase}&{Container}";
             string RequestDocapi = $"api/Delete/{deletedoc.documentname}?{DocCode}&{Phase}&{SubPhase}";
             DocumentViewModel DocModel = new DocumentViewModel();
             var resp = false;
