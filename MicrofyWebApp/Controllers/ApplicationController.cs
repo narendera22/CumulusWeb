@@ -838,7 +838,21 @@ namespace MicrofyWebApp.Controllers
             string Container ="containername=" + ApplicationContainer;
             string Phase = "Phase=" + CustomerName;
             string SubPhase = "SubPhase=" + ApplicationName;
+            string flag = "flag=Application";
+            string RequestAssertapi = $"api/Delete/ ?{AssetCode}&{Phase}&{SubPhase}&{Container}&{flag}";
 
+            var resp = false;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Asseturl);
+                var response = client.DeleteAsync(RequestAssertapi).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    resp = response.IsSuccessStatusCode;
+                }
+
+            }
             bool projectresp = false;
             string ProjectName = "ProjectName=" + ApplicationName;
             string customerName = "CustomerName=" + CustomerName;

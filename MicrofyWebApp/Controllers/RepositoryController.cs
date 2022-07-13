@@ -117,14 +117,14 @@ namespace MicrofyWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<FileUploadResponse> UploadAsync(string flag,string phase, string subphase, IFormFile file, string tags, string displaytags)
+        public async Task<FileUploadResponse> UploadAsync(string flag, string phase, string subphase, IFormFile file, string tags, string displaytags)
         {
             string Container = string.Empty;
-            if (flag== "Document")
+            if (flag == "Document")
             {
                 Container = "containername=" + DocumentContainer;
             }
-            else if(flag== "Application")
+            else if (flag == "Application")
             {
                 Container = "containername=" + ApplicationContainer;
             }
@@ -316,7 +316,7 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_Upload_NewDoc_Partial");
         }
 
-        public FileResult DownloadDocument(string url, string phase, string subphase,string flag)
+        public FileResult DownloadDocument(string url, string phase, string subphase, string flag)
         {
             string Container = string.Empty;
             if (flag == "Document")
@@ -410,19 +410,13 @@ namespace MicrofyWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> DeleteDocumentAsync(DeleteDoc deletedoc)
         {
-            string Container = string.Empty;
-            if (deletedoc.flag == "Document")
-            {
-                Container = "containername=" + DocumentContainer;
-            }
-            else if (deletedoc.flag == "Application")
-            {
-                Container = "containername=" + ApplicationContainer;
-            }
+            string Container = "containername=" + DocumentContainer;
+
             string Phase = "Phase=" + Encoder(deletedoc.phase);
             string SubPhase = "SubPhase=" + Encoder(deletedoc.subphase);
+            string flag = "flag=Document";
             string file = Path.GetFileName(deletedoc.filename);
-            string RequestAssertapi = $"api/Delete/{file}?{AssetCode}&{Phase}&{SubPhase}&{Container}";
+            string RequestAssertapi = $"api/Delete/{file}?{AssetCode}&{Phase}&{SubPhase}&{Container}&{flag}";
             string RequestDocapi = $"api/Delete/{deletedoc.documentname}?{DocCode}&{Phase}&{SubPhase}";
             DocumentViewModel DocModel = new DocumentViewModel();
             var resp = false;
