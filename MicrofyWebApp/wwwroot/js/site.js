@@ -1051,7 +1051,8 @@ function LoadService(NavParam,displaymode) {
             "ProjectName": json.projectName,
             "customername": json.customerName,
             "ProductCategory": prodcat,
-            "Service": service
+            "Service": service,
+            "Status": "In Progress"
         };
         var redirecturl = "/Application/InsertBestPractices";
         $.post(redirecturl, { "data": JSON.stringify(dataele) }, function (data) {

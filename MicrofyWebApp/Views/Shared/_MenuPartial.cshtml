@@ -77,6 +77,10 @@
                                 @if (menu.MenuLevel1 != null)
                                 {
                                     <ul class="submenu dropdown-menu" style="display:none;">
+                                        @if (menu.Name == "Repository")
+                                        {
+                                            <li><a class="nav-link" href="#" onclick="@("window.location.href='" + @Url.Action("Dashboard", "Repository") + "'");">Dashboard </a></li>
+                                        }
 
                                         @for (int j = 0; j < menu.MenuLevel1.Count; j++)
                                         {
