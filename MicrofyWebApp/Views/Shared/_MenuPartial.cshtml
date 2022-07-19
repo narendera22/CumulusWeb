@@ -33,17 +33,26 @@
 
     @foreach (var con in config.Menu)
     {
-        foreach (var useracc in userdet.moduleAccess)
+        if (userdet.moduleAccess.Count > 0)
         {
-            if (con.Name == useracc.Name)
+            foreach (var useracc in userdet.moduleAccess)
             {
-                con.Visible = useracc.Visible;
+                if (con.Name == useracc.Name)
+                {
+                    con.Visible = useracc.Visible;
+                }
+
             }
-            if (role != "Administrator")
-            {
-                if (con.Name == "Settings" || con.Name == "Activity")
-                    con.Visible = "False";
-            }
+        }
+        else
+        {
+            if (con.Name == "Repository")
+                con.Visible = "False";
+        }
+        if (role != "Administrator")
+        {
+            if (con.Name == "Settings" || con.Name == "Activity")
+                con.Visible = "False";
         }
     }
     <section class="app">

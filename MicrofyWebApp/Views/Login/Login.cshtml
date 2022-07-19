@@ -19,17 +19,17 @@
 <body>
     @*<div class="body">
 
-        </div>
-        <div class="grad"></div>*@
+    </div>
+    <div class="grad"></div>*@
     @*<div class="header">
-            <div class="imglogo">
-                <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" />
-            </div>
-        </div>*@
+    <div class="imglogo">
+    <img id="img_logo" alt="Logo" src="~/Image/Cumulus.png" />
+    </div>
+    </div>*@
 
     @*@using (Html.BeginForm("Dashboard", "Repository", FormMethod.Post, new { enctype = "multipart/form-data" })) *@
     @*<input type="text" id="txtuname" placeholder="Enter Username" name="uname" required><br>
-        <input type="password" id="txtpwd" placeholder="Enter Password" name="psw" required><br>*@
+    <input type="password" id="txtpwd" placeholder="Enter Password" name="psw" required><br>*@
 
     <div class="container">
         <div class="row">
@@ -73,38 +73,48 @@
 </html>
 <script type="text/javascript">
 
-    $(document).ready(function () {
-        $('#btnsubmit').click(function (e) {
+    $(document).ready(function() {
+        $('#btnsubmit').click(function(e) {
             e.preventDefault();
-        $('#ResponseMessage').html("");
-         var Username = $('#txtuname').val();
-        var Password = $('#txtpwd').val();
-        if (Username == "") {
-            $('#ResponseMessage').html("Enter UserName");
-            return false;
-        }
-        if (Password == "") {
-            $('#ResponseMessage').html("Enter Password");
-            return false;
-        }
-                var redirecturl = "/Login/UserLogin";
-                var loginDetails = {
-                    UserId: Username,
-                    Password: Password
+            $('#ResponseMessage').html("");
+            var Username = $('#txtuname').val();
+            var Password = $('#txtpwd').val();
+            if (Username == "") {
+                $('#ResponseMessage').html("Enter UserName");
+                return false;
+            }
+            if (Password == "") {
+                $('#ResponseMessage').html("Enter Password");
+                return false;
+            }
+            var redirecturl = "/Login/UserLogin";
+            var loginDetails = {
+                UserId: Username,
+                Password: Password
+            }
+            $.post(redirecturl, loginDetails, function(data) {
+                debugger;
+                if (data.statusCode == true) {
+                    $('#ResponseMessage').html("");
+                    if (data.moduleAccess.length > 0) {
+                        $.each(data.moduleAccess, function(i, value) {
+                            if (value.name == "Repository" && value.visible == "true")
+                                window.location.href = '@Url.Action("Dashboard", "Repository")';
+                            else
+                                window.location.href = '@Url.Action("Application", "Application")';
+                        });
+                    }
+                    else
+                        window.location.href = '@Url.Action("Application", "Application")';
                 }
-                $.post(redirecturl, loginDetails, function (data) {
-                    if (data.statusCode == true) {
-                        $('#ResponseMessage').html("");
-                        window.location.href = '@Url.Action("Dashboard", "Repository")';
-                    }
-                    else {
-                        $('#ResponseMessage').html(data.responseMessage);
-                    }
+                else {
+                    $('#ResponseMessage').html(data.responseMessage);
+                }
 
-                });
+            });
 
         });
-        $('.login').keypress(function (e) {
+        $('.login').keypress(function(e) {
             if (e.which == 13) {//Enter key pressed
                 $('#btnsubmit').click();
             }
