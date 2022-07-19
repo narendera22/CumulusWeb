@@ -320,6 +320,11 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<IActionResult> ViewAuditAsync(string projectname = null, string customername = null)
         {
+            string userid = HttpContext.Session.GetString("_userId");
+            if (userid == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
             AuditViewModel audit = new AuditViewModel();
             Configurations configurations = new Configurations();
             configurations = JsonConvert.DeserializeObject<Configurations>(GetAzureProductsAndServicesList());
@@ -422,6 +427,11 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<IActionResult> ApplicationAsync()
         {
+            string userid = HttpContext.Session.GetString("_userId");
+            if (userid == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
             ProjectView projRespon = new ProjectView();
             UserViewModel userViewModel = new UserViewModel();
             AuditViewModel auditViewModel = new AuditViewModel();
@@ -810,6 +820,11 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<IActionResult> EditProject(string projectname = null, string customername = null)
         {
+            string userid = HttpContext.Session.GetString("_userId");
+            if (userid == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
             AuditViewModel audit = new AuditViewModel();
             var projdet = GetSolutionObsDetailsAsync(projectname, customername);
             audit.project = JsonConvert.DeserializeObject<ProjectViewModel>(projdet);
