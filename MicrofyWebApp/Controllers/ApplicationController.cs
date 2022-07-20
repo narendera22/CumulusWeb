@@ -376,6 +376,11 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<IActionResult> AuditAsync(string projectname = null, string customername = null)
         {
+            string userid = HttpContext.Session.GetString("_userId");
+            if (userid == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
             AuditViewModel audit = new AuditViewModel();
             Configurations configurations = new Configurations();
             configurations = JsonConvert.DeserializeObject<Configurations>(GetAzureProductsAndServicesList());
