@@ -316,6 +316,53 @@ namespace MicrofyWebApp.Controllers
             return PartialView("VW_Upload_NewDoc_Partial");
         }
 
+        [HttpPost]
+        public ContentData DownloadFile()
+        {
+            var body = new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            var Data = JsonConvert.DeserializeObject<InputData>(body.Result);
+
+            string Container = string.Empty;
+            if (Data.flag == "Document")
+            {
+                Container = "containername=" + DocumentContainer;
+            }
+            else if (Data.flag == "Application")
+            {
+                Container = "containername=" + ApplicationContainer;
+            }
+            string filename = Path.GetFileName(Data.url);
+            string Phase = "Phase=" + Encoder(Data.phase);
+            string SubPhase = "SubPhase=" + Encoder(Data.subphase);
+            string Requestapi = $"api/Download/{filename}?{AssetCode}&{Phase}&{SubPhase}&{Container}";
+            bool Activity;
+            bool isFileExists = true;
+            using (var client = new HttpClient())
+            {
+
+                client.BaseAddress = new Uri(Asseturl);
+                Task<HttpResponseMessage> response = client.GetAsync(Requestapi);
+
+                HttpResponseMessage file = new HttpResponseMessage();
+                file = response.Result;
+                if (file.StatusCode == HttpStatusCode.NotFound)
+                {
+                    isFileExists = false;
+                }
+
+                byte[] bytes = file.Content.ReadAsByteArrayAsync().Result;
+                string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);
+                var retData = new ContentData
+                {
+                    Content = base64,
+                    FileName = filename,
+                    IsFileExists = isFileExists
+                };
+                Activity = ActivityTracker("DownloadDocument", $"{Path.GetFileName(Path.GetDirectoryName(Data.url))}/{Path.GetFileName(Data.url)}");
+                return retData;
+            }
+        }
+
         public FileResult DownloadDocument(string url, string phase, string subphase, string flag)
         {
             string Container = string.Empty;
@@ -465,4 +512,20 @@ namespace MicrofyWebApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
+    //DownloadDocument(Repository)-StartHere
+    public class InputData
+    {
+        public string url { get; set; }
+        public string phase { get; set; }
+        public string subphase { get; set; }
+        public string flag { get; set; }
+    }
+    public class ContentData
+    {
+        public string Content { get; set; }
+        public string FileName { get; set; }
+        public bool IsFileExists { get; set; }
+    }
+    //DownloadDocument(Repository)-StartHere
+
 }

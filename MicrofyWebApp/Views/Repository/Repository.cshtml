@@ -245,10 +245,13 @@
                                             <div class="col-md-8">
                                                 <div class="float-right" style="display:flex;">
                                                     <div>
-
-                                                        <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = doc.Decodedurl, phase=p.phase,subphase=string.Empty,flag="Document" }) + "'");">
+                                                        <button type="submit" class="btn btn-primary" id="btnupload1" onclick="DownloadFile('@doc.Decodedurl','@p.phase','@string.Empty','Document')">                                                            
                                                             <i class="fa fa-download" aria-hidden="true"></i>  Download
                                                         </button>
+
+                                                        @*<button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = doc.Decodedurl, phase=p.phase,subphase=string.Empty,flag="Document" }) + "'");">
+                                                            <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                                        </button>*@
                                                     </div>
                                                     <div style="display:@displaymode; padding-left:5px;">
                                                         <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@doc.name")'>
@@ -443,10 +446,12 @@
                                                     <div class="col-md-8">
                                                         <div class="float-right" style="display:flex;">
                                                             <div>
-
-                                                                <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = subdoc.Decodedurl, phase=p.phase,subphase=sub.name,flag="Document"}) + "'");">
+                                                                <button type="submit" class="btn btn-primary" id="btnupload2" onclick="DownloadFile('@subdoc.Decodedurl','@p.phase','@sub.name','Document')">                                                            
                                                                     <i class="fa fa-download" aria-hidden="true"></i>  Download
                                                                 </button>
+                                                               @* <button type="submit" class="btn btn-primary" id="btnupload" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = subdoc.Decodedurl, phase=p.phase,subphase=sub.name,flag="Document"}) + "'");">
+                                                                    <i class="fa fa-download" aria-hidden="true"></i>  Download
+                                                                </button>*@
                                                             </div>
                                                             <div style="display:@displaymode; padding-left:5px;">
                                                                 <button type="submit" class="btn btn-primary" id="btnupload" onclick='UploadDocument("@subdoc.name")'>
