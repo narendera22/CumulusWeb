@@ -123,7 +123,7 @@
                             <td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>
                             <td>@(p.Status!="" ? p.Status : "New")</td>
                             <td>
-                                @if (role == "User")
+                                @if (role == "User" || p.Status=="Completed")
                                 {
                                     <a href="#" class="btn btn-warning" title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("ViewAudit", "Application", new { projectname=p.ProjectName,customername=p.CustomerName  }) + "' ");">
                                         <span class="glyphicon glyphicon-eye-open" style="font-size:15px;"></span>

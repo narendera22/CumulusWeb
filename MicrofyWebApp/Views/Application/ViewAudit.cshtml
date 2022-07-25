@@ -1,4 +1,10 @@
 ﻿@model MicrofyWebApp.Models.AuditViewModel
+@using System.Text.RegularExpressions
+@{
+    string FirstPanel = string.Empty;
+    string LastPanel = string.Empty;
+    string isactivenav = "active";
+}
 
 <title>@ViewData["Title"] - Welcome to Cumulus</title>
 <link rel="stylesheet" href="~/css/audit.css" />
@@ -31,15 +37,20 @@
             </div>
 
         </div>
+        @* @using (Html.BeginForm("Export", "Application", FormMethod.Post))
+        {
+        <input type="hidden" name="GridHtml" />
+        <input type="submit" id="btnSubmit" value="Export" />
+        }*@
         <!-- MultiStep Form -->
         <div class="container-fluid" id="grad1">
             <div class="row justify-content-center mt-0">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="row col-md-12" >
+                        <div class="row col-md-12">
                             <div class="form-group col-md-10 row ">
                                 <label class="control-label col-md-5">
-                                    <strong>Solution Observation :</strong> @Model.project.Auditor
+                                    <strong>Solution Collaborator :</strong> @Model.project.Auditor
                                 </label><br>
                                 <label class="control-label col-md-5">
                                     <strong>Status : </strong> @Model.project.Status
@@ -51,327 +62,286 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 mx-0">
-                                <form id="msform">
-                                    <!-- progressbar -->
-                                    <ul id="progressbar">
-                                        <li class="active" id="project"><strong>Application Overview</strong></li>
-                                        <li id="checklist"><strong>Checklist</strong></li>
-                                        <li id="observations"><strong>Observation</strong></li>
-                                        <li id="action"><strong>Action Items</strong></li>
-                                        <li id="summary"><strong>Summary</strong></li>
-                                    </ul>
-                                    <!-- fieldsets -->
-                                    <fieldset>
-                                        <div class="form-card" id="ProjectDetails" name="Project Details" data-projectname="@Model.project.ProjectName" data-customername="@Model.project.CustomerName">
-                                            <div class="row col-md-12">
-                                                <div class="form-group col-md-6 row ">
-                                                    <label class="control-label col-md-5">
-                                                        @*<span style="color:red;">*</span>*@
-                                                        Application Name
-                                                    </label>
-                                                    <div class="col-md-6 ml-4">
-                                                        <input name="ProjectName" value="@Model.project.ProjectName" class="form-control ProjectDet" type="text" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-md-6 row">
-                                                    <label class="control-label col-md-5">
-                                                        @*<span style="color:red;">*</span>*@
-                                                        Customer Name
-                                                    </label>
-                                                    <div class="col-md-6 ml-4">
-                                                        <input name="CustomerName" value="@Model.project.CustomerName" class="form-control ProjectDet" type="text" readonly>
-                                                    </div>
-                                                </div>
+                                <!-- progressbar -->
+                                @*<ul id="progressbar">
+                                <li class="active" id="project"><strong>Application Overview</strong></li>
+                                <li id="checklist"><strong>Checklist</strong></li>
+                                <li id="observations"><strong>Observation</strong></li>
+                                <li id="action"><strong>Action Items</strong></li>
+                                <li id="summary"><strong>Summary</strong></li>
+                                </ul>*@
+                                <!-- fieldsets -->
 
+                                <div class="form-card" id="ProjectDetails" name="Project Details" data-projectname="@Model.project.ProjectName" data-customername="@Model.project.CustomerName">
+                                    <label class="col-md-12" style="padding: 5px 5px; font-size: 1.2rem;background: #eee;width:98.5%">
+                                        <strong>Application Overview</strong>
+                                    </label>
+                                    <div class="row col-md-12">
+                                        <div class="form-group col-md-12 row ">
+                                            <label class="control-label col-md-3">
+                                                <strong>Application Name</strong>
+
+                                            </label>
+                                            <label class="control-label col-md-3">
+                                                @Model.project.ProjectName
+                                            </label>
+                                            <label class="control-label col-md-3">
+                                                <strong>Customer Name</strong>
+
+                                            </label>
+                                            <label class="control-label col-md-3">
+                                                @Model.project.CustomerName
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+                                    @if (Model.ProjectDetails == null)
+                                    {
+                                        <div class="row col-md-12">
+                                            <div class="form-group col-md-12 row ">
+                                                <label class="control-label col-md-3">
+                                                    <strong>Customer Overview</strong>
+
+                                                </label>
+                                                <label class="control-label col-md-9">
+                                                </label>
                                             </div>
-                                            @if (Model.ProjectDetails == null)
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    <strong>Application Overview</strong>
+
+                                                </label>
+                                                <label class="control-label col-md-9">
+                                                </label>
+                                            </div>
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    <strong>Start Date</strong>
+                                                </label>
+                                                <label class="control-label col-md-3">
+                                                </label>
+                                                <label class="control-label col-md-3">
+                                                    <strong>Tentative End Date</strong>
+                                                </label>
+                                                <label class="control-label col-md-3">
+                                                </label>
+                                            </div>
+
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    <strong>Deliverables</strong>
+                                                </label>
+                                                <label class="control-label col-md-3">
+                                                </label>
+                                                <label class="control-label col-md-3">
+                                                    <strong>Application Architecture</strong>
+                                                </label>
+                                                <label class="control-label col-md-3">
+                                                </label>
+                                            </div>
+
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    <strong>Technologies in Use</strong>
+
+                                                </label>
+                                                <label class="control-label col-md-9">
+                                                </label>
+                                            </div>
+                                            <div class="form-group col-md-12 row">
+                                                <label class="control-label col-md-3">
+                                                    <strong>Azure Services Used</strong>
+
+                                                </label>
+                                                <label class="control-label col-md-5">
+                                                </label>
+                                            </div>
+                                            <div class="form-group col-md-12 row">
+                                                <table cellpadding="5" cellspacing="0" style="margin-left:15px; border: 1px solid #ccc; font-size: 11pt;" id="tbservice" class="table table-bordered table-hover" name="AzureServicesUsed">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th style="background-color: #B8DBFD; border: 1px solid #ccc">Product Category</th>
+                                                            <th style="background-color: #B8DBFD; border: 1px solid #ccc">Services</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @await Html.PartialAsync("VW_VIEW_AUDIT", Model)
+                                    }
+                                    @if (Model.BestPractices != null)
+
+                                    {
+                                        <label class="col-md-12" style="padding: 5px 5px; font-size: 1.2rem;background: #eee; width:98.5%">
+                                            <strong>Checklist</strong>
+                                        </label>
+                                        <div class="rounded shadow mr-3 pt-2 ">
+                                            <ul class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 " style="font-size:x-small" id="nav-tab" role="tablist">
+                                                @foreach (var mod in Model.BestPractices.Select((value, i) => new { i, value }))
+                                                {
+                                                    FirstPanel = Model.BestPractices.First().Service;
+                                                    isactivenav = string.Empty;
+                                                    if (FirstPanel == mod.value.Service)
+                                                    {
+                                                        isactivenav = "active";
+                                                    }
+
+                                                    <li class="nav-item flex-sm">
+                                                        <a class="nav-link border-0 text-uppercase font-weight-bold  @isactivenav" role="tab" aria-controls="Repository" aria-selected="true" data-toggle="tab" href="#@mod.value.Service.Substring(0, 3).Replace(" ", "")_@mod.i">@mod.value.Service</a>
+                                                    </li>
+
+                                                }
+
+                                            </ul>
+
+                                        </div>
+                                        <div class="tab-content mr-3" id="bestPracDiv">
+                                            @foreach (var mod in Model.BestPractices.Select((value, i) => new { i, value }))
                                             {
-                                                <div class="row col-md-12">
-                                                    <div class="form-group col-md-12 row ">
-                                                        <label class="control-label col-md-3">
-                                                            @*<span style="color:red;">*</span>*@
-                                                            Customer Overview
-                                                        </label>
-                                                        <div class="col-md-9" style="padding-left: 0px;">
-                                                            <textarea class="summernote" required name="CustomerOverview" rows="4" cols="50" disabled placeholder="Enter Customer Overview">
-                                                                                                                                                                                                                                                </textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-md-12 row">
-                                                        <label class="control-label col-md-3">
-                                                            Application Overview
-                                                        </label>
-                                                        <div class="col-md-9" style="padding-left: 0px;">
-                                                            <textarea class="summernote" required name="ProjectOverview" rows="4" cols="50" disabled placeholder="Enter Project Overview">
-                                                                                                                                                                                                                                                </textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-md-6 row">
-                                                        <label class="control-label col-md-5">
-                                                            @*<span style="color:red;">*</span>*@
-                                                            Start Date
-                                                        </label>
-                                                        <div class="col-md-6 ml-4">
-                                                            <input class="form-control ProjectDet" placeholder="dd/mm/yyyy" id="startdate" readonly name="ProjectStartDate" type="date" min="1997-01-01" max="2030-12-31">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-md-6 row">
-                                                        <label class="control-label col-md-5">
-                                                            @*<span style="color:red;">*</span>*@
-                                                            Tentative End Date
-                                                        </label>
-                                                        <div class="col-md-6 ml-4">
-                                                            <input class="form-control ProjectDet" placeholder="dd/mm/yyyy" id="startdate" readonly name="TentativeEndDate" type="date" min="1997-01-01" max="2030-12-31">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-md-6 row">
-                                                        <label class="control-label col-md-5">
-                                                            @*<span style="color:red;">*</span>*@
-                                                            Deliverables
-                                                        </label>
-                                                        <div class="col-md-6 ml-4">
-                                                            <select multiple="multiple" id="users" name="ProjectDeliverables" disabled class="form-control ProjectDet selectpicker  multiselect" data-live-search="true" data-field="multiselect" style="width: 10em;">
-                                                                @foreach (var item in Model.Deliverables)
-                                                                {
+                                                FirstPanel = Model.BestPractices.First().Service;
+                                                isactivenav = string.Empty;
+                                                if (FirstPanel == mod.value.Service)
+                                                {
+                                                    isactivenav = "active show";
+                                                }
 
-                                                                    <option value="@item.Name">@item.Name</option>
-                                                                }
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-md-6 row">
-                                                        <label class="control-label col-md-5">
-                                                            @*<span style="color:red;">*</span>*@
-                                                            Application Architecture
-                                                        </label>
-                                                        <div class="col-md-6 ml-4">
-                                                            <input type="file" class="form-control ProjectDet" data-link="" id="fileToUpload" disabled data-projectname="@Model.projectname" data-customername="@Model.project.CustomerName" name="ApplicationArchitecture" required />
-                                                            <span style="display:none;" class="tag badge rounded-pill bg-info">
-                                                                <span></span>
-                                                                <a href="#" onclick="removeFile(this);"><i class="remove fa fa-times-circle glyphicon-white"></i></a>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-md-12 row">
-                                                        <label class="control-label col-md-3">
-                                                            Technologies in Use
-                                                        </label>
-                                                        <div class="col-md-9" style="padding-left: 0px;">
-                                                            <textarea class="summernote" required name="TechnologiesInUse" rows="4" cols="50" disabled placeholder="Enter Technologies in Use">
-                                                                                                                                                                                                                                                </textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-md-12 row">
-                                                        <label class="control-label col-md-3">
-                                                            Azure Services Used
-                                                        </label>
-                                                        <div class=" row col-md-9 ">
-                                                            <div id="dynamic-Serv-field-1" class=" col-md-12 form-group dynamic-field" style="display:flex;padding-left: 0px;" data-tags="add">
-                                                                <select id="prodcat" name="ProductCategory" class=" col-md-6 form-control selectpicker mr-2" disabled>
-                                                                    <option value="Select">Select</option>
-                                                                    @foreach (var item in Model.Configuration)
-                                                                    {
-                                                                        <option value="@item.ProductCategory">@item.ProductCategory</option>
-                                                                    }
-                                                                </select>
-                                                                <div id="divserv" style="display:none;">
-                                                                    <select multiple="multiple" name="Services" id="ddlserv" class=" col-md-5 form-control selectpicker  multiselect" data-live-search="true" data-field="multiselect">
-                                                                    </select>
+                                                <div id="@mod.value.Service.Substring(0, 3).Replace(" ", "")_@mod.i" role="tabpanel" aria-labelledby="@mod.value.Service.Substring(0, 3).Replace(" ", "")_@mod.i-tab" class="tab-pane py-3 fade @isactivenav">
+                                                    @foreach (var ipsection in mod.value.BestPractices.Select((value, i) => new { i, value }))
+                                                    {
+
+                                                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading" role="tab" id="headingOne">
+                                                                    <h6 class="panel-title">
+                                                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i" aria-expanded="false" aria-controls="@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i">
+                                                                            @ipsection.value.ImpactArea
+                                                                        </a>
+                                                                    </h6>
                                                                 </div>
+                                                                <div id="@ipsection.value.ImpactArea.Substring(0, 3).Replace(" ", "")_@ipsection.i" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                                                    <div class="panel-body">
+                                                                        @foreach (var checklist in ipsection.value.Checklist)
+                                                                        {
+                                                                            <div class="form-group row col-md-12" style="display: flex; margin-bottom: 0.1rem;">
+                                                                                <label class="control-label col-md-12">
+                                                                                    <b>@checklist.Title</b>
 
-                                                                <a href="#" class="add" title="Add Service" style="padding:5px; display:none;" onclick="addservices(); return false;">
-                                                                    <i class="fas fa-plus"></i>
-                                                                </a>
+                                                                                    <p class="practicedesp">
+                                                                                        @{
+                                                                                            Regex r = new Regex(@"(https?://[^\s]+)");
+                                                                                            var myString = r.Replace(checklist.Description, "<a href=\"$1\" style=\"color: #0366d6;\">$1</a>");
+                                                                                        }
+                                                                                        @Html.Raw(myString)
+                                                                                    </p>
+
+                                                                                </label>
+
+                                                                            </div>
+                                                                            <div class="form-group row col-md-12">
+                                                                                <label class="control-label col-md-6">
+                                                                                    <strong>Action : </strong>@checklist.Input.Value
+
+                                                                                </label>
+
+                                                                                @{
+                                                                                    var displayatt = "none";
+                                                                                    if (checklist.Input.Value != "Required – Implemented" && checklist.Input.Value != "")
+                                                                                    {
+                                                                                        displayatt = "block";
+                                                                                    }
+                                                                                }
+                                                                                <label class="control-label col-md-6" style="display:@displayatt;">
+                                                                                    <strong>Remarks : </strong>@checklist.Input.Remarks
+
+                                                                                </label>
+                                                                            </div>
+                                                                            <hr class="solid">
+                                                                        }
+
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group col-md-12 row">
-                                                        <table style="margin-left:15px;" id="tbservice" class="table table-bordered table-hover" name="AzureServicesUsed">
-                                                            <thead class="thead-light">
-                                                                <tr>
-                                                                    <th>Product Category</th>
-                                                                    <th>Services</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                    }
                                                 </div>
                                             }
-                                            else
-                                            {
-                                                @await Html.PartialAsync("VW_VIEW_AUDIT", Model)
-                                            }
                                         </div>
-                                        <input type="button" name="next" class="next action-button btn btn-primary" value="Next Step" />
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-card" id="ChecklistServices" name="Checklist Services" data-projectname="@Model.project.ProjectName" data-customername="@Model.project.CustomerName">
-                                        </div>
-                                        <input type="button" name="previous" class="previous action-button-previous btn btn-primary" value="Previous" />
-                                        <input type="button" name="next" class="next action-button btn btn-primary" value="Next Step" />
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-card" id="Observation" name="Observation" data-projectname="@Model.project.ProjectName" data-customername="@Model.project.CustomerName">
-                                            <div class="form-group col-md-12 row">
-                                                <label class="control-label col-md-3">
-                                                    Impact Area
-                                                </label>
-                                                <div class="col-md-6 ml-4">
-                                                    <input class="form-control obserdet" placeholder="Enter Impact Area" id="impactarea" name="Impactarea" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-12 row">
-                                                <label class="control-label col-md-3">
-                                                    Observations
-                                                </label>
-                                                <div class="col-md-8 ml-4">
-                                                    <textarea class="summernote" placeholder="Enter Observation" id="observation" name="Observation" type="text"></textarea>
-                                                </div>
-                                                @* <a href="#" class="add" title="Add Service" style="padding:5px; display:block;" onclick="addobservation(); return false;">
-                                                <i class="fas fa-plus"></i>
-                                                </a>*@
-                                            </div>
-                                            <div class="col-md-12 row" style="padding-bottom: 5px;">
-                                                <div class="col-md-6"></div>
-                                                <div class="col-md-6">
-                                                    <input type="button" name="Add" style="display:none;" class="btn btn-primary" value="Add" onclick="addobservation(); return false;">
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-12 row">
-                                                <table style="margin-left:15px;" id="tbobserv" class="table table-bordered table-hover" name="Observation">
-                                                    <thead class="thead-light">
-                                                        <tr>
-                                                            <th>Impact Area</th>
-                                                            <th>Observation</th>
+                                    }
+                                    <div class="form-group col-md-12 row">
+                                        <label class="col-md-12" style="padding: 5px 5px; font-size: 1.2rem;background: #eee;width:98.5%">
+                                            <strong>Observation</strong>
+                                        </label>
+                                        <table cellpadding="5" cellspacing="0" style="margin-left:15px; border: 1px solid #ccc; font-size: 11pt;" id="tbobserv" class="table table-bordered table-hover" name="Observation">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th style="background-color: #B8DBFD; border: 1px solid #ccc">Impact Area</th>
+                                                    <th style="background-color: #B8DBFD; border: 1px solid #ccc">Observation</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.Observations != null)
+                                                {
+                                                    foreach (var obs in Model.Observations.Select((value, i) => new { i, value }))
+                                                    {
+                                                        <tr data-row="@obs.i+1">
+                                                            <td name="ImpactArea" style="width: 120px; border: 1px solid #ccc">
+                                                                @obs.value.ImpactArea
+                                                            </td>
+                                                            <td name="Observation" style="width: 120px; border: 1px solid #ccc">
+                                                                @obs.value.Observation
+                                                            </td>
+
                                                         </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if (Model.Observations != null)
-                                                        {
-                                                            foreach (var obs in Model.Observations.Select((value, i) => new { i, value }))
-                                                            {
-                                                                <tr data-row="@obs.i+1">
-                                                                    <td name="ImpactArea">
-                                                                        @obs.value.ImpactArea
-                                                                    </td>
-                                                                    <td name="Observation">
-                                                                        @obs.value.Observation
-                                                                    </td>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="form-group col-md-12 row">
+                                        <label class="col-md-12" style="padding: 5px 5px; font-size: 1.2rem;background: #eee; width:98.5%">
+                                            <strong>Action Items</strong>
+                                        </label>
+                                        <table cellpadding="5" cellspacing="0" style="margin-left:15px; border: 1px solid #ccc; font-size: 11pt;" id="tbactionitems" class="table table-bordered table-hover" name="ActionItems">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th style="background-color: #B8DBFD; border: 1px solid #ccc">Impact Area</th>
+                                                    <th style="background-color: #B8DBFD; border: 1px solid #ccc">Severity</th>
+                                                    <th style="background-color: #B8DBFD; border: 1px solid #ccc">Concern</th>
+                                                    <th style="background-color: #B8DBFD; border: 1px solid #ccc">Recommended Mitigation</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.ActionItems != null)
+                                                {
+                                                    foreach (var obs in Model.ActionItems.Select((value, i) => new { i, value }))
+                                                    {
+                                                        <tr data-row="@obs.i+1">
+                                                            <td name="ImpactArea" style="width: 120px; border: 1px solid #ccc">
+                                                                @obs.value.ImpactArea
+                                                            </td>
+                                                            <td name="Severity" style="width: 120px; border: 1px solid #ccc">
+                                                                @obs.value.Severity
+                                                            </td>
+                                                            <td name="Concern" style="width: 120px; border: 1px solid #ccc">
+                                                                @obs.value.Concern
+                                                            </td>
+                                                            <td name="RecommendedMitigation" style="width: 120px; border: 1px solid #ccc">
+                                                                @obs.value.RecommendedMitigation
+                                                            </td>
 
-                                                                </tr>
-                                                            }
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <input type="button" name="previous" class="previous action-button-previous btn btn-primary" value="Previous" />
-                                        <input type="button" name="next" class="next action-button btn btn-primary" value="Next Step" />
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-card" id="ActionItems" name="Action Items" data-projectname="@Model.project.ProjectName" data-customername="@Model.project.CustomerName">
-                                            <div class="form-group col-md-12 row">
-                                                <label class="control-label col-md-3">
-                                                    Impact Area
-                                                </label>
-                                                <div class="col-md-6 ml-4">
-                                                    <input class="form-control obserdet" placeholder="Enter Impact Area" id="ImpactArea" name="Impactarea" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-12 row">
-                                                <label class="control-label col-md-3">
-                                                    Severity
-                                                </label>
-                                                <div class="col-md-6 ml-4">
-                                                    <select id="Severity" name="Severity" class="form-control selectpicker mr-2">
-                                                        <option value="Select">Select</option>
-                                                        <option value="Critical Issue">Critical Issue</option>
-                                                        <option value="Single Point of Failure">Single Point of Failure</option>
-                                                        <option value="Important Issue">Important Issue</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-12 row">
-                                                <label class="control-label col-md-3">
-                                                    Concern
-                                                </label>
-                                                <div class="col-md-8 ml-4">
-                                                    <textarea class="summernote" placeholder="Enter Concern" id="concern" name="Concern" type="text"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-12 row">
-                                                <label class="control-label col-md-3">
-                                                    Recommended Mitigation
-                                                </label>
-                                                <div class="col-md-8 ml-4">
-                                                    <textarea class="summernote" placeholder="Enter Recommended Mitigation" id="RecommendedMitigation" name="RecommendedMitigation" type="text"></textarea>
-                                                </div>
-                                            </div>
-                                            @*<div class="form-group col-md-12 row">
-                                            <div class="col-md-5 ml-4">
-                                            <input class="form-control obserdet" placeholder="Enter Concern" id="concern" name="Concern" type="text">
-                                            </div>
-                                            <div class="col-md-5 ml-4">
-                                            <input class="form-control obserdet" placeholder="Enter Recommended Mitigation" id="RecommendedMitigation" name="RecommendedMitigation" type="text">
-                                            </div>
-                                            <a href="#" class="add" title="Add Action Item" style="padding:5px; display:block;" onclick="addActionItem(); return false;">
-                                            <i class="fas fa-plus"></i>
-                                            </a>
-                                            </div>*@
-                                            <div class="col-md-12 row" style="padding-bottom: 5px;">
-                                                <div class="col-md-6"></div>
-                                                <div class="col-md-6">
-                                                    <input type="button" name="Add" class="btn btn-primary" style="display:none;" value="Add" onclick="addActionItem(); return false;">
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-12 row">
-                                                <table style="margin-left:15px;" id="tbactionitems" class="table table-bordered table-hover" name="ActionItems">
-                                                    <thead class="thead-light">
-                                                        <tr>
-                                                            <th>Impact Area</th>
-                                                            <th>Severity</th>
-                                                            <th>Concern</th>
-                                                            <th>Recommended Mitigation</th>
                                                         </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if (Model.ActionItems != null)
-                                                        {
-                                                            foreach (var obs in Model.ActionItems.Select((value, i) => new { i, value }))
-                                                            {
-                                                                <tr data-row="@obs.i+1">
-                                                                    <td name="ImpactArea">
-                                                                        @obs.value.ImpactArea
-                                                                    </td>
-                                                                    <td name="Severity">
-                                                                        @obs.value.Severity
-                                                                    </td>
-                                                                    <td name="Concern">
-                                                                        @obs.value.Concern
-                                                                    </td>
-                                                                    <td name="RecommendedMitigation">
-                                                                        @obs.value.RecommendedMitigation
-                                                                    </td>
-
-                                                                </tr>
-                                                            }
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <input type="button" name="previous" class="previous action-button-previous btn btn-primary" value="Previous" />
-                                        <input type="button" name="next" class="next action-button btn btn-primary" value="Next Step" />
-
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-card" id="Summary" name="Summary" data-projectname="@Model.project.ProjectName" data-customername="@Model.project.CustomerName">
-                                        </div>
-                                        <input type="button" name="next" onclick="@("window.location.href='" + @Url.Action("Application", "Application") + "'");" class="goback action-button btn btn-primary" value="Go To Application" />
-                                    </fieldset>
-                                </form>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -390,6 +360,11 @@
 @section scripts{
     <script type="text/javascript">
         //var service = @Html.Raw(Json.Serialize(Model.Configuration));
+        $(function() {
+            $("#btnSubmit").click(function() {
+                $("input[name='GridHtml']").val($("#ProjectDetails").html());
+            });
+        });
         $(document).ready(function() {
             $("#prodcat").change(function() {
                 var end = this.value;

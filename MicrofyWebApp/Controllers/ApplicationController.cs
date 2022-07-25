@@ -12,6 +12,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
+using iTextSharp.text.html.simpleparser;
 
 namespace MicrofyWebApp.Controllers
 {
@@ -353,7 +357,7 @@ namespace MicrofyWebApp.Controllers
                     {
                         users.Add(usr.fullName.ToString());
                     }
-                    foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
+                    foreach (var usr in userViewModel.usersDetails.Where(q => (q.userRole == "Auditor" || q.userRole == "Administrator")))
                     {
                         auditor.Add(usr.fullName.ToString());
                     }
@@ -370,6 +374,7 @@ namespace MicrofyWebApp.Controllers
                 audit.ProjectDetails = solobs.ProjectDetails;
                 audit.Observations = solobs.Observations;
                 audit.ActionItems = solobs.ActionItems;
+                audit.BestPractices = solobs.Checklist;
             }
 
             return View(audit);
@@ -409,7 +414,7 @@ namespace MicrofyWebApp.Controllers
                     {
                         users.Add(usr.fullName.ToString());
                     }
-                    foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
+                    foreach (var usr in userViewModel.usersDetails.Where(q => (q.userRole == "Auditor" || q.userRole == "Administrator")))
                     {
                         auditor.Add(usr.fullName.ToString());
                     }
@@ -452,7 +457,7 @@ namespace MicrofyWebApp.Controllers
                     {
                         users.Add(usr.fullName.ToString());
                     }
-                    foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
+                    foreach (var usr in userViewModel.usersDetails.Where(q => (q.userRole == "Auditor" || q.userRole == "Administrator")))
                     {
                         auditor.Add(usr.fullName.ToString());
                     }
@@ -815,6 +820,7 @@ namespace MicrofyWebApp.Controllers
 
 
             summary.projectname = auditChecklist.ProjectName;
+            summary.customername=auditChecklist.CustomerName;
             summary.RequiredCount = countimp.ToString();
             summary.NotImplementedCount = countnotimp.ToString();
             summary.ObservationCount = obsCount.ToString();
@@ -843,7 +849,7 @@ namespace MicrofyWebApp.Controllers
                 {
                     users.Add(usr.fullName.ToString());
                 }
-                foreach (var usr in userViewModel.usersDetails.Where(q => q.userRole == "Auditor"))
+                foreach (var usr in userViewModel.usersDetails.Where(q => (q.userRole == "Auditor" || q.userRole == "Administrator")))
                 {
                     auditor.Add(usr.fullName.ToString());
                 }
@@ -900,6 +906,33 @@ namespace MicrofyWebApp.Controllers
         public async Task<IActionResult> Dashboard()
         {
             return View();
+        }
+        public async Task<IActionResult> PrintView()
+        {
+            return View();
+        }
+        //public void OnPostGeneratePDF()
+        //{
+        //    IronPdf.ChromePdfRenderer Renderer = new IronPdf.ChromePdfRenderer();
+        //    using var pdf = Renderer.RenderUrlAsPdf("https://www.nuget.org/packages/IronPdf");
+        //    pdf.WatermarkAllPages("<h2 style='color:red'>SAMPLE</h2>", IronPdf.Editing.WaterMarkLocation.MiddleCenter, 50, -45, "https://www.nuget.org/packages/IronPdf");
+        //    pdf.SaveAs(@"C:\Path\To\Watermarked.pdf");
+        //    pdf.SaveAs(@"c:\Downloads\Watermarked.pdf");
+        //}
+        [HttpPost]
+        //[ValidateInput(false)]
+        public FileResult Export(string GridHtml)
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                StringReader sr = new StringReader(GridHtml);
+                Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 100f, 0f);
+                PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
+                pdfDoc.Open();
+                XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, sr);
+                pdfDoc.Close();
+                return File(stream.ToArray(), "application/pdf", "Grid.pdf");
+            }
         }
     }
 }

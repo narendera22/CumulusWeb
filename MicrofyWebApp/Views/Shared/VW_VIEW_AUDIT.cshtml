@@ -3,143 +3,100 @@
 <div class="row col-md-12">
     <div class="form-group col-md-12 row ">
         <label class="control-label col-md-3">
-            @*<span style="color:red;">*</span>*@
-            Customer Overview
+            <strong>Customer Overview</strong>
         </label>
-        <div class="col-md-9" style="padding-left: 0px;">
-            <textarea class="form-control ProjectDet" required name="CustomerOverview" rows="4" cols="50" placeholder="Enter Customer Overview">
-                @{
-                    var val = string.Empty;
-                    if (Model.ProjectDetails.CustomerOverview != null)
-                        val = Model.ProjectDetails.CustomerOverview;
-                }
-                @Html.Raw(System.Web.HttpUtility.HtmlDecode(val).Replace("<br />","\r\n" ))
-                                                        </textarea>
-        </div>
+        <label class="control-label col-md-9">
+            @{
+                var val = string.Empty;
+                if (Model.ProjectDetails.CustomerOverview != null)
+                    val = Model.ProjectDetails.CustomerOverview;
+            }
+            @Html.Raw(System.Web.HttpUtility.HtmlDecode(val).Replace("<br />","\r\n" ))
+        </label>
+
     </div>
     <div class="form-group col-md-12 row">
         <label class="control-label col-md-3">
-            Application Overview
+            <strong>Application Overview</strong>
         </label>
-        <div class="col-md-9" style="padding-left: 0px;">
-            <textarea class="form-control ProjectDet" disabled required name="ProjectOverview" rows="4" cols="50" placeholder="Enter Project Overview">
-                @{
-                    var appval = string.Empty;
-                    if (Model.ProjectDetails.ProjectOverview != null)
-                        appval = Model.ProjectDetails.ProjectOverview;
-                }
-                @Html.Raw(System.Web.HttpUtility.HtmlDecode(appval).Replace("<br />","\r\n" ))
-                                                        </textarea>
-        </div>
-    </div>
-    <div class="form-group col-md-6 row">
-        <label class="control-label col-md-5">
-            @*<span style="color:red;">*</span>*@
-            Start Date
+        <label class="control-label col-md-9">
+            @{
+                var appval = string.Empty;
+                if (Model.ProjectDetails.ProjectOverview != null)
+                    appval = Model.ProjectDetails.ProjectOverview;
+            }
+            @Html.Raw(System.Web.HttpUtility.HtmlDecode(appval).Replace("<br />","\r\n" ))
         </label>
-        <div class="col-md-6 ml-4">
-            <input class="form-control ProjectDet" readonly placeholder="dd/mm/yyyy" id="startdate" name="ProjectStartDate" type="date" value="@Model.ProjectDetails.ProjectStartDate" min="1997-01-01" max="2030-12-31">
-        </div>
-    </div>
-    <div class="form-group col-md-6 row">
-        <label class="control-label col-md-5">
-            @*<span style="color:red;">*</span>*@
-            Tentative End Date
-        </label>
-        <div class="col-md-6 ml-4">
-            <input class="form-control ProjectDet" readonly placeholder="dd/mm/yyyy" id="startdate" name="TentativeEndDate" type="date" value="@Model.ProjectDetails.TentativeEndDate" min="1997-01-01" max="2030-12-31">
-        </div>
-    </div>
-    <div class="form-group col-md-6 row">
-        <label class="control-label col-md-5">
-            @*<span style="color:red;">*</span>*@
-            Deliverables
-        </label>
-        <div class="col-md-6 ml-4">
-            <select multiple="multiple" id="users" disabled name="ProjectDeliverables" style="width: 10em;" class="form-control ProjectDet selectpicker  multiselect" data-live-search="true" data-field="multiselect">
-                @{
-                    string[] multiVal = { };
-                    if (Model.ProjectDetails.ProjectDeliverables != "" && Model.ProjectDetails.ProjectDeliverables != null)
-                        multiVal = Model.ProjectDetails.ProjectDeliverables.Split(",");
-                }
-                @foreach (var item in Model.Deliverables)
-                {
 
-                    if (multiVal.Contains(item.Name))
-                    {
-                        <option value="@item.Name" selected>@item.Name</option>
-                    }
-                    else
-                    {
-                        <option value="@item.Name">@item.Name</option>
-                    }
-                }
-            </select>
-        </div>
     </div>
-    <div class="form-group col-md-6 row">
-        <label class="control-label col-md-5">
-            @*<span style="color:red;">*</span>*@
-            Application Architecture
+    <div class="form-group col-md-12 row">
+        <label class="control-label col-md-3">
+            <strong>Start Date</strong>
         </label>
-        <div class="col-md-6 ml-4">
+        <label class="control-label col-md-3">
+            @Model.ProjectDetails.ProjectStartDate
+        </label>
+
+        <label class="control-label col-md-3">
+            <strong>Tentative End Date</strong>
+        </label>
+        <label class="control-label col-md-3">
+            @Model.ProjectDetails.TentativeEndDate
+        </label>
+
+    </div>
+    <div class="form-group col-md-12 row">
+    <label class="control-label col-md-3">
+        <strong>Deliverables</strong>
+    </label>
+    <label class="control-label col-md-3">
+            @Model.ProjectDetails.ProjectDeliverables
+    </label>
+
+    <label class="control-label col-md-3">
+        <strong>Application Architecture</strong>
+    </label>
+    <div class="col-md-3">
             @{
                 string url = string.Empty;
                 url = System.Web.HttpUtility.UrlDecode(Model.ProjectDetails.ApplicationArchitecture);
             }
-            <input type="file" class="form-control ProjectDet" disabled data-link="@url" id="fileToUpload" data-projectname="@Model.projectname" name="ApplicationArchitecture" required />
-
             @if (url != "")
             {
-                <span class="tag badge rounded-pill bg-info">
-                    <span>@Html.Raw(System.IO.Path.GetFileName(url))</span>
-                    <a href="#" style="padding-left:3px;" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = url, phase="Application",subphase=Model.project.ProjectName,flag="Application" }) + "'");"><i class="fa fa-download" title="Download" aria-hidden="true"></i></a>
-                </span>
+            <span class="tag badge rounded-pill bg-info">
+                <span>@Html.Raw(System.IO.Path.GetFileName(url))</span>
+                <a href="#" style="padding-left:3px;" onclick="@("window.location.href='" + @Url.Action("DownloadDocument", "Repository", new { url = url, phase="Application",subphase=Model.project.ProjectName,flag="Application" }) + "'");"><i class="fa fa-download" title="Download" aria-hidden="true"></i></a>
+            </span>
             }
-        </div>
+    </div>
     </div>
     <div class="form-group col-md-12 row">
         <label class="control-label col-md-3">
-            Technologies in Use
-        </label>
-        <div class="col-md-9" style="padding-left: 0px;">
-            <textarea class="form-control ProjectDet" disabled required name="TechnologiesInUse" rows="4" cols="50" placeholder="Enter Technologies in Use">
-                @{
-                    var techval = string.Empty;
-                    if (Model.ProjectDetails.ProjectOverview != null)
-                        techval = Model.ProjectDetails.TechnologiesInUse;
-                }
-                @Html.Raw(System.Web.HttpUtility.HtmlDecode(techval).Replace("<br />","\r\n" ))
-                                                        </textarea>
-        </div>
-    </div>
-    <div class="form-group col-md-12 row">
-        <label class="control-label col-md-3">
-            Azure Services Used
-        </label>
-        <div class=" row col-md-9 ">
-            <div id="dynamic-Serv-field-1" class=" col-md-12 form-group dynamic-field" style="display:flex;padding-left: 0px;" data-tags="add">
-                <select id="prodcat" name="ProductCategory" disabled class=" col-md-6 form-control selectpicker mr-2">
-                    <option value="Select">Select</option>
-                    @foreach (var item in Model.Configuration)
-                    {
-                        <option value="@item.ProductCategory">@item.ProductCategory</option>
-                    }
-                </select>
-                <div id="divserv" style="display:none;">
-                    <select multiple="multiple" name="Services" id="ddlserv" class=" col-md-5 form-control selectpicker  multiselect" data-live-search="true" data-field="multiselect">
-                    </select>
-                </div>
+            <strong>Technologies in Use</strong>
 
-            </div>
-        </div>
+        </label>
+        <label class="control-label col-md-9">
+            @{
+                var techval = string.Empty;
+                if (Model.ProjectDetails.ProjectOverview != null)
+                    techval = Model.ProjectDetails.TechnologiesInUse;
+            }
+            @Html.Raw(System.Web.HttpUtility.HtmlDecode(techval).Replace("<br />","\r\n" ))
+        </label>
+
     </div>
     <div class="form-group col-md-12 row">
-        <table style="margin-left:15px;" id="tbservice" class="table table-bordered table-hover" name="AzureServicesUsed">
+        <label class="control-label col-md-3">
+            <strong>Azure Services Used</strong>
+        </label>
+
+    </div>
+    <div class="form-group col-md-12 row">
+        <table cellpadding="5" cellspacing="0" style="margin-left:15px; border: 1px solid #ccc; font-size: 11pt;" id="tbservice" class="table table-bordered table-hover" name="AzureServicesUsed">
             <thead class="thead-light">
                 <tr>
-                    <th>Product Category</th>
-                    <th>Services</th>
+                    <th style="background-color: #B8DBFD; border: 1px solid #ccc">Product Category</th>
+                    <th style="background-color: #B8DBFD; border: 1px solid #ccc">Services</th>
                 </tr>
             </thead>
             <tbody>
@@ -147,39 +104,11 @@
                 @foreach (var ser in Model.ProjectDetails.AzureServicesUsed.Select((value, i) => new { i, value }))
                 {
                     <tr data-row="@ser.i+1">
-                        <td name="ProductCategory">@ser.value.ProductCategory</td>
-                        <td name="Services">@ser.value.Services</td>
+                        <td name="ProductCategory" style="width: 120px; border: 1px solid #ccc">@ser.value.ProductCategory</td>
+                        <td name="Services" style="width: 120px; border: 1px solid #ccc">@ser.value.Services</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
-<script type="text/javascript">
-    var service = @Html.Raw(Json.Serialize(Model.Configuration));
-      $(document).ready(function(){
-         $("#prodcat").change(function () {
-              var end = this.value;
-              var val = $('#prodcat').val();
-              var config=service;
-              $('#ddlserv').empty()
-              if(val=="Select"){
-                  $('#divserv').hide();
-              }
-              for (var i=0;i<config.length;i++){
-                  if(val==config[i].productCategory){
-                      for(var j=0;j<config[i].services.length;j++){
-                          if(config[i].services[j].fileName!=""){
-                          jQuery('#ddlserv').append(jQuery("<option></option>").val(config[i].services[j].name).text(config[i].services[j].name));
-                          }
-                      }
-                      $("#ddlserv.multiselect").multiselect('destroy');
-                      $("#ddlserv.multiselect").multiselect({
-                          includeSelectAllOption: true
-                      });
-                      $('#divserv').show();
-                  }
-               }
-          });
-      });
-</script>

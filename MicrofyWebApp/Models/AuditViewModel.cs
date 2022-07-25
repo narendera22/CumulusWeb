@@ -120,6 +120,7 @@ namespace MicrofyWebApp.Models
     public class Summary
     {
         public string projectname { get; set; }
+        public string customername { get; set; }
         public string RequiredCount { get; set; }
         public string NotImplementedCount { get; set; }
         public string ObservationCount { get; set; }

@@ -109,7 +109,7 @@
                             @if (usr.isActive) { status = "checked"; } else { status = ""; }
                             <td>
                                 <label class="switch">
-                                    <input type="checkbox" @status class="togglecheckbox" data-username="@usr.username">
+                                    <input type="checkbox" disabled @status class="togglecheckbox" data-username="@usr.username" >
                                     <span class="slider round"></span>
                                 </label>
                             </td>
