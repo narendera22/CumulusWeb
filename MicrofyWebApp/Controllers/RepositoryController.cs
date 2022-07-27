@@ -358,7 +358,8 @@ namespace MicrofyWebApp.Controllers
                     FileName = filename,
                     IsFileExists = isFileExists
                 };
-                Activity = ActivityTracker("DownloadDocument", $"{Path.GetFileName(Path.GetDirectoryName(Data.url))}/{Path.GetFileName(Data.url)}");
+                if (isFileExists)
+                    Activity = ActivityTracker("DownloadDocument", $"{Path.GetFileName(Path.GetDirectoryName(Data.url))}/{Path.GetFileName(Data.url)}");
                 return retData;
             }
         }

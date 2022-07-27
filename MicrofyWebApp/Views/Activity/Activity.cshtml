@@ -6,17 +6,20 @@
 
 
 
-    var Top5Users = from x in Model.topModel.TopUserName
-                    join y in Model.users.usersDetails
-                    on new { a = x.id } equals new { a = y.username }
-                    where y.isDeleted == false && y.isActive == true
-                    select new { y.fullName, x.Count };
+   //var Top5Users = from x in Model.topModel.TopUserName
+    //                join y in Model.users.usersDetails
+    //                on new { a = x.id } equals new { a = y.username }
+    //                where y.isDeleted == false && y.isActive == true
+    //                select new { y.fullName, x.Count };
 
-    var Activity = from x in Model.activity
-                   join y in Model.users.usersDetails
-                   on new { a = x.UserName } equals new { a = y.username }
-                   where x.ActivityType == "DownloadDocument" && y.isDeleted == false && y.isActive == true
-                   select new { x, y };
+    var Top5Users = from a in Model.activity group a by a.UserName into u select new { UserName=u.Key, Count=u.Count() };
+
+    var Activity = Model.activity;
+    //var Activity = from x in Model.activity
+    //               join y in Model.users.usersDetails
+    //               on new { a = x.UserName } equals new { a = y.username }
+    //               where x.ActivityType == "DownloadDocument" && y.isDeleted == false && y.isActive == true
+    //               select new { x, y };
 
 }
 <!DOCTYPE html>
@@ -183,7 +186,7 @@
                                         {
                                             @foreach (var top in Top5Users.OrderByDescending(p => p.Count).Take(5))
                                             {
-                                                <li>@top.fullName (@top.Count)</li>
+                                                <li>@top.UserName (@top.Count)</li>
                                             }
                                         }
                                     </ul>
@@ -221,20 +224,20 @@
                             <div class="Pull-right"><b>No of Records : <span id="totCount"></span> of  @Activity.Count()</b></div>
                             @if (Activity != null)
                             {
-                                @foreach (var act in Activity.OrderBy(p => (DateTime.Now - p.x.LoggedTimestamp).Days))
+                                @foreach (var act in Activity.OrderBy(p => (DateTime.Now - p.LoggedTimestamp).Days))
                                 {
 
-                                    TimeSpan ts = DateTime.Now - act.x.LoggedTimestamp;
+                                    TimeSpan ts = DateTime.Now - act.LoggedTimestamp;
                                     <div class="item">
                                         <div class="row">
                                             <div class="col-2 date-holder text-right">
                                                 <div class="icon"><i class="glyphicon glyphicon-time"></i></div>
-                                                <div class="date"> <span>@act.x.LoggedTimestamp.ToString("hh:mm tt")</span><br><span class="text-info">@ts.Days days ago</span></div>
+                                                <div class="date"> <span>@act.LoggedTimestamp.ToString("hh:mm tt")</span><br><span class="text-info">@ts.Days days ago</span></div>
                                             </div>
                                             <div class="col-10 content">
-                                                <h5>@act.y.fullName</h5>
+                                                <h5>@act.UserName</h5>
                                                 <p><b>Activity type :</b> Document Download</p>
-                                                <p><b>File Name :</b>@act.x.ActivityDetails</p>
+                                                <p><b>File Name :</b>@act.ActivityDetails</p>
                                             </div>
                                         </div>
                                     </div>
