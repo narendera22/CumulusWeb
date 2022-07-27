@@ -14,7 +14,7 @@ namespace MicrofyWebApp.Models
         public string CustomerName { get; set; }
 
         public string Auditor { get; set; }
-        public List<string> Users { get; set; }
+        //public List<string> Users { get; set; }
         public string CreatedUserId { get; set; }
 
         public bool StatusCode { get; set; }

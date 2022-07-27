@@ -15,7 +15,7 @@
         applname = Model.project.ProjectName;
         custname = Model.project.CustomerName;
         auditor = Model.project.Auditor;
-        multiuserVal = Model.project.Users;
+        //multiuserVal = Model.project.Users;
         flag = "Update";
     }
     var role = HttpContextAccessor.HttpContext.Session.GetString("_UserRole");
@@ -118,31 +118,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-md-4 control-label"><span style="color:red;">*</span> Users</label>
-                            <div class="col-md-4 inputGroupContainer">
-                                <select multiple="multiple" id="users" class="form-control selectpicker  multiselect" data-live-search="true" data-field="multiselect">
-                                    @foreach (var item in Model.ListUsers)
-                                    {
-                                        @if (multiuserVal.Count > 0)
-                                        {
-                                            if (multiuserVal.Contains(item))
-                                            {
-                                                <option value="@item" selected>@item</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@item">@item</option>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <option value="@item">@item</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                        </div>
+                        
 
                         <div class="form-group">
                             <label class="col-md-4 control-label"><span style="color:red;">*</span>  Solution Collaborator</label>

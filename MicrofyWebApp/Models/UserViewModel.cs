@@ -54,4 +54,8 @@ namespace MicrofyWebApp.Models
         public string Name { get; set; }
         public string Visible { get; set; }
     }
+    public class UserApplsList
+    {
+        public List<projects> projects { get; set; }
+    }
 }

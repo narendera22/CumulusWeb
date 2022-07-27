@@ -8,7 +8,7 @@
     var status = "";
     ViewData["Title"] = "Application";
     var displaymode = "none";
-    if (role != "User")
+    if (role == "Administrator")
     {
         displaymode = "block";
     }
@@ -94,7 +94,7 @@
         @if (role == "Administrator")
         {
             <div style="margin-bottom:5px;">
-                <button type="submit" class="btn btn-primary" id="btncreateprj" onclick="@("window.location.href='" + @Url.Action("EditProject", "Application", null) + "' ");"><i class="fa fa-plus"></i> Create Application</button>
+                <button type="submit" class="btn btn-primary" id="btncreateprj"><i class="fa fa-plus"></i> Create Application</button>
             </div>
         }
 
@@ -105,7 +105,7 @@
                     <th>Application Name</th>
                     <th>Customer Name</th>
                     <th>Solution Collaborator</th>
-                    <th data-orderable="false" style="display:none;"></th>
+                    @*<th data-orderable="false" style="display:none;"></th>*@
                     <th>Status</th>
                     <th data-orderable="false">Solution Observation</th>
                     <th data-orderable="false" style="display:@displaymode">Edit / Delete Application</th>
@@ -120,10 +120,10 @@
                             <td>@p.ProjectName</td>
                             <td>@p.CustomerName</td>
                             <td>@p.Auditor</td>
-                            <td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>
+                            @*<td style="display:none;">@String.Join(", ", p.Users.ToArray())</td>*@
                             <td>@(p.Status!="" ? p.Status : "New")</td>
                             <td>
-                                @if (role == "User" || p.Status=="Completed")
+                                @if (role == "User" || p.Status == "Completed")
                                 {
                                     <a href="#" class="btn btn-warning" title="Solution Observation" onclick="@("window.location.href='" + @Url.Action("ViewAudit", "Application", new { projectname=p.ProjectName,customername=p.CustomerName  }) + "' ");">
                                         <span class="glyphicon glyphicon-eye-open" style="font-size:15px;"></span>
@@ -138,15 +138,12 @@
 
                             </td>
                             <td style="display:@displaymode">
-                                <a href="#" class="prjedit btn btn-warning" title="Edit Application" onclick="@("window.location.href='" + @Url.Action("EditProject", "Application", new { projectname=p.ProjectName,customername=p.CustomerName }) + "' ");">
+                                <a href="#" class="prjedit btn btn-warning" title="Edit Application">
                                     <span class="glyphicon glyphicon-edit" style="font-size:15px;"></span>
                                 </a>
-                                @if (role == "Administrator")
-                                {
-                                    <a href="#" class="prjdelete btn btn-warning" title="Delete Application">
-                                        <span class="glyphicon glyphicon-trash" style="font-size:15px;"></span>
-                                    </a>
-                                }
+                                <a href="#" class="prjdelete btn btn-warning" title="Delete Application">
+                                    <span class="glyphicon glyphicon-trash" style="font-size:15px;"></span>
+                                </a>
                             </td>
                         </tr>
                     }
@@ -159,78 +156,64 @@
         </div>
         </div>*@
     </div>
-    @* <div class="modal fade" id="projectEditPopup" role="dialog" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg" style="width:750px;margin:auto;">
-    <div class="modal-content">
-    <div class="modal-header">
-    <h3 class="modal-title" id="exampleModalLongTitle">Application Details</h3>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    <div class="modal-body">
-    <form class="well form-horizontal" action=" " method="post" id="UpdateProjectList_form">
-    <fieldset>
-    <div class="form-group">
-    <label class="col-md-4 control-label"><span style="color:red;">*</span> Application Name</label>
-    <div class="col-md-6 inputGroupContainer">
-    <div class="input-group">
-    <input name="projectname" id="projectname" placeholder="Project Name" class="form-control" required>
-    </div>
-    </div>
-    </div>
-    <div class="form-group">
-    <label class="col-md-4 control-label"><span style="color:red;">*</span> Customer Name</label>
-    <div class="col-md-6 inputGroupContainer">
-    <div class="input-group">
-    <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required>
-    </div>
-    </div>
-    </div>
+    <div class="modal fade" id="projectEditPopup" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="width:750px;margin:auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Application Details</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="well form-horizontal" action=" " method="post" id="UpdateProjectList_form">
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Application Name</label>
+                                <div class="col-md-6 inputGroupContainer">
+                                    <div class="input-group">
+                                        <input name="projectname" id="projectname" placeholder="Project Name" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span> Customer Name</label>
+                                <div class="col-md-6 inputGroupContainer">
+                                    <div class="input-group">
+                                        <input name="customername" id="customername" placeholder="Customer Name" class="form-control" type="text" required>
+                                    </div>
+                                </div>
+                            </div>
 
-    <div class="form-group">
-    <label class="col-md-4 control-label"><span style="color:red;">*</span> Users</label>
-    <div class="col-md-6 inputGroupContainer">
-    <div class="input-group">
-    <select multiple="multiple" id="users" class="form-control selectpicker  multiselect" data-live-search="true">
-    @foreach (var item in Model.ListUsers)
-    {
-    <option value="@item">@item</option>
-    }
-    </select>
-    </div>
-    </div>
-    </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><span style="color:red;">*</span>  Solution Collaborator</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <select id="auditor" class="col-md-6 form-control selectpicker ">
+                                            <option value="">Select</option>
+                                            @foreach (var item in Model.ListAuditor)
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
-    <div class="form-group">
-    <label class="col-md-4 control-label"><span style="color:red;">*</span>  Solution Collaborator</label>
-    <div class="col-md-8 inputGroupContainer">
-    <div class="input-group">
-    <select id="auditor" class="col-md-6 form-control selectpicker ">
-    <option value="">Select</option>
-    @foreach (var item in Model.ListAuditor)
-    {
-    <option value="@item">@item</option>
-    }
-    </select>
-    </div>
-    </div>
-    </div>
+                            <!-- Button -->
+                            <div class="form-group">
+                                <div class="col-md-7 control-label ">
+                                    <button type="submit" id="btnsave" style="display:block;" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
+                                    <button type="submit" id="btnupdate" style="display:none;" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
+                                </div>
+                            </div>
 
-    <!-- Button -->
-    <div class="form-group">
-    <div class="col-md-7 control-label ">
-    <button type="submit" id="btnsave" style="display:block;" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
-    <button type="submit" id="btnupdate" style="display:none;" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    </div>
-
-    </fieldset>
-    </form>
-    </div>
-    </div>
-    </div>
-    </div>*@
 
 
 </body>
@@ -240,91 +223,187 @@
 <script type="text/javascript">
     $(function() {
 
-        //$("#btncreateprj").click(function () {
-        //    $("#btnupdate").hide();
-        //    $("#btnsave").show();
-        //    $("#projectEditPopup").modal("show");
-        //    $("#users.multiselect").multiselect();
-        //    return false;
-        //});
-        //$(".prjedit").click(function () {
-        //    debugger;
-        //    var projectname = $(this).closest("tr").find('td:eq(0)').text();
-        //    var customername = $(this).closest("tr").find('td:eq(1)').text();
-        //    var auditor = $(this).closest("tr").find('td:eq(2)').text();
-        //    var users = $(this).closest("tr").find('td:eq(3)').text();
-        //    $("#users.multiselect").multiselect();
+        $("#btncreateprj").click(function() {
+            $("#btnupdate").hide();
+            $("#btnsave").show();
+            $("#projectEditPopup").modal("show");
+            return false;
+        });
+        $(".prjedit").click(function() {
+            debugger;
+            var projectname = $(this).closest("tr").find('td:eq(0)').text();
+            var customername = $(this).closest("tr").find('td:eq(1)').text();
+            var auditor = $(this).closest("tr").find('td:eq(2)').text();
 
-        //    var listuser=users.split(",");
-        //    $.each(users.split(","), function(i,e){
-        //        $("#users option[value='" + e + "']").prop("selected", true);
-        //    });
-        //    //var i = 0, size = listuser.length;
-        //    //for(i; i < size; i++){
-        //    //  $("#users").multiselect("widget").find(":checkbox[value='"+valArr[i]+"']").attr("checked","checked");
-        //    //  $("#users option[value='" + valArr[i] + "']").attr("selected", 1);
-        //    //  $("#users").multiselect("refresh");
-        //    //}
-        //     //$('#users').val(listuser);
-        //    $('#projectname').val(projectname);
-        //    $('#customername').val(customername);
-        //    $('#auditor').val(auditor);
-        //    $("#btnupdate").show();
-        //    $("#btnsave").hide();
-        //    $("#projectEditPopup").modal("show");
-        //    return false;
-        //});
+            $('#projectname').val(projectname);
+            $('#customername').val(customername);
+            $('#auditor').val(auditor);
+            $("#btnupdate").show();
+            $("#btnsave").hide();
+            $("#projectEditPopup").modal("show");
+            $("#projectname").prop("readonly", true);
+            $("#customername").prop("readonly", true);
+            return false;
+        });
 
-        //$("#btnupdate").click(function () {
-        //           var projectname = $('#projectname').val();
-        //           var customername = $('#customername').val();
-        //           var users = $('#users').val();
-        //           var auditor=$('#auditor').val();
+        $("#btnupdate").click(function() {
+            var projectname = $('#projectname').val();
+            var customername = $('#customername').val();
+            var auditor = $('#auditor').val();
 
-        //           var ProjectDetails = {
-        //            "ProjectName": projectname,
-        //            "CustomerName": customername,
-        //            "Auditor": auditor,
-        //            "Users": users
-        //           }
-        //            var redirecturl = "/Login/UpdateProject";
-        //       $.post(redirecturl, { "project": ProjectDetails }, function (data) {
-        //            var title = "";
-        //            var type = "";
-        //            if (data.statusCode == true) {
-        //                title = "Success!!";
-        //                type = "green";
-        //            }
-        //            else {
-        //                title = "Error!!";
-        //                type = "red";
-        //            }
-        //            $.alert({
-        //                    title: title,
-        //                    content: "Project Modified successfully",
-        //                    type: type,
-        //                    onAction: function () {
-        //                        window.location.href = '@Url.Action("Application","Application")';
-        //                    }
-        //                });
-        //        })
-        //        .fail(function (response) {
-        //           $.alert({
-        //                title: 'Error!!',
-        //                content: response,
-        //                alignMiddle: true,
-        //                type: 'red'
-        //            });
-        //        });
-        //        return false;
-        //});
-        function reset() {
-            $('#projectname').val("");
-            $('#customername').val("");
-            $('#users').val("");
-            $('#auditor').val("");
-        }
+            if (projectname == "") {
+                $.alert({
+                    title: "Error",
+                    content: "Enter Application Name",
+                    type: "red"
+                });
+                return false;
+            }
+            if (customername == "") {
+                $.alert({
+                    title: "Error",
+                    content: "Enter Customer Name",
+                    type: "red"
+                });
+                return false;
+            }
+
+            if (auditor == "") {
+                $.alert({
+                    title: "Error",
+                    content: "Select Solution Collaborator",
+                    type: "red"
+                });
+                return false;
+            }
+            var ProjectDetails = {
+                "ProjectName": projectname,
+                "CustomerName": customername,
+                "Auditor": auditor,
+                "flag": "Update"
+            }
+            var redirecturl = "/Application/UpdateProject";
+            $.post(redirecturl, { "project": ProjectDetails }, function(data) {
+                var title = "";
+                var type = "";
+                var content = "";
+                if (data.statusCode == true) {
+                    title = "Success!!";
+                    type = "green";
+                    content = "Application Modified successfully";
+                }
+                else {
+                    title = "Error!!";
+                    type = "red";
+                    content = data.responseMessage;
+                }
+                $.alert({
+                    title: title,
+                    content: content,
+                    type: type,
+                    onAction: function() {
+                        window.location.href = '@Url.Action("Application","Application")';
+                    }
+                });
+                reset();
+            })
+                .fail(function(response) {
+                    reset();
+                    $.alert({
+                        title: 'Error!!',
+                        content: response,
+                        alignMiddle: true,
+                        type: 'red'
+                    });
+                });
+
+
+            return false;
+
+        });
+        $("#btnsave").click(function() {
+            var projectname = $('#projectname').val();
+            var customername = $('#customername').val();
+            var auditor = $('#auditor').val();
+
+            if (projectname == "") {
+                $.alert({
+                    title: "Error",
+                    content: "Enter Application Name",
+                    type: "red"
+                });
+                return false;
+            }
+            if (customername == "") {
+                $.alert({
+                    title: "Error",
+                    content: "Enter Customer Name",
+                    type: "red"
+                });
+                return false;
+            }
+
+            if (auditor == "") {
+                $.alert({
+                    title: "Error",
+                    content: "Select Solution Collaborator",
+                    type: "red"
+                });
+                return false;
+            }
+            var ProjectDetails = {
+                "ProjectName": projectname,
+                "CustomerName": customername,
+                "Auditor": auditor,
+                "flag": "Save"
+            }
+            var redirecturl = "/Application/UpdateProject";
+            $.post(redirecturl, { "project": ProjectDetails }, function(data) {
+
+                var title = "";
+                var type = "";
+                var content = "";
+                if (data.statusCode == true) {
+                    title = "Success!!";
+                    type = "green";
+                    content = "Application Created successfully";
+                }
+                else {
+                    title = "Error!!";
+                    type = "red";
+                    content = data.responseMessage;
+                }
+                $.alert({
+                    title: title,
+                    content: content,
+                    type: type,
+                    onAction: function() {
+                        window.location.href = '@Url.Action("Application","Application")';
+                    }
+                });
+                reset();
+            })
+                .fail(function(response) {
+                    reset();
+                    $.alert({
+                        title: 'Error!!',
+                        content: response,
+                        alignMiddle: true,
+                        type: 'red'
+                    });
+                });
+
+
+            return false;
+
+        });
+
     });
+    function reset() {
+        $('#projectname').val("");
+        $('#customername').val("");
+        $('#auditor').val("");
+    }
     /* Initialization of datatable */
     $(document).ready(function() {
         $('#tbProject').DataTable({

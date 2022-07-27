@@ -444,7 +444,9 @@ namespace MicrofyWebApp.Controllers
             }
             ProjectView projRespon = new ProjectView();
             UserViewModel userViewModel = new UserViewModel();
+            UserViewModel userdetmodel = new UserViewModel();
             AuditViewModel auditViewModel = new AuditViewModel();
+            UserApplsList appllist = new UserApplsList();
             //auditViewModel = await ListAllChecklistAsync();
             userViewModel = await ListAllUsersAsync();
             List<string> users = new List<string>();
@@ -465,18 +467,21 @@ namespace MicrofyWebApp.Controllers
             }
             string projectResponse = string.Empty;
             string Requestapi = string.Empty;
+            string userdet = HttpContext.Session.GetString("_UserDet");
+            userdetmodel = JsonConvert.DeserializeObject<UserViewModel>(userdet);
+            appllist.projects = userdetmodel.projects;
             string UserId = "UserId=" + HttpContext.Session.GetString("_username");
             string UserRole = "UserRole=" + HttpContext.Session.GetString("_UserRole");
-            Requestapi = $"api/GetAllProjects?{SolutionObserCode}&{UserId}&{UserRole}";
+            string UserApplList = "UserApplList=" + JsonConvert.SerializeObject(appllist);
+            Requestapi = $"api/GetAllProjects?{SolutionObserCode}&{UserId}&{UserRole}&{UserApplList}";
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(SolutionObserBaseUrl);
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage Res = await client.GetAsync(Requestapi);
-                if (Res.IsSuccessStatusCode)
+                var result = await client.GetAsync(Requestapi);
+
+                if (result.IsSuccessStatusCode)
                 {
-                    projectResponse = Res.Content.ReadAsStringAsync().Result;
+                    projectResponse = result.Content.ReadAsStringAsync().Result;
                     if (projectResponse != null || projectResponse != "")
                         projRespon.ProjectsList = JsonConvert.DeserializeObject<List<ProjectViewModel>>(value: projectResponse);
                 }
@@ -524,7 +529,7 @@ namespace MicrofyWebApp.Controllers
             }
 
             projectViewModel.Auditor = project.Auditor;
-            projectViewModel.Users = project.Users;
+            //projectViewModel.Users = project.Users;
 
             using (var client = new HttpClient())
             {
