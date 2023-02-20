@@ -910,7 +910,13 @@ namespace MicrofyWebApp.Controllers
         }
         public async Task<IActionResult> Dashboard()
         {
-            return View();
+            var applications = GetAllProjectDetails();
+
+            var apps = JsonConvert.DeserializeObject<List<ProjectViewModel>>(value: applications);
+
+            ProjectDashboardViewModel viewModel = new ProjectDashboardViewModel { Projects = apps };
+
+            return View(viewModel);
         }
         public async Task<IActionResult> PrintView()
         {

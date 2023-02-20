@@ -1,1 +1,292 @@
-﻿
+﻿@using MicrofyWebApp.Models;
+@model MicrofyWebApp.Models.ProjectDashboardViewModel;
+
+<!-- Google Font: Source Sans Pro -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="~/css/AdminLte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+<!-- iCheck -->
+<link rel="stylesheet" href="~/css/AdminLte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+<!-- JQVMap -->
+<link rel="stylesheet" href="~/css/AdminLte/plugins/jqvmap/jqvmap.min.css">
+<!-- Theme style -->
+<link rel="stylesheet" href="~/css/AdminLte/adminlte.min.css">
+<!-- overlayScrollbars -->
+<link rel="stylesheet" href="~/css/AdminLte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+<!-- Daterange picker -->
+<!-- <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">-->
+<!-- summernote -->
+<link rel="stylesheet" href="~/css/AdminLte/plugins/summernote/summernote-bs4.min.css">
+
+
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var donutData = {
+            labels: [
+                'App Service',
+                'Service Bus',
+                'SQL Database',
+                'Kubernetes',
+                'Blob Storage'
+            ],
+            datasets: [
+                {
+                    data: [9, 10, 17, 12, 30],
+                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc'],
+                }
+            ]
+        }
+        var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+        var pieData = donutData;
+        var pieOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+        //Create pie or douhnut chart
+        // You can switch between pie and douhnut using the method below.
+        new Chart(pieChartCanvas, {
+            type: 'pie',
+            data: pieData,
+            options: pieOptions
+        })
+
+
+        var barData = {
+            labels: [
+                'App Service',
+                'Service Bus',
+                'SQL Database',
+                'Kubernetes',
+                'Blob Storage'
+            ],
+            datasets: [
+                {
+                    data: [9, 10, 17, 12, 30],
+                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc'],
+                }
+            ]
+        }
+
+
+        var barCanvas1 = $('#bar-chart1').get(0).getContext('2d')
+        //var pieData = barData;
+        var barOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+        //Create pie or douhnut chart
+        // You can switch between pie and douhnut using the method below.
+        new Chart(barCanvas1, {
+            type: 'bar',
+            data: barData,
+            options: barOptions
+        })
+
+    }
+</script>
+@*<div class="col-md-12" style="padding-left: 15px;">
+    <div id="divbreadcrumb">
+        <ol class="breadcrumb breadcrumb-arrow">
+            <li class="homelink"><a href="~/Application/Dashboard">Home</a></li>           
+            <li class="active"><span>Dashboard</span></li>
+        </ol>
+    </div>
+</div>*@
+
+
+
+<div class="container-fluid" id="dashboard" style="display: block;">
+    <div>
+    @*<div class="container">*@
+        <section>
+        @*<section class="content">*@
+            <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="~/Application/Dashboard">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+            </nav>
+
+            <div>
+                
+                <!--APP Details-->
+                <div class="row">
+                    <!-- TO DO List -->
+                    <div class="col-lg-12 col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="ion ion-clipboard mr-1"></i>
+                                    5 Recently added applications(@Html.ActionLink("More Details","Application","Application"))
+                                </h3>
+                                <div class="card-tools">
+                                    <button type="submit" class="btn btn-primary" id="btncreateprj" onclick="@("window.location.href='" + @Url.Action("EditProject", "Application", null) + "' ");"><i class="fa fa-plus"></i> Create Application</button>
+                                </div>
+                                @* <div class="card-tools">
+                                <ul class="pagination pagination-sm">
+                                <li class="page-item"><a href="#" class="page-link">&laquo;</a></li>
+                                <li class="page-item"><a href="#" class="page-link">1</a></li>
+                                <li class="page-item"><a href="#" class="page-link">2</a></li>
+                                <li class="page-item"><a href="#" class="page-link">3</a></li>
+                                <li class="page-item"><a href="#" class="page-link">&raquo;</a></li>
+                                </ul>
+                                </div>*@
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <ul class="todo-list" data-widget="todo-list">
+                                    @foreach (var p in @Model.Projects)
+                                    {
+                                        <li>
+                                            <!-- drag handle -->
+                                            <span class="handle">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </span>
+
+                                            <!-- todo text -->
+                                            <span class="text">@p.ProjectName</span>
+                                            <!-- Emphasis label -->
+                                            <small class="badge badge-primary"><i class="far fa-clock"></i>@p.Status</small>
+                                            <!-- General tools such as edit or delete-->
+                                            <div class="tools">
+                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-trash-o"></i>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--Tile Row1-->
+                <div class="row">
+                    <div class="col-lg-6 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3>15</h3>
+
+                                <p>Project Count</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-bag"></i>
+                            </div>
+                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-6 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3>53<sup style="font-size: 20px">%</sup></h3>
+
+                                <p>Average Compliance</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-stats-bars"></i>
+                            </div>
+                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                </div>
+                <!--Tile Row2-->
+                <div class="row">
+                    <div class="col-lg-6 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3>113</h3>
+
+                                <p>Activities Counts</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-cloud-download-alt"></i>
+                            </div>
+                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-6 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3>15</h3>
+
+                                <p>Services Count</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-pie-graph"></i>
+                            </div>
+                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                </div>
+
+
+                <!--Charts-->
+                <div class="row">
+                    <div class="col-lg-6 col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Top 5 Azure Services</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Azure Best Practices</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="bar-chart1" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                @* <canvas id="pieChart1" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+
+        </section>
+    </div>
+</div>
